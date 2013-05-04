@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% load tags %}
+
+{% block title %}{{ path.name }}{% endblock %}
+
+{% block content %}
+{% path_link path %}
+Lorem ipsum dolor...
+{% endblock %}

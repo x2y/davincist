@@ -1,0 +1,12 @@
+{% extends "base_path.html" %}
+
+{% load tags %}
+
+{% block title %}{{ path.name|capfirst }} levels{% endblock %}
+
+{% block content %}
+{% path_link path %}
+{% for level in path.level_set.all %}
+  <p>{{ level }}
+{% endfor %}
+{% endblock %}

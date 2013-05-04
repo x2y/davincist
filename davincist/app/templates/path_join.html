@@ -1,0 +1,10 @@
+{% extends "base_path.html" %}
+
+{% load tags %}
+
+{% block title %}Join {{ path.name|capfirst }}{% endblock %}
+
+{% block content %}
+{% path_link path %}
+Lorem ipsum dolor...
+{% endblock %}

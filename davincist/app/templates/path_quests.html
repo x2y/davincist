@@ -1,0 +1,12 @@
+{% extends "base_path.html" %}
+
+{% load tags %}
+
+{% block title %}{{ path.name|capfirst }} quests{% endblock %}
+
+{% block content %}
+{% path_link path %}
+{% for quest in path.quest_set.all %}
+  <p>{{ quest }}
+{% endfor %}
+{% endblock %}

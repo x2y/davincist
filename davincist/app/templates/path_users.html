@@ -1,0 +1,15 @@
+{% extends "base_path.html" %}
+
+{% load tags %}
+
+{% block title %}{{ path.name|capfirst }} users{% endblock %}
+
+{% block content %}
+{% path_link path %}
+{% for level in path.level_set.all %}
+  <p>{{ level }}
+  {% for user in level.userprofile_set.all %}
+    <p>{{ user }}
+  {% endfor %}
+{% endfor %}
+{% endblock %}
