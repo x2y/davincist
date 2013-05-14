@@ -56,27 +56,11 @@ def path_quests(request, path_name):
   return r.__dict__
 
 
-@render_to('quest_detail.html')
-def quest_detail(request, path_name, quest_id):
-  r = Response()
-  r.path = get_object_or_404(Path, pk=path_name.lower())
-  r.quest = get_object_or_404(Quest, pk=quest_id)
-  return r.__dict__
-
-
 @render_to('quest_submit.html')
 def quest_submit(request, path_name, quest_id):
   r = Response()
   r.path = get_object_or_404(Path, pk=path_name.lower())
   r.quest = get_object_or_404(Quest, pk=quest_id)
-  return r.__dict__
-
-
-@render_to('quest_verify.html')
-def quest_verify(request, path_name, user_id):
-  r = Response()
-  r.path = get_object_or_404(Path, pk=path_name.lower())
-  r.user = get_object_or_404(User, pk=user_id)
   return r.__dict__
 
 
@@ -102,13 +86,6 @@ def user_add(request):
 
 @render_to('user_home.html')
 def user_home(request, user_id):
-  r = Response()
-  r.user = get_object_or_404(User, pk=user_id)
-  return r.__dict__
-
-
-@render_to('user_detail.html')
-def user_detail(request, user_id):
   r = Response()
   r.user = get_object_or_404(User, pk=user_id)
   return r.__dict__
