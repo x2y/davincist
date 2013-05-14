@@ -91,19 +91,6 @@ class Badge(models.Model):
     unique_together = ('name', 'grade', 'path')
 
 
-class Xp(models.Model):
-  user = models.ForeignKey('UserProfile')
-  path = models.ForeignKey('Path')
-  value = models.PositiveIntegerField()
-
-  def __unicode__(self):
-    return '%s: %d' % (self.path.name, self.value)
-
-  class Meta:
-    ordering = ['user', '-value', 'path']
-    unique_together = ('user', 'path')
-
-
 class UserProfile(models.Model):
   handle = models.CharField(max_length=32, primary_key=True)
   user = models.ForeignKey(User, unique=True)
@@ -115,8 +102,7 @@ class UserProfile(models.Model):
   bio = models.TextField()
   # profile_image = models.ImageField(upload_to='uploads', null=True)
   mission = models.CharField(max_length=128)
-  levels = models.ManyToManyField('Level', blank=True)
-  badges = models.ManyToManyField('Badge', blank=True)
+  paths = models.ManyToManyField('UserPath', blank=True)
   last_seen = models.DateTimeField(default=datetime.now, editable=True, blank=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
@@ -125,6 +111,22 @@ class UserProfile(models.Model):
 
   class Meta:
     ordering = ['handle']
+
+
+class UserPath(models.Model):
+  user = models.ForeignKey(User, unique=True)
+  path = models.ForeignKey('Path')
+  mission = models.CharField(max_length=128)
+  level = models.ForeignKey('Level')
+  badges = models.ManyToManyField('Badge', blank=True)
+  xp = models.PositiveIntegerField()
+
+  def __unicode__(self):
+    return '%s/%s' % (self.user, self.path.name)
+
+  class Meta:
+    ordering = ['user', 'path']
+    unique_together = ('user', 'path')
 
 
 # class LevelEvent(models.Model):
@@ -192,4 +194,3 @@ class UserProfile(models.Model):
 # Stats
 # Meta
 # Teams
-# Path-specific mission
