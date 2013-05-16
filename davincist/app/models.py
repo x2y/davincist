@@ -92,25 +92,16 @@ class Badge(models.Model):
 
 
 class UserProfile(models.Model):
-  handle = models.CharField(max_length=32, primary_key=True)
-  user = models.ForeignKey(User, unique=True)
-  first_name = models.CharField(max_length=32)
-  last_name = models.CharField(max_length=32)
+  user = models.OneToOneField(User, primary_key=True)
   website = models.URLField(blank=True)
-  email = models.EmailField()
   birth_date = models.DateField()
   bio = models.TextField()
   # profile_image = models.ImageField(upload_to='uploads', null=True)
   mission = models.CharField(max_length=128)
   paths = models.ManyToManyField('UserPath', blank=True)
-  last_seen = models.DateTimeField(default=datetime.now, editable=True, blank=True)
-  created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):
-    return '%s' % (self.handle,)
-
-  class Meta:
-    ordering = ['handle']
+    return '%s profile' % (self.user.username,)
 
 
 class UserPath(models.Model):
