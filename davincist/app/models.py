@@ -51,7 +51,7 @@ class Quest(models.Model):
                  (EXTRA_LARGE, 'Extra-large'))
   QUEST_SIZE_MULTIPLIERS = {SMALL: 1, MEDIUM: 2, LARGE: 3, EXTRA_LARGE:5}
   size = models.CharField(max_length=1, choices=QUEST_SIZES, default=SMALL)
-  badge = models.ForeignKey('Badge', blank=True)
+  badges = models.ManyToManyField('Badge', blank=True)
   max_repetitions = models.PositiveSmallIntegerField(default=1)
   is_peer_validated = models.BooleanField(default=False)
   is_senior_validated = models.BooleanField(default=False)
