@@ -3,11 +3,16 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-def ellipsis(text, width):
-  if len(text) > width:
-    return text[:width - 3] + '...'
-  else:
-    return text
+def ellipsis(width):
+  def _decorator(function):
+    def _wrapper(*args, **kwargs):
+      text = function(*args, **kwargs)
+      if len(text) > width:
+        return text[:width - 3] + '...'
+      else:
+        return text
+    return _wrapper
+  return _decorator
 
 
 class Path(models.Model):
@@ -18,8 +23,9 @@ class Path(models.Model):
   # field = models.ForeignKey('Field')
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
+  @ellipsis(100)
   def __unicode__(self):
-    return '%s: %s' % (self.name, ellipsis(self.description, 100))
+    return '%s: %s' % (self.name, self.description)
 
   class Meta:
     get_latest_by = 'created'
@@ -65,8 +71,9 @@ class Quest(models.Model):
   is_senior_validated = models.BooleanField(default=False)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
+  @ellipsis(100)
   def __unicode__(self):
-    return '(%s) %s: %s' % (self.path.name, self.name, ellipsis(self.description, 100))
+    return '(%s) %s: %s' % (self.path.name, self.name, self.description)
 
   def xp(self):
     return self.QUEST_SIZE_MULTIPLIERS[self.size] ** self.level.rank
@@ -90,9 +97,9 @@ class Badge(models.Model):
   is_public = models.BooleanField(default=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
+  @ellipsis(100)
   def __unicode__(self):
-    return '(%s/%s) %s: %s' % (self.grade, self.path.name, self.name,
-                               ellipsis(self.description, 100))
+    return '(%s/%s) %s: %s' % (self.grade, self.path.name, self.name, self.description)
 
   class Meta:
     get_latest_by = 'created'
