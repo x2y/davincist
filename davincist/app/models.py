@@ -2,6 +2,14 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
+
+def ellipsis(text, width):
+  if len(text) > width:
+    return text[:width - 3] + '...'
+  else:
+    return text
+
+
 class Path(models.Model):
   name = models.CharField(max_length=64, primary_key=True)
   description = models.TextField()
@@ -11,7 +19,7 @@ class Path(models.Model):
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):
-    return '%s: %s' % (self.name, self.description)
+    return '%s: %s' % (self.name, ellipsis(self.description, 100))
 
   class Meta:
     get_latest_by = 'created'
@@ -58,7 +66,7 @@ class Quest(models.Model):
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):
-    return '(%s) %s: %s' % (self.path.name, self.name, self.description)
+    return '(%s) %s: %s' % (self.path.name, self.name, ellipsis(self.description, 100))
 
   def xp(self):
     return self.QUEST_SIZE_MULTIPLIERS[self.size] ** self.level.rank
@@ -83,7 +91,8 @@ class Badge(models.Model):
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):
-    return '(%s/%s) %s: %s' % (self.grade, self.path.name, self.name, self.description)
+    return '(%s/%s) %s: %s' % (self.grade, self.path.name, self.name,
+                               ellipsis(self.description, 100))
 
   class Meta:
     get_latest_by = 'created'
