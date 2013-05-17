@@ -17,6 +17,34 @@ class LevelTests(TestCase):
       actual[key] = Level(rank=key).hours_needed()
     self.assertEqual(actual, expected);
 
+  def test_level_xp_per_hours_work(self):
+    expected = {
+        0: 0,
+        1: 20,
+        4: 422,
+        9: 2514,
+        15: 7734,
+        20: 14565,
+    }
+    actual = {}
+    for key in expected:
+      actual[key] = Level(rank=key).xp_per_hours_work()
+    self.assertEqual(actual, expected);
+
+  def test_level_xp_needed(self):
+    expected = {
+        0: 0,
+        1: 20,
+        4: 17724,
+        9: 641070,
+        15: 6094392,
+        20: 21629025,
+    }
+    actual = {}
+    for key in expected:
+      actual[key] = Level(rank=key).xp_needed()
+    self.assertEqual(actual, expected);
+
 
 class QuestTests(TestCase):
   def test_quest_hours_needed(self):
