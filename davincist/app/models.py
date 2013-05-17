@@ -3,6 +3,14 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+HOURS_GROWTH_CONSTANT = 2.2
+HOURS_MULTIPLIER = 2.04
+HOURS_OFFSET = 1.04
+TIME_UNIT_MULTIPLIER = 1.25
+TIME_UNIT_OFFSET = 1.0
+XP_MULTIPLIER = 20
+
+
 def ellipsis(width):
   def _decorator(function):
     def _wrapper(*args, **kwargs):
@@ -44,8 +52,20 @@ class Level(models.Model):
   def __unicode__(self):
     return '(%s) %d: %s' % (self.path.name, self.rank, self.name)
 
+  def hours_needed(self):
+    if self.rank > 0:
+      return HOURS_MULTIPLIER * self.rank ** HOURS_GROWTH_CONSTANT - HOURS_OFFSET
+    else:
+      return 0.0
+
+  def xp_per_hours_work(self):
+    if self.rank > 0:
+      return XP_MULTIPLIER * self.rank ** HOURS_GROWTH_CONSTANT
+    else:
+      return 0.0
+
   def xp_needed(self):
-    return 20 ** self.rank
+    return self.hours_needed() * self.xp_per_hours_work()
 
   class Meta:
     get_latest_by = 'created'
@@ -63,7 +83,7 @@ class Quest(models.Model):
                  (MEDIUM, 'Medium'),
                  (LARGE, 'Large'),
                  (EXTRA_LARGE, 'Extra-large'))
-  QUEST_SIZE_MULTIPLIERS = {SMALL: 1, MEDIUM: 2, LARGE: 3, EXTRA_LARGE:5}
+  QUEST_SIZE_MULTIPLIERS = {SMALL: 1, MEDIUM: 2, LARGE: 4, EXTRA_LARGE: 6}
   size = models.CharField(max_length=1, choices=QUEST_SIZES, default=SMALL)
   badges = models.ManyToManyField('Badge', blank=True)
   max_repetitions = models.PositiveSmallIntegerField(default=1)
@@ -75,8 +95,15 @@ class Quest(models.Model):
   def __unicode__(self):
     return '(%s) %s: %s' % (self.path.name, self.name, self.description)
 
+  def hours_needed(self):
+    if self.level.rank > 0:
+      return (self.QUEST_SIZE_MULTIPLIERS[self.size] *
+          (TIME_UNIT_MULTIPLIER * self.level.rank - TIME_UNIT_OFFSET))
+    else:
+      return 0.0
+
   def xp(self):
-    return self.QUEST_SIZE_MULTIPLIERS[self.size] ** self.level.rank
+    return round(self.hours_needed() * self.level.xp_per_hours_work())
 
   class Meta:
     get_latest_by = 'created'
