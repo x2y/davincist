@@ -2,79 +2,100 @@ from django.test import TestCase
 from models import *
 
 
-class QuestTests(TestCase):
-  def init_quest(self, level, size):
-    return Quest(name='Test quest',
-                 description='A test quest',
-                 level=Level(rank=level),
-                 size=size);
-
+class LevelTests(TestCase):
   def test_level_hours_needed(self):
-    self.assertEqual(Level(rank=0).hours_needed(), 0)
-    self.assertEqual(Level(rank=1).hours_needed(), 1)
-    self.assertEqual(Level(rank=4).hours_needed(), 42)
-    self.assertEqual(Level(rank=9).hours_needed(), 255)
-    self.assertEqual(Level(rank=15).hours_needed(), 788)
-    self.assertEqual(Level(rank=20).hours_needed(), 1485)
+    expected = {
+        0: 0,
+        1: 1,
+        4: 42,
+        9: 255,
+        15: 788,
+        20: 1485,
+    }
+    actual = {}
+    for key in expected:
+      actual[key] = Level(rank=key).hours_needed()
+    self.assertEqual(actual, expected);
 
+
+class QuestTests(TestCase):
   def test_quest_hours_needed(self):
-    self.assertEqual(self.init_quest(0, Quest.SMALL).hours_needed(), 0.0);
-    self.assertEqual(self.init_quest(0, Quest.MEDIUM).hours_needed(), 0.0);
-    self.assertEqual(self.init_quest(0, Quest.LARGE).hours_needed(), 0.0);
-    self.assertEqual(self.init_quest(0, Quest.EXTRA_LARGE).hours_needed(), 0.0);
+    expected = {
+        (0, Quest.SMALL): 0.0,
+        (0, Quest.MEDIUM): 0.0,
+        (0, Quest.LARGE): 0.0,
+        (0, Quest.EXTRA_LARGE): 0.0,
 
-    self.assertEqual(self.init_quest(1, Quest.SMALL).hours_needed(), 0.25);
-    self.assertEqual(self.init_quest(1, Quest.MEDIUM).hours_needed(), 0.5);
-    self.assertEqual(self.init_quest(1, Quest.LARGE).hours_needed(), 1.0);
-    self.assertEqual(self.init_quest(1, Quest.EXTRA_LARGE).hours_needed(), 1.5);
+        (1, Quest.SMALL): 0.25,
+        (1, Quest.MEDIUM): 0.5,
+        (1, Quest.LARGE): 1.0,
+        (1, Quest.EXTRA_LARGE): 1.5,
 
-    self.assertEqual(self.init_quest(4, Quest.SMALL).hours_needed(), 4.0);
-    self.assertEqual(self.init_quest(4, Quest.MEDIUM).hours_needed(), 8.0);
-    self.assertEqual(self.init_quest(4, Quest.LARGE).hours_needed(), 16.0);
-    self.assertEqual(self.init_quest(4, Quest.EXTRA_LARGE).hours_needed(), 24.0);
+        (4, Quest.SMALL): 4.0,
+        (4, Quest.MEDIUM): 8.0,
+        (4, Quest.LARGE): 16.0,
+        (4, Quest.EXTRA_LARGE): 24.0,
 
-    self.assertEqual(self.init_quest(9, Quest.SMALL).hours_needed(), 10.25);
-    self.assertEqual(self.init_quest(9, Quest.MEDIUM).hours_needed(), 20.5);
-    self.assertEqual(self.init_quest(9, Quest.LARGE).hours_needed(), 41.0);
-    self.assertEqual(self.init_quest(9, Quest.EXTRA_LARGE).hours_needed(), 61.5);
+        (9, Quest.SMALL): 10.25,
+        (9, Quest.MEDIUM): 20.5,
+        (9, Quest.LARGE): 41.0,
+        (9, Quest.EXTRA_LARGE): 61.5,
 
-    self.assertEqual(self.init_quest(15, Quest.SMALL).hours_needed(), 17.75);
-    self.assertEqual(self.init_quest(15, Quest.MEDIUM).hours_needed(), 35.5);
-    self.assertEqual(self.init_quest(15, Quest.LARGE).hours_needed(), 71.0);
-    self.assertEqual(self.init_quest(15, Quest.EXTRA_LARGE).hours_needed(), 106.5);
+        (15, Quest.SMALL): 17.75,
+        (15, Quest.MEDIUM): 35.5,
+        (15, Quest.LARGE): 71.0,
+        (15, Quest.EXTRA_LARGE): 106.5,
 
-    self.assertEqual(self.init_quest(20, Quest.SMALL).hours_needed(), 24.0);
-    self.assertEqual(self.init_quest(20, Quest.MEDIUM).hours_needed(), 48.0);
-    self.assertEqual(self.init_quest(20, Quest.LARGE).hours_needed(), 96.0);
-    self.assertEqual(self.init_quest(20, Quest.EXTRA_LARGE).hours_needed(), 144.0);
+        (20, Quest.SMALL): 24.0,
+        (20, Quest.MEDIUM): 48.0,
+        (20, Quest.LARGE): 96.0,
+        (20, Quest.EXTRA_LARGE): 144.0,
+    }
+    actual = {}
+    for key in expected:
+      actual[key] = Quest(name='Test quest',
+                          description='A test quest',
+                          level=Level(rank=key[0]),
+                          size=key[1]).hours_needed();
+    self.assertEqual(actual, expected);
 
   def test_quest_xp(self):
-    self.assertEqual(self.init_quest(0, Quest.SMALL).xp(), 0);
-    self.assertEqual(self.init_quest(0, Quest.MEDIUM).xp(), 0);
-    self.assertEqual(self.init_quest(0, Quest.LARGE).xp(), 0);
-    self.assertEqual(self.init_quest(0, Quest.EXTRA_LARGE).xp(), 0);
+    expected = {
+        (0, Quest.SMALL): 0,
+        (0, Quest.MEDIUM): 0,
+        (0, Quest.LARGE): 0,
+        (0, Quest.EXTRA_LARGE): 0,
 
-    self.assertEqual(self.init_quest(1, Quest.SMALL).xp(), 5);
-    self.assertEqual(self.init_quest(1, Quest.MEDIUM).xp(), 10);
-    self.assertEqual(self.init_quest(1, Quest.LARGE).xp(), 20);
-    self.assertEqual(self.init_quest(1, Quest.EXTRA_LARGE).xp(), 30);
+        (1, Quest.SMALL): 5,
+        (1, Quest.MEDIUM): 10,
+        (1, Quest.LARGE): 20,
+        (1, Quest.EXTRA_LARGE): 30,
 
-    self.assertEqual(self.init_quest(4, Quest.SMALL).xp(), 1688);
-    self.assertEqual(self.init_quest(4, Quest.MEDIUM).xp(), 3376);
-    self.assertEqual(self.init_quest(4, Quest.LARGE).xp(), 6752);
-    self.assertEqual(self.init_quest(4, Quest.EXTRA_LARGE).xp(), 10128);
+        (4, Quest.SMALL): 1688,
+        (4, Quest.MEDIUM): 3376,
+        (4, Quest.LARGE): 6752,
+        (4, Quest.EXTRA_LARGE): 10128,
 
-    self.assertEqual(self.init_quest(9, Quest.SMALL).xp(), 25769);
-    self.assertEqual(self.init_quest(9, Quest.MEDIUM).xp(), 51537);
-    self.assertEqual(self.init_quest(9, Quest.LARGE).xp(), 103074);
-    self.assertEqual(self.init_quest(9, Quest.EXTRA_LARGE).xp(), 154611);
+        (9, Quest.SMALL): 25769,
+        (9, Quest.MEDIUM): 51537,
+        (9, Quest.LARGE): 103074,
+        (9, Quest.EXTRA_LARGE): 154611,
 
-    self.assertEqual(self.init_quest(15, Quest.SMALL).xp(), 137279);
-    self.assertEqual(self.init_quest(15, Quest.MEDIUM).xp(), 274557);
-    self.assertEqual(self.init_quest(15, Quest.LARGE).xp(), 549114);
-    self.assertEqual(self.init_quest(15, Quest.EXTRA_LARGE).xp(), 823671);
+        (15, Quest.SMALL): 137279,
+        (15, Quest.MEDIUM): 274557,
+        (15, Quest.LARGE): 549114,
+        (15, Quest.EXTRA_LARGE): 823671,
 
-    self.assertEqual(self.init_quest(20, Quest.SMALL).xp(), 349560);
-    self.assertEqual(self.init_quest(20, Quest.MEDIUM).xp(), 699120);
-    self.assertEqual(self.init_quest(20, Quest.LARGE).xp(), 1398240);
-    self.assertEqual(self.init_quest(20, Quest.EXTRA_LARGE).xp(), 2097360);
+        (20, Quest.SMALL): 349560,
+        (20, Quest.MEDIUM): 699120,
+        (20, Quest.LARGE): 1398240,
+        (20, Quest.EXTRA_LARGE): 2097360,
+    }
+    actual = {}
+    for key in expected:
+      actual[key] = Quest(name='Test quest',
+                          description='A test quest',
+                          level=Level(rank=key[0]),
+                          size=key[1]).xp();
+    self.assertEqual(actual, expected);
+
