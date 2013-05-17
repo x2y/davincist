@@ -54,13 +54,13 @@ class Level(models.Model):
 
   def hours_needed(self):
     if self.rank > 0:
-      return HOURS_MULTIPLIER * self.rank ** HOURS_GROWTH_CONSTANT - HOURS_OFFSET
+      return round(HOURS_MULTIPLIER * self.rank ** HOURS_GROWTH_CONSTANT - HOURS_OFFSET)
     else:
       return 0.0
 
   def xp_per_hours_work(self):
     if self.rank > 0:
-      return XP_MULTIPLIER * self.rank ** HOURS_GROWTH_CONSTANT
+      return round(XP_MULTIPLIER * self.rank ** HOURS_GROWTH_CONSTANT)
     else:
       return 0.0
 
