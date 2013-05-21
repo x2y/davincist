@@ -85,29 +85,29 @@ def user_add(request):
 
 
 @render_to('user_home.html')
-def user_home(request, user_id):
+def user_home(request, username):
   r = Response()
-  r.user = get_object_or_404(User, pk=user_id)
+  r.user = get_object_or_404(User, username__iexact=username)
   return r.__dict__
 
 
 @render_to('use_merits.html')
-def user_merits(request, user_id):
+def user_merits(request, username):
   r = Response()
-  r.user = get_object_or_404(User, pk=user_id)
+  r.user = get_object_or_404(User, username__iexact=username)
   return r.__dict__
 
 
 @render_to('user_gallery.html')
-def user_gallery(request, user_id):
+def user_gallery(request, username):
   r = Response()
-  r.user = get_object_or_404(User, pk=user_id)
+  r.user = get_object_or_404(User, username__iexact=username)
   return r.__dict__
 
 
 @render_to('user_edit.html')
-def user_edit(request, user_id):
+def user_edit(request, username):
   r = Response()
-  r.user = get_object_or_404(User, pk=user_id)
+  r.user = get_object_or_404(User, username__iexact=username)
   return r.__dict__
 

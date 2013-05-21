@@ -17,8 +17,8 @@ QUEST_GROUP = r'(?P<quest_id>%s)' % QUEST_REGEX
 # BADGE_REGEX = r'\d{1,10}'
 # BADGE_GROUP = r'(?P<badge_id>%s)' % BADGE_REGEX
 
-USER_REGEX = r'[^\s/]{1,32}'
-USER_GROUP = r'(?P<user_id>%s)' % USER_REGEX
+USER_REGEX = r'[^\s/]{1,30}'
+USER_GROUP = r'(?P<username>%s)' % USER_REGEX
 
 urlpatterns = patterns('',
     # url(r'(?i)^admin/doc/', include('django.contrib.admindocs.urls')),

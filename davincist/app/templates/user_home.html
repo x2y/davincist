@@ -1,0 +1,9 @@
+{% extends "base_user.html" %}
+
+{% load tags %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block content %}
+{% user_link user %}
+{% endblock %}

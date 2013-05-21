@@ -6,10 +6,7 @@
 
 {% block content %}
 {% path_link path %}
-{% for level in path.level_set.all %}
-  <p>{{ level }}
-  {% for user in level.userprofile_set.all %}
-    <p>{{ user }}
-  {% endfor %}
+{% for user_path in path.userpath_set.all %}
+  <p>{% user_link user_path.user %}
 {% endfor %}
 {% endblock %}
