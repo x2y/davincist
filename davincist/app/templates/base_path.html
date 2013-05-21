@@ -2,9 +2,15 @@
 
 {% load tags %}
 
-{% block title %}{{ path.name }}{% endblock %}
+{% block title %}{{ path.name|capfirst }}{% endblock %}
 
-{% block content %}
+{% block navigation %}
 {% path_link path %}
-Lorem ipsum dolor...
+<a href="/p/{{ path.name }}/users">Users</a>
+<a href="/p/{{ path.name }}/levels">Levels</a>
+<a href="/p/{{ path.name }}/quests">Quests</a>
+<a href="/p/{{ path.name }}/badges">Badges</a>
+<a href="/p/{{ path.name }}/quests/verify">Verify quests</a>
 {% endblock %}
+
+{% block content %}{% endblock %}

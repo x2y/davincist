@@ -5,14 +5,8 @@
 {% block title %}{{ path.name|capfirst }}{% endblock %}
 
 {% block content %}
-{% path_link path %}
-{{ path.name }}
-<p>
 {{ path.description }}
-<p>
-{{ path.mission }}
-<p>
-<img src="/media/{{ path.crest }}">
-<p>
-{{ path.created }}
+<p>{{ path.mission }}
+<p><img src="/media/{{ path.crest }}">
+<p>{{ path.created }}
 {% endblock %}

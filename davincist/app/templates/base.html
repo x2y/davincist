@@ -5,7 +5,8 @@
   {% block head %}{% endblock %}
 </head>
 <body>
-  {% block content %}{% endblock %}
-  {% block footer %}{% endblock %}
+  <div>{% block navigation %}{% endblock %}</div>
+  <div>{% block content %}{% endblock %}</div>
+  <div>{% block footer %}{% endblock %}</div>
 </body>
 </html>
