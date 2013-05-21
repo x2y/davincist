@@ -9,6 +9,8 @@
 {% for user_path in path.userpath_set.all %}
   <p>{% user_link user_path.user %}: (Lvl {{ user_path.level.rank }}) {{ user_path.level.name }}
   <ul>
+    <li>"{{ user_path.mission }}"
+    <li>{{ user_path.xp }} XP
     {% for badge in user_path.badges.all %}
       <li>{% badge_link badge %}
     {% endfor %}
