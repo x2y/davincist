@@ -11,6 +11,7 @@ class Response(object):
 @render_to('home.html')
 def home(request):
   r = Response()
+  r.paths = Path.objects.all()
   return r.__dict__
 
 
