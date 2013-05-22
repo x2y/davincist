@@ -9,23 +9,23 @@
 <ul>
 {% for level in path.level_set.all %}
   <li>
-    Level {{ level.rank }}: {{ level.name }}.  {{ level.description }}<br>
+    {% level_link level %}: {{ level.name }}.  {{ level.description }}<br>
     <ul>
     {% for badge in level.badges_needed.all %}
       <li>
-        {{ badge.grade }}: {{ badge.name }}<br>
+        {% badge_link badge %}<br>
         {{ badge.description }}<br>
         Quests required to get this badge:
         <ul>
         {% for quest in badge.quest_set.all %}
-          <li>{{ quest.name }}: {{ quest.description }}
+          <li>{% quest_link quest %}: {{ quest.description }}
         {% empty %}
           <li>You don't need to do anything to earn this badge.    
         {% endfor %}
         </ul>
       </li>
     {% empty %}
-      <li>All you need to do is sign up for {{ path.name }}!
+      <li>All you need to do is sign up for {% path_link path %}!
     {% endfor %}
     </ul>
   </li>
