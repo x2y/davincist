@@ -9,16 +9,16 @@
 <ul>
 {% for level in path.level_set.all %}
   <li>
-    {% level_link level %}: {{ level.name }}.  {{ level.description }}<br>
+    {% level_link level %}: {{ level.name }}.  {{ level.description|truncatechars:100 }}<br>
     <ul>
     {% for badge in level.badges_needed.all %}
       <li>
         {% badge_link badge %}<br>
-        {{ badge.description }}<br>
+        {{ badge.description|truncatechars:100 }}<br>
         Quests required to get this badge:
         <ul>
         {% for quest in badge.quest_set.all %}
-          <li>{% quest_link quest %}: {{ quest.description }}
+          <li>{% quest_link quest %}: {{ quest.description|truncatechars:100 }}
         {% empty %}
           <li>You don't need to do anything to earn this badge.    
         {% endfor %}
