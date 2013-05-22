@@ -141,7 +141,6 @@ class UserProfile(models.Model):
   bio = models.TextField()
   # profile_image = models.ImageField(upload_to='uploads', null=True)
   mission = models.CharField(max_length=128)
-  paths = models.ManyToManyField('UserPath', blank=True, related_name='user_profiles')
 
   def __unicode__(self):
     return '%s profile' % (self.user.username,)
