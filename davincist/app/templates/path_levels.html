@@ -6,7 +6,30 @@
 
 {% block content %}
 {% path_link path %}
+<ul>
 {% for level in path.level_set.all %}
-  <p>{{ level }}
+  <li>
+    Level {{ level.rank }}: {{ level.name }}.  {{ level.description }}<br />
+    <ul>
+    {% for badge in level.badges_needed.all %}
+  	  <li>
+        {{ badge.grade }}: {{ badge.name }}<br />
+        {{ badge.description }}<br />
+        <ul>
+        Quests required to get this badge:
+        {% for quest in badge.quest_set.all %}
+          <li>
+            {{ quest.name }}: {{ quest.description }}
+        {% empty %}
+          <li>
+            You don't need to do anything to earn this badge.    
+        {% endfor %}
+        </ul>
+    {% empty %}
+      <li>
+        All you need to do is sign up for {{ path.name }}!<br />
+    {% endfor %}
+    </ul>
 {% endfor %}
+</ul>
 {% endblock %}
