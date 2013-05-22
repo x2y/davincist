@@ -147,7 +147,7 @@ class UserProfile(models.Model):
 
 
 class UserPath(models.Model):
-  user = models.ForeignKey(User, unique=True, related_name='user_paths')
+  user = models.ForeignKey(User, related_name='user_paths')
   path = models.ForeignKey('Path', related_name='user_paths')
   mission = models.CharField(max_length=128)
   level = models.ForeignKey('Level', related_name='user_paths')
