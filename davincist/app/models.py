@@ -44,8 +44,8 @@ class Level(models.Model):
   name = models.CharField(max_length=64)
   description = models.TextField()
   rank = models.PositiveSmallIntegerField()
-  path = models.ForeignKey(Path)
-  badges_needed = models.ManyToManyField('Badge', blank=True)
+  path = models.ForeignKey(Path, related_name='levels')
+  badges_needed = models.ManyToManyField('Badge', blank=True, related_name='levels_needing')
   is_public = models.BooleanField(default=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
@@ -76,8 +76,8 @@ class Level(models.Model):
 class Quest(models.Model):
   name = models.CharField(max_length=128)
   description = models.TextField()
-  path = models.ForeignKey(Path)
-  level = models.ForeignKey(Level)
+  path = models.ForeignKey(Path, related_name='quests')
+  level = models.ForeignKey(Level, related_name='quests')
   SMALL, MEDIUM, LARGE, EXTRA_LARGE = 'S', 'M', 'L', 'X'
   QUEST_SIZES = ((SMALL, 'Small'),
                  (MEDIUM, 'Medium'),
@@ -85,7 +85,7 @@ class Quest(models.Model):
                  (EXTRA_LARGE, 'Extra-large'))
   QUEST_SIZE_MULTIPLIERS = {SMALL: 1, MEDIUM: 2, LARGE: 4, EXTRA_LARGE: 6}
   size = models.CharField(max_length=1, choices=QUEST_SIZES, default=SMALL)
-  badges = models.ManyToManyField('Badge', blank=True)
+  badges = models.ManyToManyField('Badge', blank=True, related_name='quests')
   max_repetitions = models.PositiveSmallIntegerField(default=1)
   is_peer_validated = models.BooleanField(default=False)
   is_senior_validated = models.BooleanField(default=False)
@@ -119,7 +119,7 @@ class Badge(models.Model):
                   (SILVER, 'Silver'),
                   (GOLD, 'Gold'))
   grade = models.CharField(max_length='1', choices=BADGE_GRADES, default=BRONZE)
-  path = models.ForeignKey('Path', blank=True)
+  path = models.ForeignKey('Path', blank=True, related_name='badges')
   # Known type?
   is_public = models.BooleanField(default=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
@@ -135,13 +135,13 @@ class Badge(models.Model):
 
 
 class UserProfile(models.Model):
-  user = models.OneToOneField(User, primary_key=True)
+  user = models.OneToOneField(User, primary_key=True, related_name='profile')
   website = models.URLField(blank=True)
   birth_date = models.DateField()
   bio = models.TextField()
   # profile_image = models.ImageField(upload_to='uploads', null=True)
   mission = models.CharField(max_length=128)
-  paths = models.ManyToManyField('UserPath', blank=True)
+  paths = models.ManyToManyField('UserPath', blank=True, related_name='user_profiles')
 
   def __unicode__(self):
     return '%s profile' % (self.user.username,)
@@ -149,10 +149,10 @@ class UserProfile(models.Model):
 
 class UserPath(models.Model):
   user = models.ForeignKey(User, unique=True)
-  path = models.ForeignKey('Path')
+  path = models.ForeignKey('Path', related_name='user_paths')
   mission = models.CharField(max_length=128)
-  level = models.ForeignKey('Level')
-  badges = models.ManyToManyField('Badge', blank=True)
+  level = models.ForeignKey('Level', related_name='user_paths')
+  badges = models.ManyToManyField('Badge', blank=True, related_name='user_paths')
   xp = models.PositiveIntegerField()
 
   def __unicode__(self):

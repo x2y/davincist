@@ -6,7 +6,7 @@
 
 {% block content %}
 {% path_link path %}
-{% for badge in path.badge_set.all %}
+{% for badge in path.badges.all %}
   <p>{% badge_link badge %}
 {% endfor %}
 {% endblock %}

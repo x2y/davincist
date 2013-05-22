@@ -7,7 +7,7 @@
 {% block content %}
 {% path_link path %}
 <ul>
-{% for level in path.level_set.all %}
+{% for level in path.levels.all %}
   <li>
     {% level_link level %}: {{ level.name }}.  {{ level.description|truncatechars:100 }}<br>
     <ul>
@@ -17,7 +17,7 @@
         {{ badge.description|truncatechars:100 }}<br>
         Quests required to get this badge:
         <ul>
-        {% for quest in badge.quest_set.all %}
+        {% for quest in badge.quests.all %}
           <li>{% quest_link quest %}: {{ quest.description|truncatechars:100 }}
         {% empty %}
           <li>You don't need to do anything to earn this badge.    

@@ -6,7 +6,7 @@
 
 {% block content %}
 {% path_link path %}
-{% for quest in path.quest_set.all %}
+{% for quest in path.quests.all %}
   <p>{{ quest }}
 {% endfor %}
 {% endblock %}

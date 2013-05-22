@@ -6,7 +6,7 @@
 
 {% block content %}
 {% path_link path %}
-{% for user_path in path.userpath_set.all %}
+{% for user_path in path.user_paths.all %}
   <p>{% user_link user_path.user %}: (Lvl {{ user_path.level.rank }}) {{ user_path.level.name }}
   <ul>
     <li>"{{ user_path.mission }}"
