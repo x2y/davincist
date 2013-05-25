@@ -30,7 +30,7 @@
     </ul>
     <ul>
     <li>
-    {% for user in level.top_users|trimto:"3" %}
+    {% for user in level.top_10_users|trimto:"3" %}
       {% if forloop.first %}Top DaVincists at this level:{% endif %}
       &nbsp;{{ user.user }} ({{ user.xp }})
       {% if not forloop.last %},{% else %}<br>{% endif %}

@@ -2,6 +2,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from operator import attrgetter # for efficient, easy sorting
+import heapq
 
 
 HOURS_GROWTH_CONSTANT = 2.2
@@ -68,15 +69,8 @@ class Level(models.Model):
   def xp_needed(self):
     return self.hours_needed() * self.xp_per_hours_work()
     
-  def top_users(self):
-    top_users = []
-    for user in self.user_paths.all():
-# debug     print "User: %s, XP: %s" % (user.user,user.xp)
-      top_users.append(user)
-# debug    print top_users
-    sorted_users = sorted(top_users, key=attrgetter('xp'), reverse=True)
-# debug    print "Sorted_users: %s" % (sorted_users)
-    return sorted_users
+  def top_10_users(self):
+    return heapq.nlargest(10, self.user_paths.all(), key=attrgetter('xp'))
 
   class Meta:
     get_latest_by = 'created'
