@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
+from operator import itemgetter # for easy sorting
 
 
 HOURS_GROWTH_CONSTANT = 2.2
@@ -66,6 +67,20 @@ class Level(models.Model):
 
   def xp_needed(self):
     return self.hours_needed() * self.xp_per_hours_work()
+    
+  def top_3_users(self):
+    top_users = []
+    for user in self.user_paths.all():
+      print "User: %s, XP: %s" % (user.user,user.xp)
+      top_users.append(user)
+    print top_users
+    print "testing..."
+    print "Does this exist? %s" % (top_users[0].xp)
+    # Cameron... trying to use itemgetter (like key=itemgetter('xp')) to sort
+    # by xp (or with reverse=true), but can't get that to work... any ideas?
+    sorted_users = sorted(top_users)
+    print "Sorted_users: %s" % (sorted_users)
+    return sorted_users
 
   class Meta:
     get_latest_by = 'created'
