@@ -22,8 +22,3 @@ def quest_link(quest):
 @register.inclusion_tag('user_link_tag.html')
 def user_link(user):
   return {'user': user}
-  
-# trims a list to the requested amount; no need to pass back entire list  
-@register.filter
-def trimto(list, trim_amount):
-  return list[0:int(trim_amount)]
