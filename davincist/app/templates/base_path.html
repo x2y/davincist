@@ -6,11 +6,11 @@
 
 {% block navigation %}
 {% path_link path %}
-<a href="/p/{{ path.name }}/users">Users</a>
-<a href="/p/{{ path.name }}/levels">Levels</a>
-<a href="/p/{{ path.name }}/quests">Quests</a>
-<a href="/p/{{ path.name }}/badges">Badges</a>
-<a href="/p/{{ path.name }}/quests/verify">Verify quests</a>
+<a href="{% url path_users path_name=path.name %}">Users</a>
+<a href="{% url path_levels path_name=path.name %}">Levels</a>
+<a href="{% url path_quests path_name=path.name %}">Quests</a>
+<a href="{% url path_badges path_name=path.name %}">Badges</a>
+<a href="{% url quests_verify path_name=path.name %}">Verify quests</a>
 {% endblock %}
 
 {% block content %}{% endblock %}
