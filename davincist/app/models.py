@@ -121,7 +121,7 @@ class Badge(models.Model):
                   (SILVER, 'Silver'),
                   (GOLD, 'Gold'))
   grade = models.CharField(max_length='1', choices=BADGE_GRADES, default=BRONZE)
-  level = models.ForeignKey('Level', blank=True, null=True)
+  level = models.ForeignKey('Level', related_name='badges')
   path = models.ForeignKey('Path', blank=True, related_name='badges')
   # Known type?
   is_public = models.BooleanField(default=True)
