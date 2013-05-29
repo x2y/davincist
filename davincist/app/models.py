@@ -66,7 +66,7 @@ class Level(models.Model):
   def xp_needed(self):
     return self.hours_needed() * self.xp_per_hours_work()
     
-  def top_10_users(self):
+  def top_10_user_paths(self):
     return self.user_paths.order_by('-xp')[:10]
 
   class Meta:

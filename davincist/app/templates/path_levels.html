@@ -27,14 +27,13 @@
     {% empty %}
       <li>All you need to do is sign up for {% path_link path %}!
     {% endfor %}
-      <li>
-      {% for user in level.top_10_users|slice:":3" %}
-        {% if forloop.first %}Top DaVincists at this level:{% endif %}
-        &nbsp;{{ user.user }} ({{ user.xp }})
-        {% if not forloop.last %},{% else %}<br>{% endif %}
-      {% empty %}
-        No one has reached this level yet.
-      {% endfor %}
+      <li>Top DaVincists at this level:
+        {% for user_path in level.top_10_user_paths|slice:":3" %}
+          {% user_link user_path.user %} ({{ user_path.xp }})
+          {% if not forloop.last %},{% endif %}
+        {% empty %}
+          No one has reached this level yet.
+        {% endfor %}
       </li>
     </ul>
   </li>
