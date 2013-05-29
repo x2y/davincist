@@ -8,12 +8,14 @@
 {% path_link path %}
 {% if path.badges.all %}
   <table>
-  <tr><td>Type</td>
+  <tr><td>Level</td>
+  <td>Type</td>
   <td>Badge Name</td>
   <td>Description</td>
   <td>Quests</td></tr>
   {% for badge in path.badges.all %}
-    <tr><td><a name="{{ badge.name }}">{{ badge.grade }}</td>
+    <tr><td><a name="{{ badge.id }}">{{ badge.levels_needing.rank }}</td>
+    <td>{{ badge.grade }}</td>
     <td>{{ badge.name }}</td>
     <td>{{ badge.description|truncatechars:64 }}</td>
     <td>{% for quest in badge.quests.all %}
@@ -25,7 +27,6 @@
       No quest is needed to earn this badge.
     {% endfor %}
   </a>
-  {% empty %}
   {% endfor %}<td></tr>
   </table>
 {% else %}
