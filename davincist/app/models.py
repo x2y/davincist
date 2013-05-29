@@ -45,7 +45,6 @@ class Level(models.Model):
   description = models.TextField()
   rank = models.PositiveSmallIntegerField()
   path = models.ForeignKey(Path, related_name='levels')
-  badges_needed = models.ManyToManyField('Badge', blank=True, related_name='levels_needing')
   is_public = models.BooleanField(default=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
