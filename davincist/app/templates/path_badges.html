@@ -6,7 +6,31 @@
 
 {% block content %}
 {% path_link path %}
-{% for badge in path.badges.all %}
-  <p>{% badge_link badge %}
-{% endfor %}
+{% if path.badges.all %}
+  <table>
+  <tr><td>Type</td>
+  <td>Badge Name</td>
+  <td>Description</td>
+  <td>Quests</td></tr>
+  {% for badge in path.badges.all %}
+    <tr><td><a name="{{ badge.name }}">{{ badge.grade }}</td>
+    <td>{{ badge.name }}</td>
+    <td>{{ badge.description|truncatechars:64 }}</td>
+    <td>{% for quest in badge.quests.all %}
+      {{ quest.name }}
+      {% if not forloop.last %}
+        , 
+      {% endif %}
+    {% empty %}
+      No quest is needed to earn this badge.
+    {% endfor %}
+  </a>
+  {% empty %}
+  {% endfor %}<td></tr>
+  </table>
+{% else %}
+Something is very, very wrong... there are no badges for this path.
+    <p>{% badge_link badge %}
+
+{% endif %}
 {% endblock %}
