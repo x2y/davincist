@@ -5,33 +5,35 @@
 {% block title %}{{ path.name|capfirst }} badges{% endblock %}
 
 {% block content %}
-{% path_link path %}
-{% if path.badges.all %}
-  <table>
-  <tr><td>Level</td>
-  <td>Type</td>
-  <td>Badge Name</td>
-  <td>Description</td>
-  <td>Quests</td></tr>
-  {% for badge in path.badges.all %}
-    <tr><td><a name="{{ badge.id }}">{{ badge.levels_needing.rank }}</td>
-    <td>{{ badge.grade }}</td>
-    <td>{{ badge.name }}</td>
-    <td>{{ badge.description|truncatechars:64 }}</td>
-    <td>{% for quest in badge.quests.all %}
-      {{ quest.name }}
-      {% if not forloop.last %}
-        , 
-      {% endif %}
-    {% empty %}
-      No quest is needed to earn this badge.
+<table>
+  <tr>
+    <th>Level</th>
+    <th>Type</th>
+    <th>Required</th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Quests</th>
+  </tr>
+  {% for level in path.levels.all %}
+    {% for badge in level.badges.all %}
+      <tr>
+        <td>{{ level.rank }}</td>
+        <td>{{ badge.grade }}</td>
+        <td>{{ badge.is_required }}</td>
+        <td>{{ badge.name }}</td>
+        <td>{{ badge.description|truncatechars:64 }}</td>
+        <td>
+          {% for quest in badge.quests.all %}
+            {{ quest.name }}
+            {% if not forloop.last %}
+              , 
+            {% endif %}
+          {% empty %}
+            <i>No quest is needed to earn this badge.</i>
+          {% endfor %}
+        </td>
+      </tr>
     {% endfor %}
-  </a>
-  {% endfor %}<td></tr>
-  </table>
-{% else %}
-Something is very, very wrong... there are no badges for this path.
-    <p>{% badge_link badge %}
-
-{% endif %}
+  {% endfor %}
+</table>
 {% endblock %}

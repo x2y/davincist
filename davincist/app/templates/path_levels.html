@@ -11,7 +11,7 @@
   <li>
     {% level_link level %}: {{ level.name }}.  {{ level.description|truncatechars:100 }}<br>
     <ul>
-    {% for badge in level.badges_needed.all %}
+    {% for badge in level.badges.all %}
       <li>
         {% badge_link badge %}<br>
         {{ badge.description|truncatechars:100 }}<br>
