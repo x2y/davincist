@@ -122,19 +122,18 @@ class Badge(models.Model):
                   (GOLD, 'Gold'))
   grade = models.CharField(max_length='1', choices=BADGE_GRADES, default=BRONZE)
   level = models.ForeignKey('Level', related_name='badges')
-  path = models.ForeignKey('Path', blank=True, related_name='badges')
   # Known type?
   is_public = models.BooleanField(default=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   @ellipsis(100)
   def __unicode__(self):
-    return '(%s/%s) %s: %s' % (self.grade, self.path.name, self.name, self.description)
+    return '(%s/%s) %s: %s' % (self.grade, self.level.path.name, self.name, self.description)
 
   class Meta:
     get_latest_by = 'created'
-    ordering = ['path', 'name', 'grade']
-    unique_together = ('name', 'grade', 'path')
+    ordering = ['level', 'name', 'grade']
+    unique_together = ('name', 'grade', 'level')
 
 
 class UserProfile(models.Model):
