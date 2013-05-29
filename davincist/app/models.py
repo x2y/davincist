@@ -123,6 +123,7 @@ class Badge(models.Model):
   grade = models.CharField(max_length='1', choices=BADGE_GRADES, default=BRONZE)
   level = models.ForeignKey('Level', related_name='badges')
   # Known type?
+  is_required = models.BooleanField(default=False)
   is_public = models.BooleanField(default=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
@@ -132,7 +133,7 @@ class Badge(models.Model):
 
   class Meta:
     get_latest_by = 'created'
-    ordering = ['level', 'name', 'grade']
+    ordering = ['level', '-is_required', 'name', 'grade']
     unique_together = ('name', 'grade', 'level')
 
 
