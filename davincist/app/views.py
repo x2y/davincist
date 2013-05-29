@@ -28,6 +28,13 @@ def path_detail(request, path_name):
   return r.__dict__
 
 
+@render_to('path_list.html')
+def path_list(request):
+  r = Response()
+  r.paths = Path.objects.all()
+  return r.__dict__
+
+
 @render_to('path_users.html')
 def path_users(request, path_name):
   r = Response()

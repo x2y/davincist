@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load tags %}
+
+{% block title %}All available paths{% endblock %}
+
+{% block content %}
+
+The following paths are available for public signup:<br>
+<ul>
+{% for path in paths %}
+  <li>
+    {{ path.name }}: {{ path.description|truncatechars:128 }}<br>
+    Mission: {{ path.mission|truncatechars:128 }}<br>
+    {% crest_link path.crest %}
+    For more details, <a href="{% url path_detail path.name %}">click here</a>.
+  </li>
+{% empty %}
+  <li>
+    Well, this is embarrassing... we don't have any paths!
+  </li>
+{% endfor %}
+</ul>
+{% endblock %}

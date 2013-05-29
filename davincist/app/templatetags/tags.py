@@ -1,5 +1,6 @@
 from davincist.app import models
 from django import template
+import os.path
 
 register = template.Library()
 
@@ -14,6 +15,14 @@ def level_link(level):
 @register.inclusion_tag('path_link_tag.html')
 def path_link(path):
   return {'path': path}
+  
+@register.inclusion_tag('crest_link_tag.html')
+def crest_link(crest):
+#  if os.path.isfile(str(crest)):
+#    return {'crest': crest}
+#  else:
+#    return {'crest': 'nocrest'}
+  return {'crest': crest}
 
 @register.inclusion_tag('quest_link_tag.html')
 def quest_link(quest):

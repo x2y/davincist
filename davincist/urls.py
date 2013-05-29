@@ -1,6 +1,7 @@
 from app.views import *
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+import settings
 
 
 admin.autodiscover()
@@ -26,6 +27,8 @@ urlpatterns = patterns('',
 
     url(r'^(?i)$', home, name='home'),
     url(r'^(?i)about/$', about, name='about'),
+    
+    url(r'^(?i)media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes':True}, name='media'),
 
     # Field pages.
     # url(r'^(?i)f/add$' % FIELD_GROUP, field_add, name='field_add'),
@@ -36,8 +39,8 @@ urlpatterns = patterns('',
 
     # Path pages.
     # url(r'^(?i)p/add$' % PATH_GROUP, path_add, name='path_add'),
-    # url(r'^(?i)p/all$', path_list, name='path_list'),
-    url(r'^(?i)p/%s/$' % PATH_GROUP, path_detail),
+    url(r'^(?i)p/all$', path_list, name='path_list'),
+    url(r'^(?i)p/%s/$' % PATH_GROUP, path_detail, name='path_detail'),
     url(r'^(?i)p/%s/users/$' % PATH_GROUP, path_users, name='path_users'),
     url(r'^(?i)p/%s/join/$' % PATH_GROUP, path_join, name='path_join'),
     # url(r'^(?i)p/%s/leave$' % PATH_GROUP, path_leave, name='path_leave'),
