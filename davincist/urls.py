@@ -1,7 +1,8 @@
 from app.views import *
+from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
 from django.contrib import admin
-import settings
 
 
 admin.autodiscover()
@@ -28,8 +29,6 @@ urlpatterns = patterns('',
     url(r'^(?i)$', home, name='home'),
     url(r'^(?i)about/$', about, name='about'),
     
-    url(r'^(?i)media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes':True}, name='media'),
-
     # Field pages.
     # url(r'^(?i)f/add$' % FIELD_GROUP, field_add, name='field_add'),
     # url(r'^(?i)f/all$', field_list, name='field_list'),
@@ -70,5 +69,5 @@ urlpatterns = patterns('',
     url(r'^(?i)u/%s/gallery/$' % USER_GROUP, user_gallery, name='user_gallery'),
     url(r'^(?i)u/%s/edit/' % USER_GROUP, user_edit, name='user_edit'),
     # url(r'^(?i)u/%s/delete' % USER_GROUP, user_delete, name='user_delete'),
-)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
