@@ -12,7 +12,7 @@ def badge_link(badge, add_anchor=True):
 def level_link(level):
   return {'level': level}
 
-@register.inclusion_tag('path_link_tag.html')
+@register.inclusion_tag('track_link_tag.html')
 def track_link(track):
   return {'track': track}
   

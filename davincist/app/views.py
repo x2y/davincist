@@ -21,35 +21,35 @@ def about(request):
   return r.__dict__
 
 
-@render_to('path_detail.html')
+@render_to('track_detail.html')
 def track_detail(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
   return r.__dict__
 
 
-@render_to('path_list.html')
+@render_to('track_list.html')
 def track_list(request):
   r = Response()
   r.tracks = Track.objects.all()
   return r.__dict__
 
 
-@render_to('path_users.html')
+@render_to('track_users.html')
 def track_users(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
   return r.__dict__
 
 
-@render_to('path_join.html')
+@render_to('track_join.html')
 def track_join(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk_iexact=track_name)
   return r.__dict__
 
 
-@render_to('path_levels.html')
+@render_to('track_levels.html')
 def track_levels(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
@@ -57,7 +57,7 @@ def track_levels(request, track_name):
   return r.__dict__
 
 
-@render_to('path_quests.html')
+@render_to('track_quests.html')
 def track_quests(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
@@ -79,7 +79,7 @@ def quests_verify(request, track_name):
   return r.__dict__
 
 
-@render_to('path_badges.html')
+@render_to('track_badges.html')
 def track_badges(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
