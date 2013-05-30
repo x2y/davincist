@@ -23,7 +23,7 @@ def ellipsis(width):
   return _decorator
 
 
-class Path(models.Model):
+class Track(models.Model):
   name = models.CharField(max_length=64, primary_key=True)
   description = models.TextField()
   mission = models.CharField(max_length=128)
@@ -44,7 +44,7 @@ class Level(models.Model):
   name = models.CharField(max_length=64)
   description = models.TextField()
   rank = models.PositiveSmallIntegerField()
-  path = models.ForeignKey(Path, related_name='levels')
+  path = models.ForeignKey(Track, related_name='levels')
   is_public = models.BooleanField(default=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
@@ -78,7 +78,7 @@ class Level(models.Model):
 class Quest(models.Model):
   name = models.CharField(max_length=128)
   description = models.TextField()
-  path = models.ForeignKey(Path, related_name='quests')
+  path = models.ForeignKey(Track, related_name='quests')
   level = models.ForeignKey(Level, related_name='quests')
   SMALL, MEDIUM, LARGE, EXTRA_LARGE = 'S', 'M', 'L', 'X'
   QUEST_SIZES = ((SMALL, 'Small'),
@@ -159,7 +159,7 @@ class UserProfile(models.Model):
 
 class UserPath(models.Model):
   user = models.ForeignKey(User, related_name='user_paths')
-  path = models.ForeignKey('Path', related_name='user_paths')
+  path = models.ForeignKey(Track, related_name='user_paths')
   mission = models.CharField(max_length=128)
   level = models.ForeignKey('Level', related_name='user_paths')
   badges = models.ManyToManyField('Badge', blank=True, related_name='user_paths')
