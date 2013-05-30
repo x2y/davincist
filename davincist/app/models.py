@@ -145,6 +145,9 @@ class UserProfile(models.Model):
   # profile_image = models.ImageField(upload_to='uploads', null=True)
   mission = models.CharField(max_length=128)
 
+  def xp(self):
+    return sum(user_path.xp for user_path in self.user.user_paths.all())
+
   def __unicode__(self):
     return '%s profile' % (self.user.username,)
 
