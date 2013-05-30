@@ -117,10 +117,10 @@ class Badge(models.Model):
   name = models.CharField(max_length=64)
   description = models.CharField(max_length=128)
   BRONZE, SILVER, GOLD = 'B', 'S', 'G'
-  BADGE_GRADES = ((BRONZE, 'Bronze'),
-                  (SILVER, 'Silver'),
-                  (GOLD, 'Gold'))
-  grade = models.CharField(max_length='1', choices=BADGE_GRADES, default=BRONZE)
+  GRADES = ((BRONZE, 'Bronze'),
+            (SILVER, 'Silver'),
+            (GOLD, 'Gold'))
+  grade = models.CharField(max_length='1', choices=GRADES, default=BRONZE)
   level = models.ForeignKey('Level', related_name='badges')
   # Known type?
   is_required = models.BooleanField(default=False)
