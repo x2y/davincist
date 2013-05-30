@@ -5,7 +5,6 @@
 {% block title %}{{ track.name|capfirst }}{% endblock %}
 
 {% block navigation %}
-{% track_link track %}
 <a href="{% url track_users track_name=track.name %}">Users</a>
 <a href="{% url track_levels track_name=track.name %}">Levels</a>
 <a href="{% url track_quests track_name=track.name %}">Quests</a>

@@ -5,7 +5,6 @@
 {% block title %}{{ track.name|capfirst }} users{% endblock %}
 
 {% block content %}
-{% track_link track %}
 {% for user_track in track.user_tracks.all %}
   <p>{% user_link user_track.user %}: (Lvl {{ user_track.level.rank }}) {{ user_track.level.name }}
   <ul>

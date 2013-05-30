@@ -5,7 +5,6 @@
 {% block title %}{{ track.name|capfirst }} levels{% endblock %}
 
 {% block content %}
-{% track_link track %}
 <ul>
 {% for level in track.levels.all %}
   <li>
