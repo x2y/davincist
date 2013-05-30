@@ -13,9 +13,9 @@
 <br>
 {{ user.username }} is a member of the following tracks:<br><br>
 {% for user_path in user.user_paths.all %}
-  {% track_link user_path.path %}<br>
+  {% track_link user_path.track %}<br>
   {% if user_path.mission %}Her/His/Its Mission: {{ user_path.mission }}<br>{% endif %}
-  {{ user_path.path.name }} Level: {{ user_path.level.rank }}: {{ user_path.level.name }} ({{ user_path.xp }} XP)<br>
+  {{ user_path.track.name }} Level: {{ user_path.level.rank }}: {{ user_path.level.name }} ({{ user_path.xp }} XP)<br>
   Top badges: 
   {% for top_badge in user_path.top_badges %}
     {% badge_link top_badge add_anchor=1 %}{% if not forloop.last %},&nbsp;{% endif %}

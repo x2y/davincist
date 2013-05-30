@@ -158,21 +158,21 @@ class UserProfile(models.Model):
 
 class UserPath(models.Model):
   user = models.ForeignKey(User, related_name='user_paths')
-  path = models.ForeignKey(Track, related_name='user_paths')
+  track = models.ForeignKey(Track, related_name='user_paths')
   mission = models.CharField(max_length=128)
   level = models.ForeignKey('Level', related_name='user_paths')
   badges = models.ManyToManyField('Badge', blank=True, related_name='user_paths')
   xp = models.PositiveIntegerField()
 
   def __unicode__(self):
-    return '%s/%s' % (self.user, self.path.name)
+    return '%s/%s' % (self.user, self.track.name)
 
   def top_badges(self):
     return self.badges.order_by('-level__rank', '-grade')[:3]
 
   class Meta:
-    ordering = ['user', 'path']
-    unique_together = ('user', 'path')
+    ordering = ['user', 'track']
+    unique_together = ('user', 'track')
 
 
 # class LevelEvent(models.Model):
