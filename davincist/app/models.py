@@ -44,12 +44,12 @@ class Level(models.Model):
   name = models.CharField(max_length=64)
   description = models.TextField()
   rank = models.PositiveSmallIntegerField()
-  path = models.ForeignKey(Track, related_name='levels')
+  track = models.ForeignKey(Track, related_name='levels')
   is_public = models.BooleanField(default=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):
-    return '(%s) %d: %s' % (self.path.name, self.rank, self.name)
+    return '(%s) %d: %s' % (self.track.name, self.rank, self.name)
 
   def hours_needed(self):
     if self.rank > 0:
@@ -72,7 +72,7 @@ class Level(models.Model):
   class Meta:
     get_latest_by = 'created'
     ordering = ['rank']
-    unique_together = (('rank', 'path'), ('name', 'path'))
+    unique_together = (('rank', 'track'), ('name', 'track'))
 
 
 class Quest(models.Model):
@@ -129,7 +129,7 @@ class Badge(models.Model):
 
   @ellipsis(100)
   def __unicode__(self):
-    return '(%s/%s) %s: %s' % (self.grade, self.level.path.name, self.name, self.description)
+    return '(%s/%s) %s: %s' % (self.grade, self.level.track.name, self.name, self.description)
 
   class Meta:
     get_latest_by = 'created'

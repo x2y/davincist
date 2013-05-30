@@ -1,6 +1,6 @@
 <span id={{ badge.id }} class="badge_{{ badge.is_required|yesno:'required,optional' }}">
   {% if add_anchor %}
-    <a href="{% url track_badges track_name=badge.level.path.name %}#{{ badge.id }}">
+    <a href="{% url track_badges track_name=badge.level.track.name %}#{{ badge.id }}">
       {{ badge.grade }} {{ badge.name }}</a>
   {% else %}
     {{ badge.grade }} {{ badge.name }}
