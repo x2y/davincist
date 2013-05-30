@@ -164,7 +164,7 @@ class UserPath(models.Model):
     return '%s/%s' % (self.user, self.path.name)
 
   def top_badges(self):
-    return self.badges.order_by('-grade')[:3]
+    return self.badges.order_by('-level__rank', '-grade')[:3]
 
   class Meta:
     ordering = ['user', 'path']
