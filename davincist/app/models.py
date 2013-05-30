@@ -163,6 +163,9 @@ class UserPath(models.Model):
   def __unicode__(self):
     return '%s/%s' % (self.user, self.path.name)
 
+  def top_badges(self):
+    return self.badges.order_by('-grade')[:3]
+
   class Meta:
     ordering = ['user', 'path']
     unique_together = ('user', 'path')
