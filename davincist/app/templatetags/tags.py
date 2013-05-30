@@ -13,8 +13,8 @@ def level_link(level):
   return {'level': level}
 
 @register.inclusion_tag('path_link_tag.html')
-def path_link(path):
-  return {'path': path}
+def track_link(track):
+  return {'track': track}
   
 @register.inclusion_tag('crest_link_tag.html')
 def crest_link(crest):

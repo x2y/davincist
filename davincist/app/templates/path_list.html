@@ -2,22 +2,22 @@
 
 {% load tags %}
 
-{% block title %}All available paths{% endblock %}
+{% block title %}All available tracks{% endblock %}
 
 {% block content %}
 
-The following paths are available for public signup:<br>
+The following tracks are available for public signup:<br>
 <ul>
-{% for path in paths %}
+{% for track in tracks %}
   <li>
-    {{ path.name }}: {{ path.description|truncatechars:128 }}<br>
-    Mission: {{ path.mission|truncatechars:128 }}<br>
-    {% crest_link path.crest %}
-    For more details, <a href="{% url track_detail path.name %}">click here</a>.
+    {{ track.name }}: {{ track.description|truncatechars:128 }}<br>
+    Mission: {{ track.mission|truncatechars:128 }}<br>
+    {% crest_link track.crest %}
+    For more details, <a href="{% url track_detail track.name %}">click here</a>.
   </li>
 {% empty %}
   <li>
-    Well, this is embarrassing... we don't have any paths!
+    Well, this is embarrassing... we don't have any tracks!
   </li>
 {% endfor %}
 </ul>

@@ -11,9 +11,9 @@
 {{ user.username }}'s Biography: {% if user.profile.bio %}{{ user.profile.bio }}{% else %}No biography set yet.{% endif %}<br>
 {% if user.profile.website %}Website: {{ user.profile.website }}<br>{% endif %}
 <br>
-{{ user.username }} is a member of the following paths:<br><br>
+{{ user.username }} is a member of the following tracks:<br><br>
 {% for user_path in user.user_paths.all %}
-  {% path_link user_path.path %}<br>
+  {% track_link user_path.path %}<br>
   {% if user_path.mission %}Her/His/Its Mission: {{ user_path.mission }}<br>{% endif %}
   {{ user_path.path.name }} Level: {{ user_path.level.rank }}: {{ user_path.level.name }} ({{ user_path.xp }} XP)<br>
   Top badges: 
@@ -24,7 +24,7 @@
   {% endfor %}
   <br><br>  
 {% empty %}
-  He/She/It hasn't joined any paths yet!
+  He/She/It hasn't joined any tracks yet!
 {% endfor %}
 
 {% endblock %}

@@ -2,11 +2,11 @@
 
 {% load tags %}
 
-{% block title %}{{ path.name|capfirst }} users{% endblock %}
+{% block title %}{{ track.name|capfirst }} users{% endblock %}
 
 {% block content %}
-{% path_link path %}
-{% for user_path in path.user_paths.all %}
+{% track_link track %}
+{% for user_path in track.user_paths.all %}
   <p>{% user_link user_path.user %}: (Lvl {{ user_path.level.rank }}) {{ user_path.level.name }}
   <ul>
     <li>"{{ user_path.mission }}"

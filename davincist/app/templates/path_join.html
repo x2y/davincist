@@ -2,9 +2,9 @@
 
 {% load tags %}
 
-{% block title %}Join {{ path.name|capfirst }}{% endblock %}
+{% block title %}Join {{ track.name|capfirst }}{% endblock %}
 
 {% block content %}
-{% path_link path %}
+{% track_link track %}
 Lorem ipsum dolor...
 {% endblock %}

@@ -2,12 +2,12 @@
 
 {% load tags %}
 
-{% block title %}{{ path.name|capfirst }} levels{% endblock %}
+{% block title %}{{ track.name|capfirst }} levels{% endblock %}
 
 {% block content %}
-{% path_link path %}
+{% track_link track %}
 <ul>
-{% for level in path.levels.all %}
+{% for level in track.levels.all %}
   <li>
     {% level_link level %}: {{ level.name }}.  {{ level.description|truncatechars:100 }}<br>
     <ul>
@@ -25,7 +25,7 @@
         </ul>
       </li>
     {% empty %}
-      <li>All you need to do is sign up for {% path_link path %}!
+      <li>All you need to do is sign up for {% track_link track %}!
     {% endfor %}
       <li>Top DaVincists at this level:
         {% for user_path in level.top_10_user_paths|slice:":3" %}

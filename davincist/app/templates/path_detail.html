@@ -2,11 +2,11 @@
 
 {% load tags %}
 
-{% block title %}{{ path.name|capfirst }}{% endblock %}
+{% block title %}{{ track.name|capfirst }}{% endblock %}
 
 {% block content %}
-{{ path.description }}
-<p>{{ path.mission }}
-<p><img src="/media/{{ path.crest }}">
-<p>{{ path.created }}
+{{ track.description }}
+<p>{{ track.mission }}
+<p><img src="/media/{{ track.crest }}">
+<p>{{ track.created }}
 {% endblock %}

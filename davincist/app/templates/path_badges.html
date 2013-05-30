@@ -2,7 +2,7 @@
 
 {% load tags %}
 
-{% block title %}{{ path.name|capfirst }} badges{% endblock %}
+{% block title %}{{ track.name|capfirst }} badges{% endblock %}
 
 {% block content %}
 <table>
@@ -12,7 +12,7 @@
     <th>Description</th>
     <th>Quests</th>
   </tr>
-  {% for level in path.levels.all %}
+  {% for level in track.levels.all %}
     {% for badge in level.badges.all %}
       <tr>
         <td>{{ level.rank }}</td>
