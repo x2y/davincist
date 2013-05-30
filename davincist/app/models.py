@@ -145,7 +145,7 @@ class UserProfile(models.Model):
   gender = models.CharField(max_length='1', choices=GENDERS)
   website = models.URLField(blank=True)
   birth_date = models.DateField()
-  bio = models.TextField()
+  bio = models.TextField(blank=True)
   # profile_image = models.ImageField(upload_to='uploads', null=True)
 
   def xp(self):
