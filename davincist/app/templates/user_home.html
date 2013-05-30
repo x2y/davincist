@@ -12,12 +12,12 @@
 {% if user.profile.website %}Website: {{ user.profile.website }}<br>{% endif %}
 <br>
 {{ user.username }} is a member of the following tracks:<br><br>
-{% for user_path in user.user_paths.all %}
-  {% track_link user_path.track %}<br>
-  {% if user_path.mission %}Her/His/Its Mission: {{ user_path.mission }}<br>{% endif %}
-  {{ user_path.track.name }} Level: {{ user_path.level.rank }}: {{ user_path.level.name }} ({{ user_path.xp }} XP)<br>
+{% for user_track in user.user_paths.all %}
+  {% track_link user_track.track %}<br>
+  {% if user_track.mission %}Her/His/Its Mission: {{ user_track.mission }}<br>{% endif %}
+  {{ user_track.track.name }} Level: {{ user_track.level.rank }}: {{ user_track.level.name }} ({{ user_track.xp }} XP)<br>
   Top badges: 
-  {% for top_badge in user_path.top_badges %}
+  {% for top_badge in user_track.top_badges %}
     {% badge_link top_badge add_anchor=1 %}{% if not forloop.last %},&nbsp;{% endif %}
   {% empty %}
     No badges acquired in this level yet.

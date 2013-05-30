@@ -66,7 +66,7 @@ class Level(models.Model):
   def xp_needed(self):
     return self.hours_needed() * self.xp_per_hours_work()
     
-  def top_10_user_paths(self):
+  def top_10_user_tracks(self):
     return self.user_paths.order_by('-xp')[:10]
 
   class Meta:
@@ -150,13 +150,13 @@ class UserProfile(models.Model):
   mission = models.CharField(max_length=128)
 
   def xp(self):
-    return sum(user_path.xp for user_path in self.user.user_paths.all())
+    return sum(user_track.xp for user_track in self.user.user_paths.all())
 
   def __unicode__(self):
     return '%s profile' % (self.user.username,)
 
 
-class UserPath(models.Model):
+class UserTrack(models.Model):
   user = models.ForeignKey(User, related_name='user_paths')
   track = models.ForeignKey(Track, related_name='user_paths')
   mission = models.CharField(max_length=128)
