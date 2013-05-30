@@ -1,1 +1,5 @@
-<span title="{{ badge.description }}">{{ badge.grade }} {{ badge.name }}</span>
+{% if badge.is_required %}
+  <span id={{ badge.id }} class="badge_required">{{ badge.grade }} {{ badge.name }}</span>
+{% else %}
+  <span id={{ badge.id }} class="badge_optional">{{ badge.grade }} {{ badge.name }}</span>
+{% endif %}

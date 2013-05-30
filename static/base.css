@@ -1,1 +1,11 @@
 /* Base styles go here. */
+
+.badge_required {
+font-weight:bold;
+color: black
+}
+
+.badge_optional {
+font-weight:normal;
+color: darkgrey
+}
