@@ -147,7 +147,6 @@ class UserProfile(models.Model):
   birth_date = models.DateField()
   bio = models.TextField()
   # profile_image = models.ImageField(upload_to='uploads', null=True)
-  mission = models.CharField(max_length=128)
 
   def xp(self):
     return sum(user_track.xp for user_track in self.user.user_tracks.all())
