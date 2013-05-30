@@ -78,7 +78,6 @@ class Level(models.Model):
 class Quest(models.Model):
   name = models.CharField(max_length=128)
   description = models.TextField()
-  path = models.ForeignKey(Track, related_name='quests')
   level = models.ForeignKey(Level, related_name='quests')
   SMALL, MEDIUM, LARGE, EXTRA_LARGE = 'S', 'M', 'L', 'X'
   QUEST_SIZES = ((SMALL, 'Small'),
@@ -95,7 +94,7 @@ class Quest(models.Model):
 
   @ellipsis(100)
   def __unicode__(self):
-    return '(%s) %s: %s' % (self.path.name, self.name, self.description)
+    return '(%s) %s: %s' % (self.level.track.name, self.name, self.description)
 
   def hours_needed(self):
     if self.level.rank > 0:
@@ -110,7 +109,7 @@ class Quest(models.Model):
   class Meta:
     get_latest_by = 'created'
     ordering = ['level', 'name']
-    unique_together = ('name', 'path', 'level')
+    unique_together = ('name', 'level')
 
 
 class Badge(models.Model):

@@ -5,8 +5,10 @@
 {% block title %}{{ track.name|capfirst }} quests{% endblock %}
 
 {% block content %}
-{% track_link track %}
-{% for quest in track.quests.all %}
-  <p>{{ quest }}
+{% for level in track.levels.all %}
+  {% level_link level %}<br>
+  {% for quest in level.quests.all %}
+    {{ quest }}<br>
+  {% endfor %}
 {% endfor %}
 {% endblock %}
