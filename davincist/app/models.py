@@ -139,6 +139,11 @@ class Badge(models.Model):
 
 class UserProfile(models.Model):
   user = models.OneToOneField(User, primary_key=True, related_name='profile')
+  MALE, FEMALE, OTHER = 'M', 'F', 'O'
+  GENDERS = ((MALE, 'Male'),
+             (FEMALE, 'Female'),
+             (OTHER, 'Other'))
+  gender = models.CharField(max_length='1', choices=GENDERS)
   website = models.URLField(blank=True)
   birth_date = models.DateField()
   bio = models.TextField()
