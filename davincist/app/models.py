@@ -67,7 +67,7 @@ class Level(models.Model):
     return self.hours_needed() * self.xp_per_hours_work()
     
   def top_10_user_tracks(self):
-    return self.user_paths.order_by('-xp')[:10]
+    return self.user_tracks.order_by('-xp')[:10]
 
   class Meta:
     get_latest_by = 'created'
@@ -150,18 +150,18 @@ class UserProfile(models.Model):
   mission = models.CharField(max_length=128)
 
   def xp(self):
-    return sum(user_track.xp for user_track in self.user.user_paths.all())
+    return sum(user_track.xp for user_track in self.user.user_tracks.all())
 
   def __unicode__(self):
     return '%s profile' % (self.user.username,)
 
 
 class UserTrack(models.Model):
-  user = models.ForeignKey(User, related_name='user_paths')
-  track = models.ForeignKey(Track, related_name='user_paths')
+  user = models.ForeignKey(User, related_name='user_tracks')
+  track = models.ForeignKey(Track, related_name='user_tracks')
   mission = models.CharField(max_length=128)
-  level = models.ForeignKey('Level', related_name='user_paths')
-  badges = models.ManyToManyField('Badge', blank=True, related_name='user_paths')
+  level = models.ForeignKey('Level', related_name='user_tracks')
+  badges = models.ManyToManyField('Badge', blank=True, related_name='user_tracks')
   xp = models.PositiveIntegerField()
 
   def __unicode__(self):

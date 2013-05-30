@@ -12,7 +12,7 @@
 {% if user.profile.website %}Website: {{ user.profile.website }}<br>{% endif %}
 <br>
 {{ user.username }} is a member of the following tracks:<br><br>
-{% for user_track in user.user_paths.all %}
+{% for user_track in user.user_tracks.all %}
   {% track_link user_track.track %}<br>
   {% if user_track.mission %}Her/His/Its Mission: {{ user_track.mission }}<br>{% endif %}
   {{ user_track.track.name }} Level: {{ user_track.level.rank }}: {{ user_track.level.name }} ({{ user_track.xp }} XP)<br>
