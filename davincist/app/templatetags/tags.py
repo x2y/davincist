@@ -5,8 +5,8 @@ import os.path
 register = template.Library()
 
 @register.inclusion_tag('badge_link_tag.html')
-def badge_link(badge):
-  return {'badge': badge}
+def badge_link(badge, add_anchor=True):
+  return {'badge': badge, 'add_anchor': add_anchor}
 
 @register.inclusion_tag('level_link_tag.html')
 def level_link(level):

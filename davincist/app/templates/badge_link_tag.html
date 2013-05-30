@@ -1,5 +1,7 @@
-{% if badge.is_required %}
-  <span id={{ badge.id }} class="badge_required">{{ badge.grade }} {{ badge.name }}</span>
+<span id={{ badge.id }} class="badge_{% if badge.is_required %}required{% else %}optional{% endif %}">
+{% if add_anchor %}
+  <a href="{% url path_badges path_name=badge.level.path.name %}#{{ badge.id }}">{{ badge.grade }} {{ badge.name }}</a>
 {% else %}
-  <span id={{ badge.id }} class="badge_optional">{{ badge.grade }} {{ badge.name }}</span>
+  {{ badge.grade }} {{ badge.name }}
 {% endif %}
+</span>

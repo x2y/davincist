@@ -16,7 +16,7 @@
     {% for badge in level.badges.all %}
       <tr>
         <td>{{ level.rank }}</td>
-        <td>{% badge_link badge %}</td>
+        <td>{% badge_link badge add_anchor=0 %}</td>
         <td>{{ badge.description|truncatechars:64 }}</td>
         <td>
           {% for quest in badge.quests.all %}
