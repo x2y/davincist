@@ -7,8 +7,8 @@ from django.contrib import admin
 
 admin.autodiscover()
 
-PATH_REGEX = r'[^\s/]{1,64}'
-PATH_GROUP = r'(?P<path_name>%s)' % PATH_REGEX
+TRACK_REGEX = r'[^\s/]{1,64}'
+TRACK_GROUP = r'(?P<track_name>%s)' % TRACK_REGEX
 
 # LEVEL_REGEX = r'\d\d?'
 # LEVEL_GROUP = r'(?P<level_id>%s)' % LEVEL_REGEX
@@ -33,33 +33,33 @@ urlpatterns = patterns('',
     # url(r'^(?i)f/add$' % FIELD_GROUP, field_add, name='field_add'),
     # url(r'^(?i)f/all$', field_list, name='field_list'),
     # url(r'^(?i)f/%s$' % FIELD_GROUP, field_detail, name='field_detail'),
-    # url(r'^(?i)f/%s/paths$' % FIELD_GROUP, field_paths, name='field_paths'),
+    # url(r'^(?i)f/%s/tracks$' % FIELD_GROUP, field_tracks, name='field_tracks'),
     # url(r'^(?i)f/%s/Users$' % FIELD_GROUP, field_users, name='field_users'),
 
-    # Path pages.
-    # url(r'^(?i)p/add$' % PATH_GROUP, path_add, name='path_add'),
-    url(r'^(?i)p/all$', path_list, name='path_list'),
-    url(r'^(?i)p/%s/$' % PATH_GROUP, path_detail, name='path_detail'),
-    url(r'^(?i)p/%s/users/$' % PATH_GROUP, path_users, name='path_users'),
-    url(r'^(?i)p/%s/join/$' % PATH_GROUP, path_join, name='path_join'),
-    # url(r'^(?i)p/%s/leave$' % PATH_GROUP, path_leave, name='path_leave'),
-    # url(r'^(?i)p/%s/gallery$' % PATH_GROUP, path_gallery, name='path_gallery'),
+    # Track pages.
+    # url(r'^(?i)t/add$' % TRACK_GROUP, track_add, name='track_add'),
+    url(r'^(?i)t/all$', track_list, name='track_list'),
+    url(r'^(?i)t/%s/$' % TRACK_GROUP, track_detail, name='track_detail'),
+    url(r'^(?i)t/%s/users/$' % TRACK_GROUP, track_users, name='track_users'),
+    url(r'^(?i)t/%s/join/$' % TRACK_GROUP, track_join, name='track_join'),
+    # url(r'^(?i)t/%s/leave$' % TRACK_GROUP, track_leave, name='track_leave'),
+    # url(r'^(?i)t/%s/gallery$' % TRACK_GROUP, track_gallery, name='track_gallery'),
 
-    url(r'^(?i)p/%s/levels/$' % PATH_GROUP, path_levels, name='path_levels'),
-    # url(r'^(?i)p/%s/level/add$' % PATH_GROUP, level_add, name='level_add'),
-    # url(r'^(?i)p/%s/level/%s$' % (PATH_GROUP, LEVEL_GROUP), level_detail, name='level_detail'),
-    # url(r'^(?i)p/%s/level/%s/edit$' % (PATH_GROUP, LEVEL_GROUP), level_edit, name='level_edit'),
-    # url(r'^(?i)p/%s/level/%s/delete$' % (PATH_GROUP, LEVEL_GROUP), level_delete, name='level_delete'),
+    url(r'^(?i)t/%s/levels/$' % TRACK_GROUP, track_levels, name='track_levels'),
+    # url(r'^(?i)t/%s/level/add$' % TRACK_GROUP, level_add, name='level_add'),
+    # url(r'^(?i)t/%s/level/%s$' % (TRACK_GROUP, LEVEL_GROUP), level_detail, name='level_detail'),
+    # url(r'^(?i)t/%s/level/%s/edit$' % (TRACK_GROUP, LEVEL_GROUP), level_edit, name='level_edit'),
+    # url(r'^(?i)t/%s/level/%s/delete$' % (TRACK_GROUP, LEVEL_GROUP), level_delete, name='level_delete'),
 
-    url(r'^(?i)p/%s/quests/$' % PATH_GROUP, path_quests, name='path_quests'),
-    url(r'^(?i)p/%s/quests/verify/$' % PATH_GROUP, quests_verify, name='quests_verify'),
-    # url(r'^(?i)p/%s/quest/add$' % PATH_GROUP, quest_add, name='quest_add'),
-    url(r'^(?i)p/%s/quest/%s/submit/$' % (PATH_GROUP, QUEST_GROUP), quest_submit, name='quest_submit'),
-    # url(r'^(?i)p/%s/quest/%s/edit$' % (PATH_GROUP, QUEST_GROUP), quest_edit, name='quest_edit'),
-    # url(r'^(?i)p/%s/quest/%s/delete$' % (PATH_GROUP, QUEST_GROUP), quest_delete, name='quest_delete'),
+    url(r'^(?i)t/%s/quests/$' % TRACK_GROUP, track_quests, name='track_quests'),
+    url(r'^(?i)t/%s/quests/verify/$' % TRACK_GROUP, quests_verify, name='quests_verify'),
+    # url(r'^(?i)t/%s/quest/add$' % TRACK_GROUP, quest_add, name='quest_add'),
+    url(r'^(?i)t/%s/quest/%s/submit/$' % (TRACK_GROUP, QUEST_GROUP), quest_submit, name='quest_submit'),
+    # url(r'^(?i)t/%s/quest/%s/edit$' % (TRACK_GROUP, QUEST_GROUP), quest_edit, name='quest_edit'),
+    # url(r'^(?i)t/%s/quest/%s/delete$' % (TRACK_GROUP, QUEST_GROUP), quest_delete, name='quest_delete'),
 
-    url(r'^(?i)p/%s/badges/$' % PATH_GROUP, path_badges, name='path_badges'),
-    # url(r'^(?i)p/%s/badge/%s$' % (PATH_GROUP, BADGE_GROUP), badge_detail, name='badge_detail'),
+    url(r'^(?i)t/%s/badges/$' % TRACK_GROUP, track_badges, name='track_badges'),
+    # url(r'^(?i)t/%s/badge/%s$' % (TRACK_GROUP, BADGE_GROUP), badge_detail, name='badge_detail'),
 
     # User pages.
     url(r'^(?i)u/signup/$', user_add, name='user_add'),
