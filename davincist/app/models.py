@@ -120,6 +120,11 @@ class Badge(models.Model):
             (SILVER, 'Silver'),
             (GOLD, 'Gold'))
   grade = models.CharField(max_length='1', choices=GRADES, default=BRONZE)
+  NEW_BRONZE, NEW_SILVER, NEW_GOLD = 1, 2, 3
+  NEW_GRADES = ((NEW_BRONZE, 'Bronze'),
+                (NEW_SILVER, 'Silver'),
+                (NEW_GOLD, 'Gold'))
+  new_grade = models.SmallIntegerField(choices=NEW_GRADES, default=NEW_BRONZE)
   level = models.ForeignKey('Level', related_name='badges')
   # Known type?
   is_required = models.BooleanField(default=False)
@@ -128,12 +133,12 @@ class Badge(models.Model):
 
   @ellipsis(100)
   def __unicode__(self):
-    return '(%s/%s) %s: %s' % (self.grade, self.level.track.name, self.name, self.description)
+    return '(%s/%s) %s: %s' % (self.new_grade, self.level.track.name, self.name, self.description)
 
   class Meta:
     get_latest_by = 'created'
-    ordering = ['level', '-is_required', 'name', 'grade']
-    unique_together = ('name', 'grade', 'level')
+    ordering = ['level', '-is_required', 'name', 'new_grade']
+    unique_together = ('name', 'new_grade', 'level')
 
 
 class UserProfile(models.Model):
