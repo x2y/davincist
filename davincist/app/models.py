@@ -93,8 +93,6 @@ class Quest(models.Model):
            (SENIOR, 'Senior'))
   type = models.CharField(max_length=1, choices=TYPES, default=HONOR)
   max_repetitions = models.PositiveSmallIntegerField(default=1)
-  is_peer_validated = models.BooleanField(default=False)
-  is_senior_validated = models.BooleanField(default=False)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   @ellipsis(100)
