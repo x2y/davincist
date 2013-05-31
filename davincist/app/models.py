@@ -87,6 +87,11 @@ class Quest(models.Model):
   QUEST_SIZE_MULTIPLIERS = {SMALL: 1, MEDIUM: 2, LARGE: 4, EXTRA_LARGE: 6}
   size = models.CharField(max_length=1, choices=QUEST_SIZES, default=SMALL)
   badges = models.ManyToManyField('Badge', blank=True, related_name='quests')
+  HONOR, PEER, SENIOR = 'H', 'P', 'S'
+  TYPES = ((HONOR, 'Honor'),
+           (PEER, 'Peer'),
+           (SENIOR, 'Senior'))
+  type = models.CharField(max_length=1, choices=TYPES, default=HONOR)
   max_repetitions = models.PositiveSmallIntegerField(default=1)
   is_peer_validated = models.BooleanField(default=False)
   is_senior_validated = models.BooleanField(default=False)
