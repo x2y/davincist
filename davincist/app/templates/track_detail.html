@@ -3,6 +3,16 @@
 {% load tags %}
 
 {% block title %}{{ track.name|capfirst }}{% endblock %}
+{% block gutter_subtitle %}Home{% endblock %}
+
+{% block head %}
+<style>
+  #nav #track-home-link {
+    color: #FAFAFA;
+    border-color: #FAFAFA;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 {{ track.description }}

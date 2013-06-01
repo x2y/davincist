@@ -3,6 +3,16 @@
 {% load tags %}
 
 {% block title %}{{ track.name|capfirst }} quests{% endblock %}
+{% block gutter_subtitle %}Quests{% endblock %}
+
+{% block head %}
+<style>
+  #nav #track-quests-link {
+    color: #FAFAFA;
+    border-color: #FAFAFA;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 {% for level in track.levels.all %}

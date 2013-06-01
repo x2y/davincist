@@ -3,14 +3,17 @@
 {% load tags %}
 
 {% block title %}{{ track.name|capfirst }}{% endblock %}
+{% block gutter_title %}{{ track.name|capfirst }}{% endblock %}
 
 {% block navigation %}
-{% track_link track %}
-<a href="{% url track_users track_name=track.name %}">Users</a>
-<a href="{% url track_levels track_name=track.name %}">Levels</a>
-<a href="{% url track_quests track_name=track.name %}">Quests</a>
-<a href="{% url track_badges track_name=track.name %}">Badges</a>
-<a href="{% url quests_verify track_name=track.name %}">Verify quests</a>
+<ul>
+  <li><a id="track-home-link" href="{% url track_detail track_name=track.name %}">home</a>
+  <li><a id="track-users-link" href="{% url track_users track_name=track.name %}">users</a>
+  <li><a id="track-levels-link" href="{% url track_levels track_name=track.name %}">levels</a>
+  <li><a id="track-quests-link" href="{% url track_quests track_name=track.name %}">quests</a>
+  <li><a id="track-badges-link" href="{% url track_badges track_name=track.name %}">badges</a>
+  <li><a id="track-verify-link" href="{% url quests_verify track_name=track.name %}">verify</a>
+</ul>
 {% endblock %}
 
 {% block content %}{% endblock %}

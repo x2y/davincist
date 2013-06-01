@@ -3,6 +3,16 @@
 {% load tags %}
 
 {% block title %}{{ track.name|capfirst }} badges{% endblock %}
+{% block gutter_subtitle %}Badges{% endblock %}
+
+{% block head %}
+<style>
+  #nav #track-badges-link {
+    color: #FAFAFA;
+    border-color: #FAFAFA;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 <table>

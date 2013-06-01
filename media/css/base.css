@@ -1,5 +1,112 @@
 /* Base styles go here. */
 
+@import url(http://fonts.googleapis.com/css?family=Lobster);
+
+body {
+  background-image: url('http://upload.wikimedia.org/wikipedia/commons/1/1c/Paramore_Concert.jpg');
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 0;
+  margin: 0;
+}
+
+#gutter {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 225px;
+}
+
+.gutter-title {
+  position: absolute;
+  top: 660px;
+  left: 22px;
+  width: 600px;
+  text-align: right;
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin:    0 0;
+  -ms-transform-origin:     0 0;
+  -o-transform-origin:      0 0;
+  transform-origin:         0 0;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform:    rotate(-90deg);
+  -ms-transform:     rotate(-90deg);
+  -o-transform:      rotate(-90deg);
+  transform:         rotate(-90deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  font-family: 'Lobster', cursive;
+  font-size: 100px;
+  font-weight: 700;
+  color: #FAFAFA;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+}
+
+.gutter-title.subtitle {
+  top: 725px;
+  left: 132px;
+  font-size: 36px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+#gutter-box {
+  position: absolute;
+  bottom: 15px;
+  text-align: center;
+  width: 100%;
+  font-family: 'Lobster', cursive;
+  font-size: 28px;
+  color: #FAFAFA;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+}
+
+#nav {
+  margin-top: 35px;
+}
+
+#nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 225px;
+  width: 100%;
+}
+
+#nav li {
+  float: left;
+  margin: 0 1em 0 0;
+}
+
+#nav a {
+  text-decoration: none;
+  display: block;
+  width: 5em;
+  padding: 0 0.5em;
+  color: white;
+  font-family: 'Lobster', cursive;
+  font-size: 18px;
+  color: rgba(250, 250, 250, 0.8);
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+  border-bottom: 8px solid rgba(250, 250, 250, 0.7);
+}
+
+#nav a:hover {
+  color: #FAFAFA;
+  border-color: #FAFAFA;
+}
+
+#content {
+  clear: both;
+  background-color: #FAFAFA;
+  margin: 0 40px 30px 225px;
+  border: 0 1px 1px 1px solid #DDD;
+  -mox-box-shadow:    0 0 20px rgba(0, 0, 0, 0.6);
+  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  box-shadow:         0 0 20px rgba(0, 0, 0, 0.6);
+  padding: 30px;
+  min-height: 1000px;
+}
+
 .badge_required {
   font-weight: bold;
   color: black;
