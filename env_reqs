@@ -6,7 +6,6 @@ argparse==1.2.1
 django-annoying==0.7.7
 django-appconf==0.6
 django-imagekit==2.0.2
-pyrg==0.2.6
 six==1.2.0
 wsgiref==0.1.2
 yolk==0.4.3
