@@ -7,13 +7,13 @@
   {% block head %}{% endblock %}
 </head>
 <body>
-  <div id="gutter">
+  <div id="gutter" class="floating-text">
     <div class="gutter-title">{% block gutter_title %}Title{% endblock %}</div>
     <div class="gutter-title subtitle">{% block gutter_subtitle %}Subtitle{% endblock %}</div>
-    <div id="gutter-box">Lvl. 5 | 294 XP</div>
+    <div id="gutter-box" class="floating-text">Lvl. 5 | 294 XP</div>
   </div>
-  <div id="nav">{% block navigation %}{% endblock %}</div>
-  <div id="content">{% block content %}{% endblock %}</div>
+  <div id="nav" class="floating-text">{% block navigation %}{% endblock %}</div>
+  <div id="content" class="floating-box">{% block content %}{% endblock %}</div>
   <div>{% block footer %}{% endblock %}</div>
 </body>
 </html>
