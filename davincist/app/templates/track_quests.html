@@ -15,10 +15,25 @@
 {% endblock %}
 
 {% block content %}
-{% for level in track.levels.all %}
-  {% level_link level %}<br>
-  {% for quest in level.quests.all %}
-    {{ quest }}<br>
-  {% endfor %}
-{% endfor %}
+<table>
+	<tr>
+		<th> Level </th>
+		<th> Name </th>
+		<th> Description </th>
+		<th> Badge </th>
+	</tr>
+	{% for level in track.levels.all %}
+		{% for quest in level.quests.all %}
+			<tr>
+				<td> {{ level.rank }} </td>
+				<td> {% quest_link quest.name %} </td>
+				<td> <b>{{quest.size}}</b> {{quest.description|truncatechars:64}} <br></td>
+				<td>
+					{% for badge in quest.badges.all %}
+  						{% badge_link badge %}
+  					{% endfor %}
+  			</tr>
+  		{% endfor %}
+  	{% endfor %}
+</table>
 {% endblock %}
