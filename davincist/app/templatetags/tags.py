@@ -25,8 +25,8 @@ def crest_link(crest):
   return {'crest': crest}
 
 @register.inclusion_tag('quest_link_tag.html')
-def quest_link(quest):
-  return {'quest': quest}
+def quest_link(quest, add_anchor=True):
+  return {'quest': quest, 'add_anchor': add_anchor}
 
 @register.inclusion_tag('user_link_tag.html')
 def user_link(user):

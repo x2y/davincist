@@ -26,8 +26,8 @@
 		{% for quest in level.quests.all %}
 			<tr>
 				<td> {{ level.rank }} </td>
-				<td> {% quest_link quest.name %} </td>
-				<td> <b>{{quest.size}}</b> {{quest.description|truncatechars:64}} <br></td>
+				<td> {% quest_link quest add_anchor=0 %} </td>
+				<td> <b>{{ quest.size }}</b> {{ quest.description|truncatechars:64 }} <br></td>
 				<td>
 					{% for badge in quest.badges.all %}
   						{% badge_link badge %}
@@ -37,3 +37,4 @@
   	{% endfor %}
 </table>
 {% endblock %}
+
