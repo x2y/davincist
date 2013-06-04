@@ -1,0 +1,13 @@
+{
+	"folders":
+	[
+		{
+			"path": "/home/cbehar/dev/davincist",
+			"file_exclude_patterns": ["*.pyc"]
+		}
+	],
+	"settings":
+  {
+    "tab_size": 2
+  }
+}
