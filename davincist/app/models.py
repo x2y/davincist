@@ -73,7 +73,7 @@ class Level(models.Model):
 
   def xp_needed(self):
     return self.hours_needed() * self.xp_per_hours_work()
-    
+
   def top_10_user_tracks(self):
     return self.user_tracks.order_by('-xp')[:10]
 
@@ -110,7 +110,7 @@ class Quest(models.Model):
   def hours_needed(self):
     if self.level.rank > 0:
       return (self.QUEST_SIZE_MULTIPLIERS[self.size] *
-          (TIME_UNIT_MULTIPLIER * self.level.rank - TIME_UNIT_OFFSET))
+              (TIME_UNIT_MULTIPLIER * self.level.rank - TIME_UNIT_OFFSET))
     else:
       return 0.0
 
@@ -123,10 +123,48 @@ class Quest(models.Model):
     unique_together = ('name', 'level')
 
 
+class VerificationRequest(models.Model):
+  user = models.ForeignKey(User, related_name='verification_requests')
+  quest = models.ForeignKey(Quest, related_name='verification_requests')
+  text = models.TextField(blank=True)
+  youtube_id = models.SlugField(max_length=11, blank=True)
+  UNCHECKED, VERIFIED, NOT_VERIFIED = 'U', 'V', 'N'
+  STATUSES = ((UNCHECKED, 'Unchecked'),
+              (VERIFIED, 'Verified'),
+              (NOT_VERIFIED, 'Not verified'))
+  status = models.CharField(max_length=1, choices=STATUSES, default=UNCHECKED)
+  timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
+
+  def __unicode__(self):
+    return '%s for %s - %s' % (self.quest.name, self.user.username, self.status)
+
+  class Meta:
+    get_latest_by = 'time'
+    ordering = ['status', 'quest', 'user']
+    unique_together = ('user', 'quest')
+
+
+class Verification(models.Model):
+  request = models.ForeignKey(VerificationRequest, related_name='verifications')
+  verifier = models.ForeignKey(User, related_name='verifications')
+  is_positive = models.BooleanField(default=False)
+  timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
+
+  def __unicode__(self):
+    return '%s for %s - %sverified by %s' % (self.request.quest.name, self.request.user.username,
+                                             '' if self.is_positive else 'not ',
+                                             self.verifier.username)
+
+  class Meta:
+    get_latest_by = 'time'
+    ordering = ['verifier', '-timestamp']
+    unique_together = ('request', 'verifier')
+
+
 class Badge(models.Model):
   name = models.CharField(max_length=64)
   description = models.CharField(max_length=128)
-  BRONZE, SILVER, GOLD = 1, 2, 3 
+  BRONZE, SILVER, GOLD = 1, 2, 3
   GRADES = ((BRONZE, 'Bronze'),
             (SILVER, 'Silver'),
             (GOLD, 'Gold'))
