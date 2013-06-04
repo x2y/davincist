@@ -2,7 +2,7 @@
 	"folders":
 	[
 		{
-			"path": "/home/cbehar/dev/davincist",
+			"path": "~/dev/davincist",
 			"file_exclude_patterns": ["*.pyc"]
 		}
 	],
