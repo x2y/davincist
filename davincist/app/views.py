@@ -1,6 +1,7 @@
 from annoying.decorators import render_to
 from django.shortcuts import *
 from models import *
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # Attributes will be defined outside init pylint: disable=W0201
@@ -45,7 +46,7 @@ def track_users(request, track_name):
 @render_to('track_join.html')
 def track_join(request, track_name):
   r = Response()
-  r.track = get_object_or_404(Track, pk_iexact=track_name)
+  r.track = get_object_or_404(Track, pk__iexact=track_name)
   return r.__dict__
 
 
@@ -61,6 +62,11 @@ def track_levels(request, track_name):
 def track_quests(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
+  if not request.user.is_anonymous():
+    try:
+      r.user_track = request.user.user_tracks.get(track__name=track_name)
+    except ObjectDoesNotExist:
+      pass
   return r.__dict__
 
 
