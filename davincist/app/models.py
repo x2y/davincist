@@ -88,12 +88,12 @@ class Quest(models.Model):
   description = models.TextField()
   level = models.ForeignKey(Level, related_name='quests')
   SMALL, MEDIUM, LARGE, EXTRA_LARGE = 'S', 'M', 'L', 'X'
-  QUEST_SIZES = ((SMALL, 'Small'),
-                 (MEDIUM, 'Medium'),
-                 (LARGE, 'Large'),
-                 (EXTRA_LARGE, 'Extra-large'))
-  QUEST_SIZE_MULTIPLIERS = {SMALL: 1, MEDIUM: 2, LARGE: 4, EXTRA_LARGE: 6}
-  size = models.CharField(max_length=1, choices=QUEST_SIZES, default=SMALL)
+  SIZES = ((SMALL, 'Small'),
+           (MEDIUM, 'Medium'),
+           (LARGE, 'Large'),
+           (EXTRA_LARGE, 'Extra-large'))
+  SIZE_MULTIPLIERS = {SMALL: 1, MEDIUM: 2, LARGE: 4, EXTRA_LARGE: 6}
+  size = models.CharField(max_length=1, choices=SIZES, default=SMALL)
   badges = models.ManyToManyField('Badge', blank=True, related_name='quests')
   HONOR, PEER, SENIOR = 'H', 'P', 'S'
   TYPES = ((HONOR, 'Honor'),
@@ -109,7 +109,7 @@ class Quest(models.Model):
 
   def hours_needed(self):
     if self.level.rank > 0:
-      return (self.QUEST_SIZE_MULTIPLIERS[self.size] *
+      return (self.SIZE_MULTIPLIERS[self.size] *
               (TIME_UNIT_MULTIPLIER * self.level.rank - TIME_UNIT_OFFSET))
     else:
       return 0.0
