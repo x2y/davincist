@@ -40,8 +40,8 @@ class Track(models.Model):
   #  print "finding user %s" % self.user_tracks.user
     for user_track in self.user_tracks.all():
       if user_track.user.username == "zerogee":
-        return True;
-    return False;
+        return True
+    return False
 
   class Meta:
     get_latest_by = 'created'
