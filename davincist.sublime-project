@@ -3,7 +3,7 @@
 	[
 		{
 			"path": "~/dev/davincist",
-			"file_exclude_patterns": ["*.pyc"]
+			"file_exclude_patterns": ["*.pyc", "*/static/*"]
 		}
 	],
 	"settings":
