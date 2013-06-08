@@ -35,14 +35,6 @@ class Track(models.Model):
   def __unicode__(self):
     return '%s: %s' % (self.name, self.description)
 
-  # may be useful, maybe not - commenting out for now. forgot I can't pass parameters in
-  def has_user(self):
-  #  print "finding user %s" % self.user_tracks.user
-    for user_track in self.user_tracks.all():
-      if user_track.user.username == "zerogee":
-        return True
-    return False
-
   class Meta:
     get_latest_by = 'created'
     ordering = ['name']
