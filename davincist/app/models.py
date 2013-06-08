@@ -77,6 +77,9 @@ class Level(models.Model):
   def top_10_user_tracks(self):
     return self.user_tracks.order_by('-xp')[:10]
 
+  def user_count(self):
+      return self.user_tracks.count()
+
   class Meta:
     get_latest_by = 'created'
     ordering = ['rank']
@@ -179,6 +182,9 @@ class Badge(models.Model):
   def __unicode__(self):
     return '(%s/%s) %s: %s' % (self.grade, self.level.track.name, self.name, self.description)
 
+  def user_count(self):
+    return self.user_tracks.count()
+
   class Meta:
     get_latest_by = 'created'
     ordering = ['level', '-is_required', 'name', 'grade']
@@ -217,6 +223,9 @@ class UserTrack(models.Model):
 
   def top_badges(self):
     return self.badges.order_by('-level__rank', '-grade')[:3]
+
+  def badges_owned(self):
+    return self.badges.order_by('-level__rank', '-grade')
 
   class Meta:
     ordering = ['user', 'track']
