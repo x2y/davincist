@@ -70,7 +70,7 @@ class Level(models.Model):
     return self.user_tracks.order_by('-xp')[:10]
 
   def user_count(self):
-      return self.user_tracks.count()
+    return self.user_tracks.count()
 
   class Meta:
     get_latest_by = 'created'
@@ -80,7 +80,8 @@ class Level(models.Model):
 
 class Quest(models.Model):
   name = models.CharField(max_length=128)
-  description = models.TextField()
+  description = models.CharField(max_length=128)
+  training = models.TextField()
   level = models.ForeignKey(Level, related_name='quests')
   SMALL, MEDIUM, LARGE, EXTRA_LARGE = 'S', 'M', 'L', 'X'
   SIZES = ((SMALL, 'Small'),
