@@ -25,10 +25,11 @@ USER_GROUP = r'(?P<username>%s)' % USER_REGEX
 urlpatterns = patterns('',
     # url(r'^(?i)admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'', include('social_auth.urls')),
 
     url(r'^(?i)$', home, name='home'),
     url(r'^(?i)about/$', about, name='about'),
-    
+
     # Field pages.
     # url(r'^(?i)f/add$' % FIELD_GROUP, field_add, name='field_add'),
     # url(r'^(?i)f/all$', field_list, name='field_list'),
@@ -70,4 +71,3 @@ urlpatterns = patterns('',
     url(r'^(?i)u/%s/edit/' % USER_GROUP, user_edit, name='user_edit'),
     # url(r'^(?i)u/%s/delete' % USER_GROUP, user_delete, name='user_delete'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

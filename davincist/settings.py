@@ -2,6 +2,9 @@
 
 import os.path
 
+import django.conf.global_settings as global_settings
+from django.template.defaultfilters import slugify
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 PROJECT_DIR = os.path.dirname(__file__)
@@ -16,8 +19,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': F('sqlite3.db'),                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': F('sqlite3.db'),                 # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -78,7 +81,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -88,7 +91,7 @@ SECRET_KEY = 'u2gal=)(t4kgtyk^kbkd#h5st7v6-(grv3g90q^2n+pmh8!&amp;*b'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    #'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -125,9 +128,37 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'social_auth',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+AUTHENTICATION_BACKENDS = (
+    'social_auth.backends.facebook.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    'social_auth.context_processors.social_auth_by_name_backends',
+    'social_auth.context_processors.social_auth_backends',
+    'social_auth.context_processors.social_auth_by_type_backends',
+    'social_auth.context_processors.social_auth_login_redirect',
+)
+
+FACEBOOK_APP_ID = '441749529254687'
+FACEBOOK_API_SECRET = 'aebd14b554b3101758a8da82ebc15f3b'
+FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+
+SOCIAL_AUTH_ENABLED_BACKENDS = ('facebook',)
+SOCIAL_AUTH_COMPLETE_URL_NAME = 'socialauth_complete'
+SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
+SOCIAL_AUTH_SLUGIFY_USERNAMES = True
+SOCIAL_AUTH_EXTRA_DATA = False
+SOCIAL_AUTH_CHANGE_SIGNAL_ONLY = True
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_ERROR_URL = '/login-error/'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -157,4 +188,3 @@ LOGGING = {
         },
     }
 }
-

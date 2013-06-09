@@ -10,7 +10,14 @@
   <div id="gutter" class="floating-text">
     <div class="gutter-title">{% block gutter_title %}Title{% endblock %}</div>
     <div class="gutter-title subtitle">{% block gutter_subtitle %}Subtitle{% endblock %}</div>
-    <div id="gutter-box" class="floating-text">{{ user.username }}<br>{% block track_info %}Track Info{% endblock %}</div>
+    <div id="gutter-box" class="floating-text">
+      {% if user.is_authenticated %}
+        {{ user.username }}
+      {% else %}
+        <a href="{% url socialauth_begin 'facebook' %}">Log in with Facebook</a>
+      {% endif %}<br>
+      {% block track_info %}Track Info{% endblock %}
+    </div>
   </div>
   <div id="nav" class="floating-text">{% block navigation %}{% endblock %}</div>
   <div id="content" class="floating-box">{% block content %}{% endblock %}</div>
