@@ -18,5 +18,50 @@
 {{ track.description }}
 <p>{{ track.mission }}
 <p><img src="/media/{{ track.crest }}" width="100px" height="100px"></img>
-<p>{{ track.created }}
+<p>{{ track.created }}</p>
+<h2> Announcements </h2>
+<p> Announcements go here </p>
+<h3> Badges </h3>
+{% for level in track.levels.all %}
+	{% for badges in level.badges.all %}
+		<p> {{ badges.user_count }}
+			{% if badges.user_count == 0 or badges.user_count > 1 %} 
+				users have
+			{% else %}
+				user has
+			{% endif %}
+			{{ badges.name }} 
+		</p>
+	{% endfor %}
+{% endfor %}
+<h3> Levels </h3>
+{% for level in track.levels.all %}
+	<p>
+	{{ level.user_count }}
+	{% if level.user_count == 0 or level.user_count > 1  %}
+		 users are
+	{% else %} 
+		 user is
+	{% endif %}
+	on {{ level.name}}
+	</p>
+	<p>
+	{% if level.user_count > 3 %}
+		{% for user_track in level.top_10_user_tracks|slice:":3" %}
+          	Top users are: {% user_link user_track.user %} ({{ user_track.xp }})
+         {% endfor %}
+    {% endif %}
+{% endfor %}
+<h3> Quests to be fulfilled </h3>
+{% for level in track.levels.all %}
+	{% for user_track in user.user_tracks.all %}
+		{% for quest in level.quests.all %}
+			{% for badge in quest.badges.all %}
+				{% if badge not in user_track.badges_owned %}
+					<p>{% quest_link quest %}</p>
+				{% endif %}
+			{% endfor %}
+		{% endfor %}
+	{% endfor %}
+{% endfor %}
 {% endblock %}

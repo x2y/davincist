@@ -13,8 +13,10 @@
   }
 </style>
 {% endblock %}
-
 {% block content %}
+{% if user_track %}
+  Your {{ track.name }} level, {{ user.username }}: {{ user_track.level.rank }}, {{ user_track.level.name }}.<br>
+{% endif %}
 <ul>
 {% for level in track.levels.all %}
   <li>
