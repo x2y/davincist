@@ -229,6 +229,7 @@ class WallPost(models.Model):
   user = models.ForeignKey(User, related_name='wall_posts')
   poster = models.ForeignKey(User, related_name='wall_posts_posted')
   text = models.CharField(max_length=512)
+  is_public = models.BooleanField(default=True)
   verification_request = models.ForeignKey(VerificationRequest, related_name='wall_posts', blank=True, null=True)
   timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
