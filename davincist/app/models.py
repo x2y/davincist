@@ -225,6 +225,23 @@ class UserTrack(models.Model):
     unique_together = ('user', 'track')
 
 
+class WallPost(models.Model):
+  user = models.ForeignKey(User, related_name='wall_posts')
+  poster = models.ForeignKey(User, related_name='wall_posts_posted')
+  text = models.CharField(max_length=512)
+  verification_request = models.ForeignKey(VerificationRequest, related_name='wall_posts', blank=True, null=True)
+  timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
+
+  @ellipsis(100)
+  def __unicode__(self):
+    return u'@%s: %s \u2014 %s on %s' % (self.user.username, self.text, self.poster.username,
+                                         datetime.date(self.timestamp).strftime('%b %d, \'%y'))
+
+  class Meta:
+    get_latest_by = 'timestamp'
+    ordering = ['user', '-timestamp']
+
+
 # class LevelEvent(models.Model):
 #  user = models.ForeignKey('User')
 #  level = models.ForeignKey('Level')
@@ -285,7 +302,6 @@ class UserTrack(models.Model):
 # Moderation
 # Flagging
 # 1:1 Mail
-# Wall
 # Achievements?
 # Stats
 # Meta
