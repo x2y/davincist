@@ -105,7 +105,7 @@ def user_add(request):
 @render_to('user_home.html')
 def user_home(request, username):
   r = Response()
-  r.user = get_object_or_404(User, username__iexact=username)
+  r.target_user = get_object_or_404(User, username__iexact=username)
   return r.__dict__
 
 

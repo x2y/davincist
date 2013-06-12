@@ -2,17 +2,24 @@
 
 {% load tags %}
 
-{% block title %}{{ user.username }}'s Profile{% endblock %}
+{% block title %}{{ target_user.username }}'s Profile{% endblock %}
 
 {% block content %}
-{% comment %}<img src="{{ user.profile.profile_image }}" height=200 width=200>{% endcomment %}
+
+{% comment %}Temporary styling to show how public/private classes work{% endcomment %}
+<style type="text/css">
+.public {color:black;}
+.private {color:blue;}
+</style>
+
+{% comment %}<img src="{{ target_user.profile.profile_image }}" height=200 width=200>{% endcomment %}
 --PROFILE PICTURE HERE--<br>
-{{ user.username }} Overall XP: {{ user.profile.xp }}<br>
-{{ user.username }}'s Biography: {% if user.profile.bio %}{{ user.profile.bio }}{% else %}No biography set yet.{% endif %}<br>
-{% if user.profile.website %}Website: {{ user.profile.website }}<br>{% endif %}
+{{ target_user.username }} Overall XP: {{ target_user.profile.xp }}<br>
+{{ target_user.username }}'s Biography: {% if target_user.profile.bio %}{{ target_user.profile.bio }}{% else %}No biography set yet.{% endif %}<br>
+{% if target_user.profile.website %}Website: {{ target_user.profile.website }}<br>{% endif %}
 <br>
-{{ user.username }} is a member of the following tracks:<br><br>
-{% for user_track in user.user_tracks.all %}
+{{ target_user.username }} is a member of the following tracks:<br><br>
+{% for user_track in target_user.user_tracks.all %}
   {% track_link user_track.track %}<br>
   {% if user_track.mission %}Her/His/Its Mission: {{ user_track.mission }}<br>{% endif %}
   {{ user_track.track.name }} Level: {{ user_track.level.rank }}: {{ user_track.level.name }} ({{ user_track.xp }} XP)<br>
@@ -26,5 +33,21 @@
 {% empty %}
   He/She/It hasn't joined any tracks yet!
 {% endfor %}
+{% comment %}Begin wall code{% endcomment %}
+<h2>Your Wall</h2>
+{% if not target_user.wall_posts.all %}
+  You don't have any comments or updates for now.  Go complete some quests!<br>
+{% else %}
+  {% for post in target_user.wall_posts.all|slice:":10" %}{% comment %}Only show the last 10 posts{% endcomment %}
+    <div 
+    {% if not post.is_public %}
+      {% if target_user == user or post.poster == user %}
+        class="private"><b>{{ post.poster }}:</b> {{ post.text }}</div>
+      {% endif %}
+    {% else %}
+      class="public"><b>{{ post.poster }}:</b> {{ post.text }}</div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
 {% endblock %}
