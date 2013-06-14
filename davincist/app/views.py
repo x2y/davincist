@@ -72,7 +72,7 @@ def track_join(request, track_name):
 def track_levels(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
-  if not request.user.is_anonymous():
+  if request.user.is_authenticated():
     try:
       r.user_track = request.user.user_tracks.get(track__name=track_name)
     except ObjectDoesNotExist:
