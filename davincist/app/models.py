@@ -134,6 +134,13 @@ class VerificationRequest(models.Model):
   def __unicode__(self):
     return '%s for %s - %s' % (self.quest.name, self.user.username, self.status)
 
+  def to_dict(self):
+    return {
+        'pk': self.pk,
+        'user': self.user.username,
+        'quest': self.quest.name,
+    }
+
   class Meta:
     get_latest_by = 'time'
     ordering = ['status', 'quest', 'user']
@@ -228,7 +235,8 @@ class UserTrack(models.Model):
 class WallPost(models.Model):
   user = models.ForeignKey(User, related_name='wall_posts')
   poster = models.ForeignKey(User, related_name='wall_posts_posted')
-  text = models.CharField(max_length=512)
+  MAX_TEXT_LENGTH = 512
+  text = models.CharField(max_length=MAX_TEXT_LENGTH)
   is_public = models.BooleanField(default=True)
   verification_request = models.ForeignKey(VerificationRequest, related_name='wall_posts', blank=True, null=True)
   timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
@@ -237,6 +245,18 @@ class WallPost(models.Model):
   def __unicode__(self):
     return u'@%s: %s \u2014 %s on %s' % (self.user.username, self.text, self.poster.username,
                                          datetime.date(self.timestamp).strftime('%b %d, \'%y'))
+
+  def to_dict(self):
+    ret = {
+        'user': self.user.username,
+        'poster': self.poster.username,
+        'text': self.text,
+        'is_public': self.is_public,
+        'timestamp': self.timestamp.isoformat(),
+    }
+    if self.verification_request:
+      ret['verification_request'] = self.verification_request.to_dict()
+    return ret
 
   class Meta:
     get_latest_by = 'timestamp'

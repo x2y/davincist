@@ -70,4 +70,7 @@ urlpatterns = patterns('',
     url(r'^(?i)u/%s/gallery/$' % USER_GROUP, user_gallery, name='user_gallery'),
     url(r'^(?i)u/%s/edit/' % USER_GROUP, user_edit, name='user_edit'),
     # url(r'^(?i)u/%s/delete' % USER_GROUP, user_delete, name='user_delete'),
+
+    # AJAX pages.
+    url(r'^(?i)x/post-to-wall/', ajax_post_to_wall, name='ajax_post_to_wall'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

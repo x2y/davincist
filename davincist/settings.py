@@ -74,6 +74,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     F('../media/css/'),
     F('../media/img/'),
+    F('../media/js/'),
 )
 
 # List of finder classes that know how to find static files in

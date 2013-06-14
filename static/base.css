@@ -120,3 +120,19 @@ body {
   font-weight: normal;
   color: darkgrey;
 }
+
+#wall-post-box {
+  width: 400px;
+}
+
+#wall-post-textbox {
+  float: left;
+  margin: 0;
+  width: 100%;
+  height: 5em;
+}
+
+.wall-post-button-box {
+  clear: left;
+  float: right;
+}
