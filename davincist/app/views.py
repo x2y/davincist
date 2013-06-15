@@ -1,13 +1,12 @@
 from annoying.decorators import ajax_request, render_to
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import *
 from models import *
-from django.core.exceptions import ObjectDoesNotExist
+from validators import *
 
 
 # Attributes will be defined outside init pylint: disable=W0201
 class Response(object):
-  pass
-
   @classmethod
   def errors(cls, *errors):
     print errors
@@ -15,16 +14,6 @@ class Response(object):
       return {'errors': errors[0]}
     else:
       return {'errors': errors}
-
-
-def get_missing_field_errors(data, fields):
-  ret = []
-  for field in fields:
-    if field not in data:
-      ret.append('Missing field: %s.' % field)
-    elif not data[field].strip():
-      ret.append('Empty field: %s.' % field)
-  return ret
 
 
 @render_to('home.html')
@@ -158,34 +147,24 @@ def ajax_post_to_wall(request):
   if not request.user.is_authenticated():
     return Response.errors('User is not logged in.')
 
-  # Request must have text, to, and is_public fields filled in.
-  data = request.POST
-  errors = get_missing_field_errors(data, ('text', 'to', 'is_public'))
+  # Perform all the general validation.
+  errors = get_errors(request.POST, {
+      'text': (NonEmptyValidator(), StrippedLengthValidator(WallPost.MAX_TEXT_LENGTH)),
+      'to': (RequiredValidator(), ModelValidator(User)),
+      'is_public': (RequiredValidator(), BooleanValidator()),
+  })
   if errors:
     return Response.errors(errors)
 
-  text_field, to_field, is_public_field = data['text'], data['to'], data['is_public']
+  # Extract the relevant data.
+  text = request.POST['text'].strip()
+  to = User.objects.get(pk=int(request.POST['to']))
+  is_public = request.POST['is_public'] == 'true'
 
-  # Request must have a valid text field.
-  text = text_field.strip()
-  if len(text) > WallPost.MAX_TEXT_LENGTH:
-    return Response.errors('Invalid text field: >%d chars' % WallPost.MAX_TEXT_LENGTH)
-
-  # Request must have a valid to field.
-  if not to_field.isdigit():
-    return Response.errors('Invalid to field: %s.' % to_field)
-  try:
-    to = User.objects.get(pk=int(to_field))
-  except ObjectDoesNotExist:
-    return Response.errors('No User with pk: %s.' % to_field)
-
-  # Request must have a valid is_public field.
-  if is_public_field not in ('true', 'false'):
-    return Response.errors('Invalid is_public field: %s.' % to_field)
-  is_public = is_public_field == 'true'
+  # TODO: Support quest verification linking.
 
   # Create and save the new WallPost.
-  post = WallPost(user=to, poster=request.user, text=text_field, is_public=is_public)
+  post = WallPost(user=to, poster=request.user, text=text, is_public=is_public)
   post.save()
   r.post = post.to_dict()
   return r.__dict__
