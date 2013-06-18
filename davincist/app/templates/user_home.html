@@ -60,7 +60,8 @@
 <!-- Move the wall posting stuff into a reusable template. -->
 <div id="wall-post-box">
   <textarea id="wall-post-textbox"></textarea>
-  <div class="wall-post-button-box">
+  <div id="wall-post-error"></div>
+  <div id="wall-post-button-box">
     <button id="wall-post-public-button">Post Public</button>
     <button id="wall-post-private-button">Post Private</button>
   </div>
@@ -79,18 +80,14 @@
     data.is_public = is_public
     $.post("/x/post-to-wall/", data, function (data) {
       if (data.errors) {
-        for (var i = 0; i < data.errors.length; ++i) {
-          console.error(data.errors[i]);
-        }
-        // TODO: Show a server error.
+        $('#wall-post-error').text(data.errors.join());
         return;
       }
 
       // TODO: Load new post into existing wall without a reload.
       location.reload();
     }).fail(function() {
-      // TODO: Show a server error.
-      console.error('Server error!');
+      $('#wall-error').text('Server error!');
     }).always(function() {
       $("#wall-post-box :input").removeAttr('disabled');
     });

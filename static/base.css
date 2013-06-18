@@ -132,7 +132,11 @@ body {
   height: 5em;
 }
 
-.wall-post-button-box {
-  clear: left;
+#wall-post-error {
+  float: left;
+  color: red;
+}
+
+#wall-post-button-box {
   float: right;
 }
