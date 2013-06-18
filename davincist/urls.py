@@ -72,5 +72,6 @@ urlpatterns = patterns('',
     # url(r'^(?i)u/%s/delete' % USER_GROUP, user_delete, name='user_delete'),
 
     # AJAX pages.
+    url(r'^(?i)x/get-wall-posts/', ajax_get_wall_posts, name='ajax_get_wall_posts'),
     url(r'^(?i)x/post-to-wall/', ajax_post_to_wall, name='ajax_post_to_wall'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

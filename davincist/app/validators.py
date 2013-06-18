@@ -38,7 +38,7 @@ class StrippedLengthValidator(object):
             if len(data[field].strip()) > self.max_length_ else None)
 
 
-class NumberValidator(object):
+class IntegerValidator(object):
   def error(self, data, field):
     if field not in data:
       return None

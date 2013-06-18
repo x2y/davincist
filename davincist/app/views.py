@@ -1,8 +1,13 @@
 from annoying.decorators import ajax_request, render_to
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, EmptyPage
+from django.db.models import Q
 from django.shortcuts import *
 from models import *
 from validators import *
+
+
+WALL_POSTS_PER_PAGE = 15
 
 
 # Attributes will be defined outside init pylint: disable=W0201
@@ -134,6 +139,39 @@ def user_gallery(request, username):
 def user_edit(request, username):
   r = Response()
   r.user = get_object_or_404(User, username__iexact=username)
+  return r.__dict__
+
+
+@ajax_request
+def ajax_get_wall_posts(request):
+  r = Response()
+  if request.method != 'GET':
+    return Response.errors('Request must use GET; used: %s.' % request.method)
+
+  errors = get_errors(request.GET, {
+      'target_user': (RequiredValidator(), ModelValidator(User)),
+      'page': (RequiredValidator(), IntegerValidator()),
+  })
+  if errors:
+    return Response.errors(errors)
+
+  target_user = User.objects.get(pk=int(request.GET['target_user']))
+  page_number = int(request.GET['page'])
+
+  # Get all wall posts visible to the specified user (paginated).
+  wall_posts = target_user.wall_posts.filter(Q(is_public=True) |
+                                             Q(user=request.user) |
+                                             Q(poster=request.user)).order_by('-timestamp')
+  paginator = Paginator(wall_posts, WALL_POSTS_PER_PAGE)
+
+  r.wall_posts = []
+  try:
+    page = paginator.page(page_number)
+    for wall_post in page:
+      r.wall_posts.append(wall_post.to_dict())
+    r.has_next = page.has_next()
+  except EmptyPage:
+    r.has_next = False
   return r.__dict__
 
 

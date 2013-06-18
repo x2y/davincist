@@ -1,3 +1,5 @@
+import time
+
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
@@ -252,7 +254,7 @@ class WallPost(models.Model):
         'poster': self.poster.username,
         'text': self.text,
         'is_public': self.is_public,
-        'timestamp': self.timestamp.isoformat(),
+        'timestamp': int(time.mktime(self.timestamp.timetuple())),
     }
     if self.verification_request:
       ret['verification_request'] = self.verification_request.to_dict()

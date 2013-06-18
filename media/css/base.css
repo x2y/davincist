@@ -122,6 +122,7 @@ body {
 }
 
 #wall-post-box {
+  float: left;
   width: 400px;
 }
 
@@ -139,4 +140,40 @@ body {
 
 #wall-post-button-box {
   float: right;
+}
+
+#wall {
+  clear: left;
+  float: left;
+}
+
+.wall-post.private {
+  color: blue;
+}
+
+.wall-post .poster {
+  font-weight: bold;
+}
+
+.wall-post .poster:after {
+  content: ': ';
+}
+
+.wall-post .timestamp {
+  color: #888;
+}
+
+.wall-post .timestamp:before {
+  content: ' @';
+}
+
+#wall-load-previous-error {
+  clear: left;
+  float: left;
+  color: red;
+}
+
+#wall-load-previous-button {
+  clear: left;
+  float: left;
 }
