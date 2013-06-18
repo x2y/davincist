@@ -75,7 +75,8 @@
     }
     $newPost.append($('<span class="poster">').text(data.poster));
     $newPost.append($('<span>').text(data.text));
-    $newPost.append($('<span class="timestamp">').text(new Date(data.timestamp).toLocaleString()));
+    $newPost.append($('<span class="timestamp">').text(
+        new Date(data.timestamp * 1000).toLocaleString()));
     $newPost.appendTo($('#wall'));
   }
 
