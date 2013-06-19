@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 
 HOURS_GROWTH_CONSTANT = 2.2
@@ -73,6 +74,12 @@ class Level(models.Model):
 
   def user_count(self):
     return self.user_tracks.count()
+
+  def next_level(self):
+    try:
+      return self.track.levels.get(rank=self.rank + 1)
+    except ObjectDoesNotExist:
+      return None
 
   class Meta:
     get_latest_by = 'created'
