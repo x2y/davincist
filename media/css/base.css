@@ -9,6 +9,8 @@ body {
   background-size: cover;
   padding: 0;
   margin: 0;
+  font-family: Helvetica,Helvetica Neue,Arial,Liberation Sans,DejaVu Sans,sans-serif;
+  font-size: 14px;
 }
 
 .floating-text {
@@ -111,14 +113,54 @@ body {
   min-width: 675px;
 }
 
-.badge_required {
-  font-weight: bold;
-  color: black;
+.badge {
+  color: #FFF;
+  background-color: #505050;
+  border: 1px solid #333;
+  padding: 0px 6px 0px 3px;
+  display: inline-block;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 24px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  margin: 0 3px 3px 0;
+  font-size: 13px;
+  font-style: italic;
 }
 
-.badge_optional {
-  font-weight: normal;
-  color: darkgrey;
+.badge.required {
+  font-style: normal;
+  background-color: #333;
+}
+
+.badge:hover {
+  background-color: #555;
+}
+
+.medal {
+  background-color: red;
+  width: 6px;
+  height: 6px;
+  line-height: inherit;
+  display: inline-block;
+  margin: 0 5px 1px 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.medal.grade-1 {
+  background-color: #CC9966;
+}
+
+.medal.grade-2 {
+  background-color: #C5C5C5;
+}
+
+.medal.grade-3 {
+  background-color: #FFCC00;
 }
 
 #wall-post-box {

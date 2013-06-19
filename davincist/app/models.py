@@ -194,6 +194,9 @@ class Badge(models.Model):
   def user_count(self):
     return self.user_tracks.count()
 
+  def track_name(self):
+    return self.level.track.name
+
   class Meta:
     get_latest_by = 'created'
     ordering = ['level', '-is_required', 'name', 'grade']
