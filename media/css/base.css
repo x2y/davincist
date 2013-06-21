@@ -3,7 +3,6 @@
 @import url(http://fonts.googleapis.com/css?family=Lobster);
 
 body {
-  background-image: url('/static/guitar-bkg-0.jpg');
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;

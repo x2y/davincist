@@ -4,6 +4,15 @@
 
 {% block title %}{{ track.name|capfirst }}{% endblock %}
 {% block gutter_title %}{{ track.name|capfirst }}{% endblock %}
+
+{% block base_head %}
+<style>
+  body {
+    background-image: url('{{ track.background_url }}');
+  }
+</style>
+{% endblock %}
+
 {% block track_info %}
   {% if user_track %}
     Lvl: {{ user_track.level.rank }} | XP: {{ user_track.xp }}
@@ -11,6 +20,7 @@
     Join {% track_link track %} today.
   {% endif %}
 {% endblock %}
+
 {% block navigation %}
 <ul>
   <li><a id="track-home-link" href="{% url track_detail track_name=track.name %}">home</a>
