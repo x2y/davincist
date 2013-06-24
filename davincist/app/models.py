@@ -1,6 +1,8 @@
+import random
 import time
 
 from datetime import datetime
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -32,11 +34,16 @@ class Track(models.Model):
   mission = models.CharField(max_length=128)
   crest = models.ImageField(upload_to='uploads', null=True)
   # field = models.ForeignKey('Field')
+  backgrounds = models.PositiveSmallIntegerField(default=True)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   @ellipsis(100)
   def __unicode__(self):
     return '%s: %s' % (self.name, self.description)
+
+  def background_url(self):
+    return '%s%s-bkg-%d.jpg' % (settings.STATIC_URL, self.name.lower(),
+                                random.randint(0, self.backgrounds - 1))
 
   class Meta:
     get_latest_by = 'created'
