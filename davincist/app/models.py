@@ -100,18 +100,18 @@ class Quest(models.Model):
   training = models.TextField()
   level = models.ForeignKey(Level, related_name='quests')
   SMALL, MEDIUM, LARGE, EXTRA_LARGE = 'S', 'M', 'L', 'X'
-  SIZES = ((SMALL, 'Small'),
-           (MEDIUM, 'Medium'),
-           (LARGE, 'Large'),
-           (EXTRA_LARGE, 'Extra-large'))
+  SIZES = {SMALL: 'Small',
+           MEDIUM: 'Medium',
+           LARGE: 'Large',
+           EXTRA_LARGE: 'Extra-large'}
   SIZE_MULTIPLIERS = {SMALL: 1, MEDIUM: 2, LARGE: 4, EXTRA_LARGE: 6}
-  size = models.CharField(max_length=1, choices=SIZES, default=SMALL)
+  size = models.CharField(max_length=1, choices=SIZES.items(), default=SMALL)
   badges = models.ManyToManyField('Badge', blank=True, related_name='quests')
   HONOR, PEER, SENIOR = 'H', 'P', 'S'
-  TYPES = ((HONOR, 'Honor'),
-           (PEER, 'Peer'),
-           (SENIOR, 'Senior'))
-  type = models.CharField(max_length=1, choices=TYPES, default=HONOR)
+  TYPES = {HONOR: 'Honor',
+           PEER: 'Peer',
+           SENIOR: 'Senior'}
+  type = models.CharField(max_length=1, choices=TYPES.items(), default=HONOR)
   max_repetitions = models.PositiveSmallIntegerField(default=1)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
@@ -141,10 +141,10 @@ class VerificationRequest(models.Model):
   text = models.TextField(blank=True)
   youtube_id = models.SlugField(max_length=11, blank=True)
   UNCHECKED, VERIFIED, NOT_VERIFIED = 'U', 'V', 'N'
-  STATUSES = ((UNCHECKED, 'Unchecked'),
-              (VERIFIED, 'Verified'),
-              (NOT_VERIFIED, 'Not verified'))
-  status = models.CharField(max_length=1, choices=STATUSES, default=UNCHECKED)
+  STATUSES = {UNCHECKED: 'Unchecked',
+              VERIFIED: 'Verified',
+              NOT_VERIFIED: 'Not verified'}
+  status = models.CharField(max_length=1, choices=STATUSES.items(), default=UNCHECKED)
   timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):
@@ -184,10 +184,10 @@ class Badge(models.Model):
   name = models.CharField(max_length=64)
   description = models.CharField(max_length=128)
   BRONZE, SILVER, GOLD = 1, 2, 3
-  GRADES = ((BRONZE, 'Bronze'),
-            (SILVER, 'Silver'),
-            (GOLD, 'Gold'))
-  grade = models.SmallIntegerField(choices=GRADES, default=BRONZE)
+  GRADES = {BRONZE: 'Bronze',
+            SILVER: 'Silver',
+            GOLD: 'Gold'}
+  grade = models.SmallIntegerField(choices=GRADES.items(), default=BRONZE)
   level = models.ForeignKey('Level', related_name='badges')
   # Known type?
   is_required = models.BooleanField(default=False)
@@ -213,10 +213,10 @@ class Badge(models.Model):
 class UserProfile(models.Model):
   user = models.OneToOneField(User, primary_key=True, related_name='profile')
   MALE, FEMALE, OTHER = 'M', 'F', 'O'
-  GENDERS = ((MALE, 'Male'),
-             (FEMALE, 'Female'),
-             (OTHER, 'Other'))
-  gender = models.CharField(max_length='1', choices=GENDERS)
+  GENDERS = {MALE: 'Male',
+             FEMALE: 'Female',
+             OTHER: 'Other'}
+  gender = models.CharField(max_length='1', choices=GENDERS.items())
   website = models.URLField(blank=True)
   birth_date = models.DateField()
   bio = models.TextField(blank=True)
