@@ -1,0 +1,67 @@
+{% extends "base_track.html" %}
+
+{% load tags %}
+
+{% block title %}{{ track.name|capfirst }} - {{ quest.name|capfirst }}{% endblock %}
+
+{% block head %}
+<script>
+  var questPk = {{ quest.pk }};
+</script>
+{% endblock %}
+
+{% block gutter_subtitle %}Quest{% endblock %}
+
+{% block content %}
+<h1>Lvl {{ quest.level.rank }} - {{ quest.name }}</h1>
+<p>
+<h2>{{ quest.description }}</h2>
+<p>
+{{ quest.type_string }}
+{% if quest.max_repetitions > 1 %} ({{ quest.max_repetitions }}x){% endif %}
+ earning you: {% for badge in quest.badges.all %}{% badge_link badge %}{% endfor %}
+<div id="training">
+  {{ quest.training|safe }}
+  {% if not quest_status %}
+    <div id="start-quest-mask">
+      <div>
+        <button id="start-quest-button">Start {{ quest.name }}!</button>
+        <div id="start-quest-error"></div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+<script>
+  $(function () {
+    {% if quest_status %}
+      
+    {% endif %}
+  });
+
+  {% if not quest_status %}
+    $('#start-quest-button').click(startQuest);
+
+    function startQuest() {
+      $('#start-quest-button').attr('disabled', true);
+
+      var data = {};
+      data.quest = questPk;
+      $.post('{% url ajax_start_quest %}', data, function (data) {
+        if (data.errors) {
+          $('#start-quest-error').text(data.errors.join());
+          return;
+        }
+        $('#start-quest-mask').remove();
+        $('#training').css('max-height', 'none');
+      }).fail(function() {
+        $('#start-quest-error').text('Server error!');
+      }).always(function() {
+        $('#start-quest-button').removeAttr('disabled');
+      });
+    }
+  {% else %}
+    $('#training').css('max-height', 'none');
+  {% endif %}
+</script>
+{% endblock %}
+

@@ -18,7 +18,7 @@ body {
 }
   
 .floating-box {
-  background-color: #FAFAFA;
+  background-color: #FFF;
   -moz-box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
   -webkit-shadow:  rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
   box-shadow:      rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
@@ -217,4 +217,46 @@ body {
 #wall-load-previous-button {
   clear: left;
   float: left;
+}
+
+#training {
+  position: relative;
+  min-height: 150px;
+  max-height: 400px;
+  overflow: hidden;
+}
+
+#start-quest-mask {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 350px;
+  text-align: center;
+
+  background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, #FFF 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,#FFF)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,#FFF 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(255,255,255,0) 0%,#FFF 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(255,255,255,0) 0%,#FFF 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,#FFF 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+}
+
+#start-quest-mask div {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+#start-quest-button {
+  display: inline-block;
+  margin-bottom: 20px;
+  height: 40px;
+  min-width: 250px;
+  font-size: 14pt;
+}
+
+#start-quest-error {
+  color: red;
 }

@@ -30,7 +30,7 @@
         <td>{{ badge.description|truncatechars:64 }}</td>
         <td>
           {% for quest in badge.quests.all %}
-            {{ quest.name }}{% if not forloop.last %},&nbsp;{% endif %}
+            {% quest_link quest %}{% if not forloop.last %},&nbsp;{% endif %}
           {% empty %}
             <i>No quest is needed to earn this badge.</i>
           {% endfor %}

@@ -1,8 +1,3 @@
 <span id={{ quest.id }} class="quest">
-  {% if add_anchor %}
-    <a href="{% url track_quests track_name=quest.level.track.name %}#{{ quest.id }}">
-      {{ quest.name }}</a>
-  {% else %}
- 	{{ quest.name }}
-  {% endif %}
+  <a href="{% url quest_detail quest.level.track.name quest.id %}">{{ quest.name }}</a>
 </span>

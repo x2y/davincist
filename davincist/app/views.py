@@ -2,6 +2,7 @@ from annoying.decorators import ajax_request, render_to
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import *
 from models import *
 from validators import *
@@ -14,7 +15,6 @@ WALL_POSTS_PER_PAGE = 15
 class Response(object):
   @classmethod
   def errors(cls, *errors):
-    print errors
     if len(errors) == 1 and hasattr(errors[0], '__iter__'):
       return {'errors': errors[0]}
     else:
@@ -86,11 +86,19 @@ def track_quests(request, track_name):
   return r.__dict__
 
 
-@render_to('quest_submit.html')
-def quest_submit(request, track_name, quest_id):
+@render_to('quest_detail.html')
+def quest_detail(request, track_name, quest_id):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
   r.quest = get_object_or_404(Quest, pk=quest_id)
+  if r.track != r.quest.level.track:
+    raise Http404
+
+  try:
+    r.quest_status = VerificationRequest.objects.get(user=request.user, quest=r.quest).status
+  except ObjectDoesNotExist:
+    pass
+
   return r.__dict__
 
 
@@ -205,4 +213,34 @@ def ajax_post_to_wall(request):
   post = WallPost(user=to, poster=request.user, text=text, is_public=is_public)
   post.save()
   r.post = post.to_dict()
+  return r.__dict__
+
+
+@ajax_request
+def ajax_start_quest(request):
+  r = Response()
+  if request.method != 'POST':
+    return Response.errors('Request must use POST; used: %s.' % request.method)
+
+  # Posting User must be logged in.
+  if not request.user.is_authenticated():
+    return Response.errors('User is not logged in.')
+
+  # Perform all the general validation.
+  errors = get_errors(request.POST, {
+      'quest': (RequiredValidator(), ModelValidator(Quest)),
+  })
+  if errors:
+    return Response.errors(errors)
+
+  quest_pk = int(request.POST['quest'])
+  if VerificationRequest.objects.filter(user=request.user, quest__pk=quest_pk).exists():
+    return Response.errors('Quest already started!')
+
+  # Record that the quest has been started.
+  verification_request = VerificationRequest(user=request.user,
+                                             status=VerificationRequest.UNSUBMITTED)
+  verification_request.quest_id = quest_pk
+  verification_request.save()
+
   return r.__dict__

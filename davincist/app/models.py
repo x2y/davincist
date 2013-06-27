@@ -121,13 +121,16 @@ class Quest(models.Model):
 
   def hours_needed(self):
     if self.level.rank > 0:
-      return (self.SIZE_MULTIPLIERS[self.size] *
+      return (Quest.SIZE_MULTIPLIERS[self.size] *
               (TIME_UNIT_MULTIPLIER * self.level.rank - TIME_UNIT_OFFSET))
     else:
       return 0.0
 
   def xp(self):
     return round(self.hours_needed() * self.level.xp_per_hours_work())
+
+  def type_string(self):
+    return '%s verified' % Quest.TYPES[self.type]
 
   class Meta:
     get_latest_by = 'created'
@@ -140,11 +143,12 @@ class VerificationRequest(models.Model):
   quest = models.ForeignKey(Quest, related_name='verification_requests')
   text = models.TextField(blank=True)
   youtube_id = models.SlugField(max_length=11, blank=True)
-  UNCHECKED, VERIFIED, NOT_VERIFIED = 'U', 'V', 'N'
-  STATUSES = {UNCHECKED: 'Unchecked',
+  UNSUBMITTED, UNCHECKED, VERIFIED, NOT_VERIFIED = 'X', 'U', 'V', 'N'
+  STATUSES = {UNSUBMITTED: 'Unsubmitted',
+              UNCHECKED: 'Unchecked',
               VERIFIED: 'Verified',
               NOT_VERIFIED: 'Not verified'}
-  status = models.CharField(max_length=1, choices=STATUSES.items(), default=UNCHECKED)
+  status = models.CharField(max_length=1, choices=STATUSES.items(), default=UNSUBMITTED)
   timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):

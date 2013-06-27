@@ -99,7 +99,7 @@
           renderWallPost(data.wall_posts[i]);
         }
         if (!data.has_next) {
-          $('#wall-load-previous-button').hide();
+          $('#wall-load-previous-button').remove();
         }
       }
     }).fail(function() {

@@ -55,7 +55,7 @@ urlpatterns = patterns('',
     url(r'^(?i)t/%s/quests/$' % TRACK_GROUP, track_quests, name='track_quests'),
     url(r'^(?i)t/%s/quests/verify/$' % TRACK_GROUP, quests_verify, name='quests_verify'),
     # url(r'^(?i)t/%s/quest/add$' % TRACK_GROUP, quest_add, name='quest_add'),
-    url(r'^(?i)t/%s/quest/%s/submit/$' % (TRACK_GROUP, QUEST_GROUP), quest_submit, name='quest_submit'),
+    url(r'^(?i)t/%s/quest/%s/$' % (TRACK_GROUP, QUEST_GROUP), quest_detail, name='quest_detail'),
     # url(r'^(?i)t/%s/quest/%s/edit$' % (TRACK_GROUP, QUEST_GROUP), quest_edit, name='quest_edit'),
     # url(r'^(?i)t/%s/quest/%s/delete$' % (TRACK_GROUP, QUEST_GROUP), quest_delete, name='quest_delete'),
 
@@ -74,4 +74,5 @@ urlpatterns = patterns('',
     # AJAX pages.
     url(r'^(?i)x/get-wall-posts/', ajax_get_wall_posts, name='ajax_get_wall_posts'),
     url(r'^(?i)x/post-to-wall/', ajax_post_to_wall, name='ajax_post_to_wall'),
+    url(r'^(?i)x/start-quest/', ajax_start_quest, name='ajax_start_quest'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
