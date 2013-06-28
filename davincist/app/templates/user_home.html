@@ -4,8 +4,9 @@
 
 {% block title %}{{ target_user.username }}'s Profile{% endblock %}
 
-{% block head_script %}
-var targetUserPk = {{ target_user.pk }};
+{% block head %}
+{{ block.super }}
+<script>var targetUserPk = {{ target_user.pk }};</script>
 {% endblock %}
 
 {% block content %}
@@ -57,76 +58,79 @@ var targetUserPk = {{ target_user.pk }};
 {% endblock %}
 
 {% block footer_script %}
-var wallPage = 0;
+{{ block.super }}
+<script>
+  var wallPage = 0;
 
-$(function () {
-  $('#wall-load-previous-button').click(loadPreviousWallPosts);
-  $('#wall-post-public-button').click(function() { postToWall(true); });
-  $('#wall-post-private-button').click(function() { postToWall(false); });
+  $(function () {
+    $('#wall-load-previous-button').click(loadPreviousWallPosts);
+    $('#wall-post-public-button').click(function() { postToWall(true); });
+    $('#wall-post-private-button').click(function() { postToWall(false); });
 
-  loadPreviousWallPosts();
-});
+    loadPreviousWallPosts();
+  });
 
-function renderWallPost(data) {
-  var $newPost = $('<div class="wall-post"></div>');
-  if (!data.is_public) {
-    $newPost.addClass('private');
+  function renderWallPost(data) {
+    var $newPost = $('<div class="wall-post"></div>');
+    if (!data.is_public) {
+      $newPost.addClass('private');
+    }
+    $newPost.append($('<span class="poster">').text(data.poster));
+    $newPost.append($('<span>').text(data.text));
+    $newPost.append($('<span class="timestamp">').text(
+        new Date(data.timestamp * 1000).toLocaleString()));
+    $newPost.appendTo($('#wall'));
   }
-  $newPost.append($('<span class="poster">').text(data.poster));
-  $newPost.append($('<span>').text(data.text));
-  $newPost.append($('<span class="timestamp">').text(
-      new Date(data.timestamp * 1000).toLocaleString()));
-  $newPost.appendTo($('#wall'));
-}
 
-function loadPreviousWallPosts() {
-  $('#wall-load-previous-button').attr('disabled', true);
+  function loadPreviousWallPosts() {
+    $('#wall-load-previous-button').attr('disabled', true);
 
-  var data = {};
-  data.target_user = targetUserPk;
-  data.page = ++wallPage;
-  $.ajax({
-    url: '{% url ajax_get_wall_posts %}',
-    data: data,
-    cache: false,
-    success: function (data) {
+    var data = {};
+    data.target_user = targetUserPk;
+    data.page = ++wallPage;
+    $.ajax({
+      url: '{% url ajax_get_wall_posts %}',
+      data: data,
+      cache: false,
+      success: function (data) {
+        if (data.errors) {
+          $('#wall-load-previous-posts-error').text(data.errors.join());
+          return;
+        }
+        for (var i = 0; i < data.wall_posts.length; ++i) {
+          renderWallPost(data.wall_posts[i]);
+        }
+        if (!data.has_next) {
+          $('#wall-load-previous-button').remove();
+        }
+      }
+    }).fail(function() {
+      $('#wall-load-previous-error').text('Server error!');
+    }).always(function() {
+      $('#wall-load-previous-button').removeAttr('disabled');
+    });
+  }
+
+  function postToWall(is_public) {
+    $('#wall-post-box :input').attr('disabled', true);
+
+    var data = {};
+    data.text = $('#wall-post-textbox').val();
+    data.to = targetUserPk;
+    data.is_public = is_public;
+    $.post('{% url ajax_post_to_wall %}', data, function (data) {
       if (data.errors) {
-        $('#wall-load-previous-posts-error').text(data.errors.join());
+        $('#wall-post-error').text(data.errors.join());
         return;
       }
-      for (var i = 0; i < data.wall_posts.length; ++i) {
-        renderWallPost(data.wall_posts[i]);
-      }
-      if (!data.has_next) {
-        $('#wall-load-previous-button').remove();
-      }
-    }
-  }).fail(function() {
-    $('#wall-load-previous-error').text('Server error!');
-  }).always(function() {
-    $('#wall-load-previous-button').removeAttr('disabled');
-  });
-}
 
-function postToWall(is_public) {
-  $('#wall-post-box :input').attr('disabled', true);
-
-  var data = {};
-  data.text = $('#wall-post-textbox').val();
-  data.to = targetUserPk;
-  data.is_public = is_public;
-  $.post('{% url ajax_post_to_wall %}', data, function (data) {
-    if (data.errors) {
-      $('#wall-post-error').text(data.errors.join());
-      return;
-    }
-
-    // TODO: Load new post into existing wall without a reload.
-    location.reload();
-  }).fail(function() {
-    $('#wall-error').text('Server error!');
-  }).always(function() {
-    $('#wall-post-box :input').removeAttr('disabled');
-  });
-}
+      // TODO: Load new post into existing wall without a reload.
+      location.reload();
+    }).fail(function() {
+      $('#wall-error').text('Server error!');
+    }).always(function() {
+      $('#wall-post-box :input').removeAttr('disabled');
+    });
+  }
+</script>
 {% endblock %}

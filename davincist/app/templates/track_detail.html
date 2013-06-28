@@ -7,6 +7,7 @@
 
 {% block head %}
 {{ block.super }}
+<script>var trackName = '{{ track.name }}';</script>
 <style>
   #nav #track-home-link {
     color: #FAFAFA;
@@ -15,10 +16,6 @@
 </style>
 {% endblock %}
 
-{% block head_script %}
-{{ block.super }}
-var trackName = '{{ track.name }}';
-{% endblock %}
 
 {% block content %}
 {{ track.description }}
@@ -80,28 +77,31 @@ var trackName = '{{ track.name }}';
 {% endblock %}
 
 {% block footer_script %}
-{% if user.is_authenticated and not user_track %}
-  $(function() {
-    $('#join-track-button').click(joinTrack);
-  });
-
-  <!-- TODO: Refactor into a common location so that it can be utilized in multiple locations. -->
-  function joinTrack() {
-    $('#join-track-button').attr('disabled', true);
-
-    var data = {};
-    data.track = trackName;
-    $.post('{% url ajax_join_track %}', data, function (data) {
-      if (data.errors) {
-        $('#join-track-error').text(data.errors.join());
-        return;
-      }
-      location.reload();
-    }).fail(function() {
-      $('#join-track-error').text('Server error!');
-    }).always(function() {
-      $('#join-track-button').removeAttr('disabled');
+{{ block.super }}
+<script>
+  {% if user.is_authenticated and not user_track %}
+    $(function() {
+      $('#join-track-button').click(joinTrack);
     });
-  }
-{% endif %}
+
+    <!-- TODO: Refactor into a common location so that it can be utilized in multiple locations. -->
+    function joinTrack() {
+      $('#join-track-button').attr('disabled', true);
+
+      var data = {};
+      data.track = trackName;
+      $.post('{% url ajax_join_track %}', data, function (data) {
+        if (data.errors) {
+          $('#join-track-error').text(data.errors.join());
+          return;
+        }
+        location.reload();
+      }).fail(function() {
+        $('#join-track-error').text('Server error!');
+      }).always(function() {
+        $('#join-track-button').removeAttr('disabled');
+      });
+    }
+  {% endif %}
+</script>
 {% endblock %}
