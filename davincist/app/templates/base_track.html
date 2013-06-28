@@ -5,7 +5,8 @@
 {% block title %}{{ track.name|capfirst }}{% endblock %}
 {% block gutter_title %}{{ track.name|capfirst }}{% endblock %}
 
-{% block base_head %}
+{% block head %}
+{{ block.super }}
 <style>
   body {
     background-image: url('{{ track.background_url }}');
