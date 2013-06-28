@@ -271,6 +271,7 @@ class WallPost(models.Model):
 
   def to_dict(self):
     ret = {
+        'pk': self.pk,
         'user': self.user.username,
         'poster': self.poster.username,
         'text': self.text,

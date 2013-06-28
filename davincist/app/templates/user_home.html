@@ -61,6 +61,7 @@
 {{ block.super }}
 <script>
   var wallPage = 0;
+  var earliestWallPostPk = null;
 
   $(function () {
     $('#wall-load-previous-button').click(loadPreviousWallPosts);
@@ -79,7 +80,7 @@
     $newPost.append($('<span>').text(data.text));
     $newPost.append($('<span class="timestamp">').text(
         new Date(data.timestamp * 1000).toLocaleString()));
-    $newPost.appendTo($('#wall'));
+    return $newPost;
   }
 
   function loadPreviousWallPosts() {
@@ -87,7 +88,9 @@
 
     var data = {};
     data.target_user = targetUserPk;
-    data.page = ++wallPage;
+    if (earliestWallPostPk) {
+      data.since_pk = earliestWallPostPk;
+    }
     $.ajax({
       url: '{% url ajax_get_wall_posts %}',
       data: data,
@@ -98,7 +101,9 @@
           return;
         }
         for (var i = 0; i < data.wall_posts.length; ++i) {
-          renderWallPost(data.wall_posts[i]);
+          var post = data.wall_posts[i];
+          renderWallPost(post).appendTo($('#wall'));
+          earliestWallPostPk = post.pk;
         }
         if (!data.has_next) {
           $('#wall-load-previous-button').remove();
@@ -124,8 +129,8 @@
         return;
       }
 
-      // TODO: Load new post into existing wall without a reload.
-      location.reload();
+      renderWallPost(data.post).prependTo($('#wall'));
+      $('#wall-post-textbox').val('');
     }).fail(function() {
       $('#wall-error').text('Server error!');
     }).always(function() {

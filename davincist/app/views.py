@@ -1,6 +1,5 @@
 from annoying.decorators import ajax_request, render_to
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import *
@@ -163,29 +162,31 @@ def ajax_get_wall_posts(request):
 
   errors = get_errors(request.GET, {
       'target_user': (RequiredValidator(), ModelValidator(User, int)),
-      'page': (RequiredValidator(), IntegerValidator()),
+      'since_id': (ModelValidator(WallPost, int)),
   })
   if errors:
     return Response.errors(errors)
 
   target_user_pk = int(request.GET['target_user'])
-  page_number = int(request.GET['page'])
 
   # Get all wall posts visible to the specified user (paginated).
-  wall_posts = WallPost.objects.filter(Q(is_public=True) |
-                                       Q(user=request.user) |
-                                       Q(poster=request.user),
-                                       user__pk=target_user_pk).order_by('-timestamp')
-  paginator = Paginator(wall_posts, WALL_POSTS_PER_PAGE)
+  if 'since_pk' in request.GET:
+    since_pk = int(request.GET['since_pk'])
+    wall_posts = WallPost.objects.filter(
+        Q(is_public=True) | Q(user=request.user) | Q(poster=request.user),
+        user__pk=target_user_pk,
+        pk__lt=since_pk).order_by('-timestamp').all()[:WALL_POSTS_PER_PAGE + 1]
+  else:
+    # Just get the latest wall posts if no since_pk field is specified.
+    wall_posts = WallPost.objects.filter(
+        Q(is_public=True) | Q(user=request.user) | Q(poster=request.user),
+        user__pk=target_user_pk).order_by('-timestamp').all()[:WALL_POSTS_PER_PAGE + 1]
 
   r.wall_posts = []
-  try:
-    page = paginator.page(page_number)
-    for wall_post in page:
-      r.wall_posts.append(wall_post.to_dict())
-    r.has_next = page.has_next()
-  except EmptyPage:
-    r.has_next = False
+  for i in xrange(len(wall_posts) - 1):
+    r.wall_posts.append(wall_posts[i].to_dict())
+  r.has_next = len(wall_posts) > WALL_POSTS_PER_PAGE
+
   return r.__dict__
 
 
