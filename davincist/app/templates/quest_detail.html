@@ -34,11 +34,15 @@ var questPk = {{ quest.pk }};
 {% endblock %}
 
 {% block footer_script %}
-{% if not quest_status %}
-  $(function() {
+$(function() {
+  {% if not quest_status %}
     $('#start-quest-button').click(startQuest);
-  });
+  {% else %}
+    $('#training').css('max-height', 'none');
+  {% endif %}
+});
 
+{% if not quest_status %}
   function startQuest() {
     $('#start-quest-button').attr('disabled', true);
 
@@ -57,7 +61,5 @@ var questPk = {{ quest.pk }};
       $('#start-quest-button').removeAttr('disabled');
     });
   }
-{% else %}
-  $('#training').css('max-height', 'none');
 {% endif %}
 {% endblock %}
