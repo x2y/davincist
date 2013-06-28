@@ -98,10 +98,11 @@ def quest_detail(request, track_name, quest_id):
   if r.track != r.quest.level.track:
     raise Http404
 
-  try:
-    r.quest_status = VerificationRequest.objects.get(user=request.user, quest=r.quest).status
-  except ObjectDoesNotExist:
-    pass
+  if request.user.is_authenticated():
+    try:
+      r.quest_status = VerificationRequest.objects.get(user=request.user, quest=r.quest).status
+    except ObjectDoesNotExist:
+      pass
 
   return r.__dict__
 
