@@ -168,13 +168,14 @@ def ajax_get_wall_posts(request):
   if errors:
     return Response.errors(errors)
 
-  target_user = User.objects.get(pk=int(request.GET['target_user']))
+  target_user_pk = int(request.GET['target_user'])
   page_number = int(request.GET['page'])
 
   # Get all wall posts visible to the specified user (paginated).
-  wall_posts = target_user.wall_posts.filter(Q(is_public=True) |
-                                             Q(user=request.user) |
-                                             Q(poster=request.user)).order_by('-timestamp')
+  wall_posts = WallPost.objects.filter(Q(is_public=True) |
+                                       Q(user=request.user) |
+                                       Q(poster=request.user),
+                                       user__pk=target_user_pk).order_by('-timestamp')
   paginator = Paginator(wall_posts, WALL_POSTS_PER_PAGE)
 
   r.wall_posts = []
@@ -209,13 +210,14 @@ def ajax_post_to_wall(request):
 
   # Extract the relevant data.
   text = request.POST['text'].strip()
-  to = User.objects.get(pk=int(request.POST['to']))
+  to_pk = int(request.POST['to'])
   is_public = request.POST['is_public'] == 'true'
 
   # TODO: Support quest verification linking.
 
   # Create and save the new WallPost.
-  post = WallPost(user=to, poster=request.user, text=text, is_public=is_public)
+  post = WallPost(poster=request.user, text=text, is_public=is_public)
+  post.user_id = to_pk
   post.save()
   r.post = post.to_dict()
   return r.__dict__
