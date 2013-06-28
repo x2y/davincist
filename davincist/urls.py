@@ -75,4 +75,5 @@ urlpatterns = patterns('',
     url(r'^(?i)x/get-wall-posts/', ajax_get_wall_posts, name='ajax_get_wall_posts'),
     url(r'^(?i)x/post-to-wall/', ajax_post_to_wall, name='ajax_post_to_wall'),
     url(r'^(?i)x/start-quest/', ajax_start_quest, name='ajax_start_quest'),
+    url(r'^(?i)x/join-track/', ajax_join_track, name='ajax_join_track'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

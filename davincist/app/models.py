@@ -236,10 +236,10 @@ class UserProfile(models.Model):
 class UserTrack(models.Model):
   user = models.ForeignKey(User, related_name='user_tracks')
   track = models.ForeignKey(Track, related_name='user_tracks')
-  mission = models.CharField(max_length=128)
+  mission = models.CharField(max_length=128, default='')
   level = models.ForeignKey('Level', related_name='user_tracks')
   badges = models.ManyToManyField('Badge', blank=True, related_name='user_tracks')
-  xp = models.PositiveIntegerField()
+  xp = models.PositiveIntegerField(default=0)
 
   def __unicode__(self):
     return '%s/%s' % (self.user, self.track.name)

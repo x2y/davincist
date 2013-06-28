@@ -9,6 +9,7 @@
   <script src="{% static 'ajax.js' %}"></script>
   {% block base_head %}{% endblock %}
   {% block head %}{% endblock %}
+  <script>{% block head_script %}{% endblock %}</script>
 </head>
 <body>
   <div id="gutter" class="floating-text">
@@ -26,5 +27,6 @@
   <div id="nav" class="floating-text">{% block navigation %}{% endblock %}</div>
   <div id="content" class="floating-box">{% block content %}{% endblock %}</div>
   <div>{% block footer %}{% endblock %}</div>
+  <script>{% block footer_script %}{% endblock %}</script>
 </body>
 </html>

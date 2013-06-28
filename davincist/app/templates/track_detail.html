@@ -14,11 +14,23 @@
 </style>
 {% endblock %}
 
+{% block head_script %}
+{{ block.super }}
+var trackName = '{{ track.name }}';
+{% endblock %}
+
 {% block content %}
 {{ track.description }}
 <p>{{ track.mission }}
 <p><img src="/media/{{ track.crest }}" width="100px" height="100px"></img>
-<p>{{ track.created }}</p>
+
+{% if user.is_authenticated and not user_track %}
+  <p>
+    <button id="join-track-button">Join {{ track.name }}!</button>
+    <div id="join-track-error"></div>
+  </p>
+{% endif %}
+
 <h2> Announcements </h2>
 <p> Announcements go here </p>
 <h3> Badges </h3>
@@ -64,4 +76,31 @@
 		{% endfor %}
 	{% endfor %}
 {% endfor %}
+{% endblock %}
+
+{% block footer_script %}
+{% if user.is_authenticated and not user_track %}
+  $(function() {
+    $('#join-track-button').click(joinTrack);
+  });
+
+  <!-- TODO: Refactor into a common location so that it can be utilized in multiple locations. -->
+  function joinTrack() {
+    $('#join-track-button').attr('disabled', true);
+
+    var data = {};
+    data.track = trackName;
+    $.post('{% url ajax_join_track %}', data, function (data) {
+      if (data.errors) {
+        $('#join-track-error').text(data.errors.join());
+        return;
+      }
+      location.reload();
+    }).fail(function() {
+      $('#join-track-error').text('Server error!');
+    }).always(function() {
+      $('#join-track-button').removeAttr('disabled');
+    });
+  }
+{% endif %}
 {% endblock %}

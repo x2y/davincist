@@ -38,6 +38,11 @@ def about(request):
 def track_detail(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
+  if request.user.is_authenticated():
+    try:
+      r.user_track = request.user.user_tracks.get(track__name=track_name)
+    except ObjectDoesNotExist:
+      pass
   return r.__dict__
 
 
@@ -157,7 +162,7 @@ def ajax_get_wall_posts(request):
     return Response.errors('Request must use GET; used: %s.' % request.method)
 
   errors = get_errors(request.GET, {
-      'target_user': (RequiredValidator(), ModelValidator(User)),
+      'target_user': (RequiredValidator(), ModelValidator(User, int)),
       'page': (RequiredValidator(), IntegerValidator()),
   })
   if errors:
@@ -196,7 +201,7 @@ def ajax_post_to_wall(request):
   # Perform all the general validation.
   errors = get_errors(request.POST, {
       'text': (NonEmptyValidator(), StrippedLengthValidator(WallPost.MAX_TEXT_LENGTH)),
-      'to': (RequiredValidator(), ModelValidator(User)),
+      'to': (RequiredValidator(), ModelValidator(User, int)),
       'is_public': (RequiredValidator(), BooleanValidator()),
   })
   if errors:
@@ -228,19 +233,52 @@ def ajax_start_quest(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'quest': (RequiredValidator(), ModelValidator(Quest)),
+      'quest': (RequiredValidator(), ModelValidator(Quest, int)),
   })
   if errors:
     return Response.errors(errors)
 
   quest_pk = int(request.POST['quest'])
   if VerificationRequest.objects.filter(user=request.user, quest__pk=quest_pk).exists():
-    return Response.errors('Quest already started!')
+    return Response.errors('Quest already started.')
 
   # Record that the quest has been started.
   verification_request = VerificationRequest(user=request.user,
                                              status=VerificationRequest.UNSUBMITTED)
   verification_request.quest_id = quest_pk
   verification_request.save()
+
+  return r.__dict__
+
+
+@ajax_request
+def ajax_join_track(request):
+  r = Response()
+  if request.method != 'POST':
+    return Response.errors('Request must use POST; used: %s.' % request.method)
+
+  # Posting User must be logged in.
+  if not request.user.is_authenticated():
+    return Response.errors('User is not logged in.')
+
+  # Perform all the general validation.
+  errors = get_errors(request.POST, {
+      'track': (RequiredValidator(), ModelValidator(Track, str)),
+  })
+  if errors:
+    return Response.errors(errors)
+
+  track_name = request.POST['track']
+  if UserTrack.objects.filter(user=request.user, track__name=track_name).exists():
+    return Response.errors('Track already joined.')
+
+  # Create a new UserTrack.
+  user_track = UserTrack(user=request.user, mission='')
+  user_track.track_id = track_name
+  try:
+    user_track.level = Level.objects.get(track__name=track_name, rank=0)
+  except ObjectDoesNotExist:
+    return Response.errors('Track has no level 0.')
+  user_track.save()
 
   return r.__dict__

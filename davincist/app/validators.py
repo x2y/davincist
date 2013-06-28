@@ -53,17 +53,20 @@ class BooleanValidator(object):
 
 
 class ModelValidator(object):
-  def __init__(self, model):
+  def __init__(self, model, pk_type):
     self.model_ = model
     self.model_name_ = model._meta.object_name
+    self.pk_type_ = pk_type
 
   def error(self, data, field):
     if field not in data:
       return None
-    if not data[field].isdigit():
-      return 'Invalid %s model field: %s.' % (self.model_name_, field)
+
     try:
-      self.model_.objects.get(pk=int(data[field]))
+      pk = self.pk_type_(data[field])
     except:
-      return 'No %s model %s for field: %s.' % (self.model_name_, data[field], field)
+      return 'Invalid %s model field: %s.' % (self.model_name_, field)
+
+    if self.model_.objects.filter(pk=pk).count() != 1:
+      return 'No unique %s model %s for field: %s.' % (self.model_name_, data[field], field)
     return None

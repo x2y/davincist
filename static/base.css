@@ -260,3 +260,13 @@ body {
 #start-quest-error {
   color: red;
 }
+
+#join-track-button {
+  height: 40px;
+  min-width: 250px;
+  font-size: 14pt;
+}
+
+#join-track-error {
+  color: red;
+}
