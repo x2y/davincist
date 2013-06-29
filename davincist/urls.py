@@ -42,7 +42,6 @@ urlpatterns = patterns('',
     url(r'^(?i)t/all$', track_list, name='track_list'),
     url(r'^(?i)t/%s/$' % TRACK_GROUP, track_detail, name='track_detail'),
     url(r'^(?i)t/%s/users/$' % TRACK_GROUP, track_users, name='track_users'),
-    url(r'^(?i)t/%s/join/$' % TRACK_GROUP, track_join, name='track_join'),
     # url(r'^(?i)t/%s/leave$' % TRACK_GROUP, track_leave, name='track_leave'),
     # url(r'^(?i)t/%s/gallery$' % TRACK_GROUP, track_gallery, name='track_gallery'),
 

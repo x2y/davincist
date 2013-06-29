@@ -59,13 +59,6 @@ def track_users(request, track_name):
   return r.__dict__
 
 
-@render_to('track_join.html')
-def track_join(request, track_name):
-  r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
-  return r.__dict__
-
-
 @render_to('track_levels.html')
 def track_levels(request, track_name):
   r = Response()
