@@ -52,7 +52,6 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-
 MEDIA_ROOT = F('../media/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -103,9 +102,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
-
-ROOT_URLCONF = 'davincist.urls'
-
 
 ROOT_URLCONF = 'davincist.urls'
 
