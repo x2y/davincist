@@ -10,21 +10,33 @@
   {% block head %}{% endblock %}
 </head>
 <body>
+  <div id="header">
+    <span id="title">{% block gutter_title %}Title{% endblock %}</span>
+    <span id="subtitle">{% block gutter_subtitle %}Subtitle{% endblock %}</span>
+  </div>
   <div id="gutter" class="floating-text">
-    <div class="gutter-title">{% block gutter_title %}Title{% endblock %}</div>
-    <div class="gutter-title subtitle">{% block gutter_subtitle %}Subtitle{% endblock %}</div>
+    <div id="nav" class="floating-text">{% block navigation %}{% endblock %}</div>
     <div id="gutter-box" class="floating-text">
       {% if user.is_authenticated %}
         {{ user.username }}
       {% else %}
         <a href="{% url socialauth_begin 'facebook' %}">Log in with Facebook</a>
-      {% endif %}<br>
+      {% endif %}
       {% block track_info %}Track Info{% endblock %}
     </div>
   </div>
-  <div id="nav" class="floating-text">{% block navigation %}{% endblock %}</div>
   <div id="content" class="floating-box">{% block content %}{% endblock %}</div>
   <div>{% block footer %}{% endblock %}</div>
+  <script>
+    $(function() {
+      var MIN_NAV_TOP_PX = 25;
+      $(document).scroll(function(e) {
+        var top = $(document).scrollTop();
+        $('#nav').css('margin-top', Math.max(MIN_NAV_TOP_PX, 150 - top) + 'px');
+      });
+      $(document).scroll();
+    });
+  </script>
   {% block footer_script %}{% endblock %}
 </body>
 </html>

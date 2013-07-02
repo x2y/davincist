@@ -20,6 +20,15 @@ class Response(object):
       return {'errors': errors}
 
 
+def get_user_track(request, track_name):
+  if request.user.is_authenticated():
+    try:
+      return request.user.user_tracks.get(track__name=track_name)
+    except ObjectDoesNotExist:
+      pass
+  return None
+
+
 @render_to('home.html')
 def home(request):
   r = Response()
@@ -33,18 +42,6 @@ def about(request):
   return r.__dict__
 
 
-@render_to('track_detail.html')
-def track_detail(request, track_name):
-  r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
-  if request.user.is_authenticated():
-    try:
-      r.user_track = request.user.user_tracks.get(track__name=track_name)
-    except ObjectDoesNotExist:
-      pass
-  return r.__dict__
-
-
 @render_to('track_list.html')
 def track_list(request):
   r = Response()
@@ -52,10 +49,19 @@ def track_list(request):
   return r.__dict__
 
 
+@render_to('track_detail.html')
+def track_detail(request, track_name):
+  r = Response()
+  r.track = get_object_or_404(Track, pk__iexact=track_name)
+  r.user_track = get_user_track(request, track_name)
+  return r.__dict__
+
+
 @render_to('track_users.html')
 def track_users(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
+  r.user_track = get_user_track(request, track_name)
   return r.__dict__
 
 
@@ -63,11 +69,7 @@ def track_users(request, track_name):
 def track_levels(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
-  if request.user.is_authenticated():
-    try:
-      r.user_track = request.user.user_tracks.get(track__name=track_name)
-    except ObjectDoesNotExist:
-      pass
+  r.user_track = get_user_track(request, track_name)
   return r.__dict__
 
 
@@ -75,11 +77,15 @@ def track_levels(request, track_name):
 def track_quests(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
-  if request.user.is_authenticated():
-    try:
-      r.user_track = request.user.user_tracks.get(track__name=track_name)
-    except ObjectDoesNotExist:
-      pass
+  r.user_track = get_user_track(request, track_name)
+  return r.__dict__
+
+
+@render_to('track_badges.html')
+def track_badges(request, track_name):
+  r = Response()
+  r.track = get_object_or_404(Track, pk__iexact=track_name)
+  r.user_track = get_user_track(request, track_name)
   return r.__dict__
 
 
@@ -102,13 +108,6 @@ def quest_detail(request, track_name, quest_id):
 
 @render_to('quests_verify.html')
 def quests_verify(request, track_name):
-  r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
-  return r.__dict__
-
-
-@render_to('track_badges.html')
-def track_badges(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
   return r.__dict__
