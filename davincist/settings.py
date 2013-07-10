@@ -3,7 +3,6 @@
 import os.path
 
 import django.conf.global_settings as global_settings
-from django.template.defaultfilters import slugify
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
