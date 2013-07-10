@@ -1,0 +1,17 @@
+{% extends "base_user.html" %}
+
+{% load tags %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+<form action="" method="post">
+  {% csrf_token %}
+  <p>
+    <label for="username">Username</label>
+    <input type="text" name="username" value=""/>
+  </p>
+  <button type="submit">Submit</button>
+  <input type="submit" value="Submit"/>
+</form>
+{% endblock %}

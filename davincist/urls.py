@@ -1,4 +1,5 @@
 from app.views import *
+from app.social_auth_pipeline_views import *
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
@@ -75,4 +76,11 @@ urlpatterns = patterns('',
     url(r'^(?i)x/post-to-wall/', ajax_post_to_wall, name='ajax_post_to_wall'),
     url(r'^(?i)x/start-quest/', ajax_start_quest, name='ajax_start_quest'),
     url(r'^(?i)x/join-track/', ajax_join_track, name='ajax_join_track'),
+
+    
+    url(r'^form/$', form, name='form'),
+    url(r'^form2/$', form2, name='form2'),
+    url(r'^close_login_popup/$', close_login_popup, name='login_popup_close'),
+
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
