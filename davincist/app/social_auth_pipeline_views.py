@@ -10,6 +10,13 @@ from social_auth import __version__ as version
 from social_auth.utils import setting
 
 
+def login_error(request):
+  messages = get_messages(request)
+  return render_to_response('login_error.html', {'version': version,
+                                                 'messages': messages},
+                            RequestContext(request))
+
+
 def form(request):
   if request.method == 'POST' and request.POST.get('username'):
     name = setting('SOCIAL_AUTH_PARTIAL_PIPELINE_KEY', 'partial_pipeline')
