@@ -33,8 +33,7 @@ class Track(models.Model):
   description = models.TextField()
   mission = models.CharField(max_length=128)
   crest = models.ImageField(upload_to='uploads', null=True)
-  # field = models.ForeignKey('Field')
-  backgrounds = models.PositiveSmallIntegerField(default=True)
+  backgrounds = models.PositiveSmallIntegerField(default=1)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   @ellipsis(100)
@@ -94,53 +93,62 @@ class Level(models.Model):
     unique_together = (('rank', 'track'), ('name', 'track'))
 
 
-class Quest(models.Model):
-  name = models.CharField(max_length=128)
+class Requirement(models.Model):
+  level = models.ForeignKey(Level, related_name='requirements')
+  order = models.FloatField()
+
+  @ellipsis(100)
+  def __unicode__(self):
+    return '%s (Lvl. %d): %s' % (self.level.track.name, self.level.rank,
+                                 ', '.join(badge.name for badge in self.badges.all()))
+
+  class Meta:
+    ordering = ['level__rank', 'order']
+    unique_together = ('level', 'order')
+
+
+class Badge(models.Model):
+  requirement = models.ForeignKey(Requirement, related_name='badges')
+  name = models.CharField(max_length=64)
   description = models.CharField(max_length=128)
   training = models.TextField()
-  level = models.ForeignKey(Level, related_name='quests')
-  SMALL, MEDIUM, LARGE, EXTRA_LARGE = 'S', 'M', 'L', 'X'
-  SIZES = {SMALL: 'Small',
-           MEDIUM: 'Medium',
-           LARGE: 'Large',
-           EXTRA_LARGE: 'Extra-large'}
-  SIZE_MULTIPLIERS = {SMALL: 1, MEDIUM: 2, LARGE: 4, EXTRA_LARGE: 6}
-  size = models.CharField(max_length=1, choices=SIZES.items(), default=SMALL)
-  badges = models.ManyToManyField('Badge', blank=True, related_name='quests')
-  HONOR, PEER, SENIOR = 'H', 'P', 'S'
-  TYPES = {HONOR: 'Honor',
-           PEER: 'Peer',
-           SENIOR: 'Senior'}
-  type = models.CharField(max_length=1, choices=TYPES.items(), default=HONOR)
-  max_repetitions = models.PositiveSmallIntegerField(default=1)
+  BRONZE, SILVER, GOLD, DIAMOND = 1, 2, 4, 6
+  GRADES = {BRONZE: 'Bronze',
+            SILVER: 'Silver',
+            GOLD: 'Gold',
+            DIAMOND: 'Diamond'}
+  grade = models.SmallIntegerField(choices=GRADES.items(), default=BRONZE)
+  requires_verification = models.BooleanField(default=False)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   @ellipsis(100)
   def __unicode__(self):
-    return '(%s) %s: %s' % (self.level.track.name, self.name, self.description)
+    return '(%s/%s) %s: %s' % (self.grade, self.requirement.level.track.name, self.name,
+                               self.description)
 
   def hours_needed(self):
-    if self.level.rank > 0:
-      return (Quest.SIZE_MULTIPLIERS[self.size] *
-              (TIME_UNIT_MULTIPLIER * self.level.rank - TIME_UNIT_OFFSET))
+    if self.requirement.level.rank > 0:
+      return self.grade * (TIME_UNIT_MULTIPLIER * self.requirement.level.rank - TIME_UNIT_OFFSET)
     else:
       return 0.0
 
   def xp(self):
-    return round(self.hours_needed() * self.level.xp_per_hours_work())
+    return round(self.hours_needed() * self.requirement.level.xp_per_hours_work())
 
-  def type_string(self):
-    return '%s verified' % Quest.TYPES[self.type]
+  def user_count(self):
+    return self.user_tracks.count()
+
+  def track_name(self):
+    return self.level.track.name
 
   class Meta:
     get_latest_by = 'created'
-    ordering = ['level', 'name']
-    unique_together = ('name', 'level')
+    ordering = ['-requirement__level__rank', 'grade', 'name']
 
 
 class VerificationRequest(models.Model):
   user = models.ForeignKey(User, related_name='verification_requests')
-  quest = models.ForeignKey(Quest, related_name='verification_requests')
+  badge = models.ForeignKey(Badge, related_name='verification_requests')
   text = models.TextField(blank=True)
   youtube_id = models.SlugField(max_length=11, blank=True)
   UNSUBMITTED, UNCHECKED, VERIFIED, NOT_VERIFIED = 'X', 'U', 'V', 'N'
@@ -152,19 +160,19 @@ class VerificationRequest(models.Model):
   timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):
-    return '%s for %s - %s' % (self.quest.name, self.user.username, self.status)
+    return '%s for %s - %s' % (self.badge.name, self.user.username, self.status)
 
   def to_dict(self):
     return {
         'pk': self.pk,
         'user': self.user.username,
-        'quest': self.quest.name,
+        'badge': self.badge.name,
     }
 
   class Meta:
     get_latest_by = 'time'
-    ordering = ['status', 'quest', 'user']
-    unique_together = ('user', 'quest')
+    ordering = ['status', 'badge', 'user']
+    unique_together = ('user', 'badge')
 
 
 class Verification(models.Model):
@@ -174,7 +182,7 @@ class Verification(models.Model):
   timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):
-    return '%s for %s - %sverified by %s' % (self.request.quest.name, self.request.user.username,
+    return '%s for %s - %sverified by %s' % (self.request.badge.name, self.request.user.username,
                                              '' if self.is_positive else 'not ',
                                              self.verifier.username)
 
@@ -184,36 +192,6 @@ class Verification(models.Model):
     unique_together = ('request', 'verifier')
 
 
-class Badge(models.Model):
-  name = models.CharField(max_length=64)
-  description = models.CharField(max_length=128)
-  BRONZE, SILVER, GOLD = 1, 2, 3
-  GRADES = {BRONZE: 'Bronze',
-            SILVER: 'Silver',
-            GOLD: 'Gold'}
-  grade = models.SmallIntegerField(choices=GRADES.items(), default=BRONZE)
-  level = models.ForeignKey('Level', related_name='badges')
-  # Known type?
-  is_required = models.BooleanField(default=False)
-  is_public = models.BooleanField(default=True)
-  created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
-
-  @ellipsis(100)
-  def __unicode__(self):
-    return '(%s/%s) %s: %s' % (self.grade, self.level.track.name, self.name, self.description)
-
-  def user_count(self):
-    return self.user_tracks.count()
-
-  def track_name(self):
-    return self.level.track.name
-
-  class Meta:
-    get_latest_by = 'created'
-    ordering = ['level', '-is_required', 'name', 'grade']
-    unique_together = ('name', 'grade', 'level')
-
-
 class UserProfile(models.Model):
   user = models.OneToOneField(User, primary_key=True, related_name='profile')
   MALE, FEMALE, OTHER = 'M', 'F', 'O'
@@ -221,10 +199,7 @@ class UserProfile(models.Model):
              FEMALE: 'Female',
              OTHER: 'Other'}
   gender = models.CharField(max_length='1', choices=GENDERS.items())
-  website = models.URLField(blank=True)
-  birth_date = models.DateField()
-  bio = models.TextField(blank=True)
-  # profile_image = models.ImageField(upload_to='uploads', null=True)
+  profile_image = models.ImageField(upload_to='uploads', null=True)
 
   def xp(self):
     return sum(user_track.xp for user_track in self.user.user_tracks.all())
@@ -261,7 +236,8 @@ class WallPost(models.Model):
   MAX_TEXT_LENGTH = 512
   text = models.CharField(max_length=MAX_TEXT_LENGTH)
   is_public = models.BooleanField(default=True)
-  verification_request = models.ForeignKey(VerificationRequest, related_name='wall_posts', blank=True, null=True)
+  verification_request = models.ForeignKey(VerificationRequest, related_name='wall_posts',
+                                           blank=True, null=True)
   timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   @ellipsis(100)
@@ -285,69 +261,3 @@ class WallPost(models.Model):
   class Meta:
     get_latest_by = 'timestamp'
     ordering = ['user', '-timestamp']
-
-
-# class LevelEvent(models.Model):
-#  user = models.ForeignKey('User')
-#  level = models.ForeignKey('Level')
-#  timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
-#
-#  def __unicode__(self):
-#    return '%s to %s on %s' % (self.user.handle, str(self.level), str(self.timestamp))
-#
-#  class Meta:
-#    ordering = ['user', 'timestamp']
-#    get_latest_by = 'timestamp'
-#
-#
-# class QuestEvent(models.Model):
-#  user = models.ForeignKey('User')
-#  quest = models.ForeignKey('Quest')
-#  timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
-#
-#  def __unicode__(self):
-#    return '%s completed %s on %s' % (self.user.handle, str(self.quest), str(self.timestamp))
-#
-#  class Meta:
-#    ordering = ['user', 'timestamp']
-#    get_latest_by = 'timestamp'
-#
-#
-# class BadgeEvent(models.Model):
-#  user = models.ForeignKey('User')
-#  badge = models.ForeignKey('Badge')
-#  timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
-#
-#  def __unicode__(self):
-#    return '%s received %s on %s' % (self.user.handle, str(self.badge), str(self.timestamp))
-#
-#  class Meta:
-#    ordering = ['user', 'timestamp']
-#    get_latest_by = 'timestamp'
-#
-#
-# class XpEvent(models.Model):
-#  user = models.ForeignKey('User')
-#  path = models.ForeignKey('Path')
-#  xp = models.PositiveIntegerField()
-#  timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
-#
-#  def __unicode__(self):
-#    return '%s received %d XP in %s on %s' % (self.user.handle, self.xp, self.path.name,
-#                                              str(self.timestamp))
-#
-#  class Meta:
-#    ordering = ['user', 'path', 'timestamp']
-#    get_latest_by = 'timestamp'
-
-
-# Chat
-# Forum
-# Gallery
-# Moderation
-# Flagging
-# 1:1 Mail
-# Achievements?
-# Stats
-# Meta
-# Teams
