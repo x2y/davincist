@@ -23,21 +23,13 @@
   <li>
     {% level_link level %}: {{ level.name }}.  {{ level.description|truncatechars:100 }}<br>
     <ul>
-    {% for badge in level.badges.all %}
+    {% for requirement in level.requirements.all %}
       <li>
-        {% badge_link badge %}<br>
-        {{ badge.description|truncatechars:100 }}<br>
-        Quests required to get this badge:
-        <ul>
-        {% for quest in badge.quests.all %}
-          <li>{% quest_link quest %}: {{ quest.description|truncatechars:100 }}
-        {% empty %}
-          <li>You don't need to do anything to earn this badge.    
+        {% for badge in requirement.badges.all %}
+          {% badge_link badge %}
+          {% if not forloop.last %} or {% endif %}
         {% endfor %}
-        </ul>
       </li>
-    {% empty %}
-      <li>All you need to do is sign up for {% track_link track %}!
     {% endfor %}
       <li>Top DaVincists at this level:
         {% for user_track in level.top_10_user_tracks|slice:":3" %}

@@ -20,19 +20,17 @@
 {% comment %}<img src="{{ target_user.profile.profile_image }}" height=200 width=200>{% endcomment %}
 --PROFILE PICTURE HERE--<br>
 {{ target_user.username }} Overall XP: {{ target_user.profile.xp }}<br>
-{{ target_user.username }}'s Biography: {% if target_user.profile.bio %}{{ target_user.profile.bio }}{% else %}No biography set yet.{% endif %}<br>
-{% if target_user.profile.website %}Website: {{ target_user.profile.website }}<br>{% endif %}
 <br>
-{{ target_user.username }} is a member of the following tracks:<br><br>
+{{ target_user.username }} is a member of the following tracks:<br>
 {% for user_track in target_user.user_tracks.all %}
   {% track_link user_track.track %}<br>
   {% if user_track.mission %}Her/His/Its Mission: {{ user_track.mission }}<br>{% endif %}
   {{ user_track.track.name }} Level: {{ user_track.level.rank }}: {{ user_track.level.name }} ({{ user_track.xp }} XP)<br>
   Top badges: 
   {% for top_badge in user_track.top_badges %}
-    {% badge_link top_badge add_anchor=1 %}{% if not forloop.last %},&nbsp;{% endif %}
+    {% badge_link top_badge %}{% if not forloop.last %},&nbsp;{% endif %}
   {% empty %}
-    No badges acquired in this level yet.
+    No badges acquired in this track yet.
   {% endfor %}
   <br><br>  
 {% empty %}
@@ -60,7 +58,6 @@
 {% block footer_script %}
 {{ block.super }}
 <script>
-  var wallPage = 0;
   var earliestWallPostPk = null;
 
   $(function () {

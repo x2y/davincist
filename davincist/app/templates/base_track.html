@@ -19,7 +19,7 @@
     <div id="track-name">{{ user_track.level.name }}</div>
     <!-- Mock progress bars. -->
     <div id="badge-container">
-      <span class="medal large grade-3"></span><span class="medal large grade-3"></span><span class="medal large disabled grade-3"></span><span class="medal large disabled grade-3"></span>
+      <span class="medal large grade-4"></span><span class="medal large grade-4"></span><span class="medal large disabled grade-4"></span><span class="medal large disabled grade-4"></span>
       <span class="medal large grade-2"></span><span class="medal large grade-2"></span><span class="medal large grade-2"></span><span class="medal large grade-2"></span><span class="medal large disabled grade-2"></span><span class="medal large disabled grade-2"></span>
       <span class="medal large grade-1"></span><span class="medal large grade-1"></span><span class="medal large grade-1"></span><span class="medal large grade-1"></span><span class="medal large disabled grade-1"></span><span class="medal large disabled grade-1"></span>
     </div>
@@ -37,7 +37,6 @@
   <li><a id="track-home-link" href="{% url track_detail track_name=track.name %}">home</a>
   <li><a id="track-users-link" href="{% url track_users track_name=track.name %}">users</a>
   <li><a id="track-levels-link" href="{% url track_levels track_name=track.name %}">levels</a>
-  <li><a id="track-quests-link" href="{% url track_quests track_name=track.name %}">quests</a>
   <li><a id="track-badges-link" href="{% url track_badges track_name=track.name %}">badges</a>
   <li><a id="track-verify-link" href="{% url quests_verify track_name=track.name %}">verify</a>
 </ul>

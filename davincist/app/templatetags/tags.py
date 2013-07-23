@@ -5,8 +5,8 @@ register = template.Library()
 
 
 @register.inclusion_tag('badge_link_tag.html')
-def badge_link(badge, add_anchor=True):
-  return {'badge': badge, 'add_anchor': add_anchor}
+def badge_link(badge):
+  return {'badge': badge}
 
 
 @register.inclusion_tag('level_link_tag.html')
@@ -26,11 +26,6 @@ def crest_link(crest):
 #  else:
 #    return {'crest': 'nocrest'}
   return {'crest': crest}
-
-
-@register.inclusion_tag('quest_link_tag.html')
-def quest_link(quest):
-  return {'quest': quest}
 
 
 @register.inclusion_tag('user_link_tag.html')

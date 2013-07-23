@@ -35,7 +35,7 @@
       {% else %}
         <a href="javascript:openPopup('{% url socialauth_begin 'facebook' %}'); return void(0);">Log in with Facebook</a>
       {% endif %}
-      {% block track_info %}Track Info{% endblock %}
+      {% block track_info %}{% endblock %}
     </div>
   </div>
   <div id="content" class="floating-box">{% block content %}{% endblock %}</div>

@@ -14,11 +14,8 @@ TRACK_GROUP = r'(?P<track_name>%s)' % TRACK_REGEX
 # LEVEL_REGEX = r'\d\d?'
 # LEVEL_GROUP = r'(?P<level_id>%s)' % LEVEL_REGEX
 
-QUEST_REGEX = r'\d{1,10}'
-QUEST_GROUP = r'(?P<quest_id>%s)' % QUEST_REGEX
-
-# BADGE_REGEX = r'\d{1,10}'
-# BADGE_GROUP = r'(?P<badge_id>%s)' % BADGE_REGEX
+BADGE_REGEX = r'\d{1,10}'
+BADGE_GROUP = r'(?P<badge_id>%s)' % BADGE_REGEX
 
 USER_REGEX = r'[^\s/]{1,30}'
 USER_GROUP = r'(?P<username>%s)' % USER_REGEX
@@ -30,13 +27,6 @@ urlpatterns = patterns('',
 
     url(r'^(?i)$', home, name='home'),
     url(r'^(?i)about/$', about, name='about'),
-
-    # Field pages.
-    # url(r'^(?i)f/add$' % FIELD_GROUP, field_add, name='field_add'),
-    # url(r'^(?i)f/all$', field_list, name='field_list'),
-    # url(r'^(?i)f/%s$' % FIELD_GROUP, field_detail, name='field_detail'),
-    # url(r'^(?i)f/%s/tracks$' % FIELD_GROUP, field_tracks, name='field_tracks'),
-    # url(r'^(?i)f/%s/Users$' % FIELD_GROUP, field_users, name='field_users'),
 
     # Track pages.
     # url(r'^(?i)t/add$' % TRACK_GROUP, track_add, name='track_add'),
@@ -55,7 +45,7 @@ urlpatterns = patterns('',
     url(r'^(?i)t/%s/quests/$' % TRACK_GROUP, track_quests, name='track_quests'),
     url(r'^(?i)t/%s/quests/verify/$' % TRACK_GROUP, quests_verify, name='quests_verify'),
     # url(r'^(?i)t/%s/quest/add$' % TRACK_GROUP, quest_add, name='quest_add'),
-    url(r'^(?i)t/%s/quest/%s/$' % (TRACK_GROUP, QUEST_GROUP), quest_detail, name='quest_detail'),
+    #url(r'^(?i)t/%s/quest/%s/$' % (TRACK_GROUP, QUEST_GROUP), quest_detail, name='quest_detail'),
     # url(r'^(?i)t/%s/quest/%s/edit$' % (TRACK_GROUP, QUEST_GROUP), quest_edit, name='quest_edit'),
     # url(r'^(?i)t/%s/quest/%s/delete$' % (TRACK_GROUP, QUEST_GROUP), quest_delete, name='quest_delete'),
 

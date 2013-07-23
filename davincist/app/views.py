@@ -176,7 +176,7 @@ def ajax_get_wall_posts(request):
         user__pk=target_user_pk).order_by('-timestamp').all()[:WALL_POSTS_PER_PAGE + 1]
 
   r.wall_posts = []
-  for i in xrange(len(wall_posts) - 1):
+  for i in xrange(min(len(wall_posts), WALL_POSTS_PER_PAGE)):
     r.wall_posts.append(wall_posts[i].to_dict())
   r.has_next = len(wall_posts) > WALL_POSTS_PER_PAGE
 

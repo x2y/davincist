@@ -19,24 +19,18 @@
 <table>
   <tr>
     <th>Level</th>
-    <th>Type and Name</th>
+    <th>Badge</th>
     <th>Description</th>
-    <th>Quests</th>
   </tr>
   {% for level in track.levels.all %}
-    {% for badge in level.badges.all %}
-      <tr>
-        <td>{{ level.rank }}</td>
-        <td>{% badge_link badge add_anchor=0 %}</td>
-        <td>{{ badge.description|truncatechars:64 }}</td>
-        <td>
-          {% for quest in badge.quests.all %}
-            {% quest_link quest %}{% if not forloop.last %},&nbsp;{% endif %}
-          {% empty %}
-            <i>No quest is needed to earn this badge.</i>
-          {% endfor %}
-        </td>
-      </tr>
+    {% for requirement in level.requirements.all %}
+      {% for badge in requirement.badges.all %}
+        <tr>
+          <td>{{ level.rank }}</td>
+          <td>{% badge_link badge %}</td>
+          <td>{{ badge.description|truncatechars:64 }}</td>
+        </tr>
+      {% endfor %}
     {% endfor %}
   {% endfor %}
 </table>
