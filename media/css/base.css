@@ -240,7 +240,7 @@ body {
   overflow: hidden;
 }
 
-#start-quest-mask {
+#start-badge-mask {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -256,14 +256,14 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0); /* IE6-9 */
 }
 
-#start-quest-mask div {
+#start-badge-mask div {
   position: absolute;
   bottom: 0;
   width: 100%;
   text-align: center;
 }
 
-#start-quest-button {
+#start-badge-button {
   display: inline-block;
   margin-bottom: 20px;
   height: 40px;
@@ -271,7 +271,7 @@ body {
   font-size: 14pt;
 }
 
-#start-quest-error {
+#start-badge-error {
   color: red;
 }
 

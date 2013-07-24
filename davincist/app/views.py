@@ -73,14 +73,6 @@ def track_levels(request, track_name):
   return r.__dict__
 
 
-@render_to('track_quests.html')
-def track_quests(request, track_name):
-  r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
-  r.user_track = get_user_track(request, track_name)
-  return r.__dict__
-
-
 @render_to('track_badges.html')
 def track_badges(request, track_name):
   r = Response()
@@ -89,27 +81,20 @@ def track_badges(request, track_name):
   return r.__dict__
 
 
-@render_to('quest_detail.html')
-def quest_detail(request, track_name, quest_id):
+@render_to('badge_detail.html')
+def badge_detail(request, track_name, badge_id):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
-  r.quest = get_object_or_404(Quest, pk=quest_id)
-  if r.track != r.quest.level.track:
+  r.badge = get_object_or_404(Badge, pk=badge_id)
+  if r.track != r.badge.requirement.level.track:
     raise Http404
 
   if request.user.is_authenticated():
     try:
-      r.quest_status = VerificationRequest.objects.get(user=request.user, quest=r.quest).status
+      r.badge_status = VerificationRequest.objects.get(user=request.user, badge=r.badge).status
     except ObjectDoesNotExist:
       pass
 
-  return r.__dict__
-
-
-@render_to('quests_verify.html')
-def quests_verify(request, track_name):
-  r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
   return r.__dict__
 
 
@@ -207,7 +192,7 @@ def ajax_post_to_wall(request):
   to_pk = int(request.POST['to'])
   is_public = request.POST['is_public'] == 'true'
 
-  # TODO: Support quest verification linking.
+  # TODO: Support badge verification linking.
 
   # Create and save the new WallPost.
   post = WallPost(poster=request.user, text=text, is_public=is_public)
@@ -218,7 +203,7 @@ def ajax_post_to_wall(request):
 
 
 @ajax_request
-def ajax_start_quest(request):
+def ajax_start_badge(request):
   r = Response()
   if request.method != 'POST':
     return Response.errors('Request must use POST; used: %s.' % request.method)
@@ -229,19 +214,19 @@ def ajax_start_quest(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'quest': (RequiredValidator(), ModelValidator(Quest, int)),
+      'badge': (RequiredValidator(), ModelValidator(Badge, int)),
   })
   if errors:
     return Response.errors(errors)
 
-  quest_pk = int(request.POST['quest'])
-  if VerificationRequest.objects.filter(user=request.user, quest__pk=quest_pk).exists():
-    return Response.errors('Quest already started.')
+  badge_pk = int(request.POST['badge'])
+  if VerificationRequest.objects.filter(user=request.user, badge__pk=badge_pk).exists():
+    return Response.errors('Badge already started.')
 
-  # Record that the quest has been started.
+  # Record that the badge has been started.
   verification_request = VerificationRequest(user=request.user,
                                              status=VerificationRequest.UNSUBMITTED)
-  verification_request.quest_id = quest_pk
+  verification_request.badge_id = badge_pk
   verification_request.save()
 
   return r.__dict__
