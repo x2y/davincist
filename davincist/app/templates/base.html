@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
 <head>
-  <title>{% block title %}{% endblock %}</title>
+  <title>{% block tab_title %}{% endblock %}</title>
   {% load staticfiles %}
   <link href="{% static 'base.css' %}" rel="stylesheet" type="text/css">
   <script src="{% static 'jquery.min.js' %}"></script>
@@ -24,8 +24,8 @@
 </head>
 <body>
   <div id="header">
-    <span id="title">{% block gutter_title %}Title{% endblock %}</span>
-    <span id="subtitle">{% block gutter_subtitle %}Subtitle{% endblock %}</span>
+    <span id="title">{% block title %}Title{% endblock %}</span>
+    <span id="subtitle">{% block subtitle %}Subtitle{% endblock %}</span>
   </div>
   <div id="gutter" class="floating-text">
     <div id="nav" class="floating-text">{% block navigation %}{% endblock %}</div>

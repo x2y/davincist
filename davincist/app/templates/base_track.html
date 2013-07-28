@@ -2,8 +2,8 @@
 
 {% load tags %}
 
+{% block tab_title %}{{ track.name|capfirst }}{% endblock %}
 {% block title %}{{ track.name|capfirst }}{% endblock %}
-{% block gutter_title %}{{ track.name|capfirst }}{% endblock %}
 
 {% block head %}
 {{ block.super }}

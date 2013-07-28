@@ -2,7 +2,7 @@
 
 {% load tags %}
 
-{% block title %}{{ track.name|capfirst }} - {{ badge.name|capfirst }}{% endblock %}
+{% block tab_title %}{{ track.name|capfirst }} - {{ badge.name|capfirst }}{% endblock %}
 
 {% block head %}
 {{ block.super }}
@@ -13,7 +13,7 @@
 </script>
 {% endblock %}
 
-{% block gutter_subtitle %}Badge{% endblock %}
+{% block subtitle %}Badge{% endblock %}
 
 {% block content %}
 <h1>Lvl {{ badge.requirement.level.rank }} - {{ badge.name }}</h1>
