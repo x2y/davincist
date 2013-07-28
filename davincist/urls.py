@@ -64,6 +64,7 @@ urlpatterns = patterns('',
     url(r'^(?i)x/get-wall-posts/', ajax_get_wall_posts, name='ajax_get_wall_posts'),
     url(r'^(?i)x/post-to-wall/', ajax_post_to_wall, name='ajax_post_to_wall'),
     url(r'^(?i)x/start-badge/', ajax_start_badge, name='ajax_start_badge'),
+    url(r'^(?i)x/complete-unverified-badge/', ajax_complete_unverified_badge, name='ajax_complete_unverified_badge'),
     url(r'^(?i)x/join-track/', ajax_join_track, name='ajax_join_track'),
 
 

@@ -86,14 +86,17 @@ def badge_detail(request, track_name, badge_id):
   r = Response()
   r.track = get_object_or_404(Track, pk__iexact=track_name)
   r.badge = get_object_or_404(Badge, pk=badge_id)
+  r.user_track = get_user_track(request, track_name)
   if r.track != r.badge.requirement.level.track:
     raise Http404
 
   if request.user.is_authenticated():
     try:
-      r.badge_status = VerificationRequest.objects.get(user=request.user, badge=r.badge).status
+      status = VerificationRequest.objects.get(user=request.user, badge=r.badge).status
+      r.is_started = True
+      r.is_submitted = status != VerificationRequest.UNSUBMITTED
     except ObjectDoesNotExist:
-      pass
+      r.is_started = False
 
   return r.__dict__
 
@@ -219,14 +222,62 @@ def ajax_start_badge(request):
   if errors:
     return Response.errors(errors)
 
-  badge_pk = int(request.POST['badge'])
-  if VerificationRequest.objects.filter(user=request.user, badge__pk=badge_pk).exists():
+  badge = Badge.objects.get(pk=int(request.POST['badge']))
+  if VerificationRequest.objects.filter(user=request.user, badge=badge).exists():
     return Response.errors('Badge already started.')
+
+  if not request.user.user_tracks.filter(track__pk=badge.requirement.level.track.pk).exists():
+    return Response.errors('User has not joined %s.' % badge.requirement.level.track.name)
 
   # Record that the badge has been started.
   verification_request = VerificationRequest(user=request.user,
                                              status=VerificationRequest.UNSUBMITTED)
-  verification_request.badge_id = badge_pk
+  verification_request.badge = badge
+  verification_request.save()
+
+  return r.__dict__
+
+
+@ajax_request
+def ajax_complete_unverified_badge(request):
+  r = Response()
+  if request.method != 'POST':
+    return Response.errors('Request must use POST; used: %s.' % request.method)
+
+  # Posting User must be logged in.
+  if not request.user.is_authenticated():
+    return Response.errors('User is not logged in.')
+
+  # Perform all the general validation.
+  errors = get_errors(request.POST, {
+      'badge': (RequiredValidator(), ModelValidator(Badge, int)),
+  })
+  if errors:
+    return Response.errors(errors)
+
+  badge = Badge.objects.get(pk=int(request.POST['badge']))
+  if badge.requires_verification:
+    return Response.errors('Badge requires verification.')
+
+  try:
+    user_track = request.user.user_tracks.get(track__pk=badge.requirement.level.track.pk)
+  except ObjectDoesNotExist:
+    return Response.errors('User has not joined %s.' % badge.requirement.level.track.name)
+
+  try:
+    verification_request = VerificationRequest.objects.get(user=request.user, badge=badge)
+  except ObjectDoesNotExist:
+    return Response.errors('Badge not started.')
+
+  if verification_request.status != VerificationRequest.UNSUBMITTED:
+    return Response.errors('Badge already completed.')
+
+  # Award the badge.
+  user_track.badges.add(badge)
+  user_track.save()
+
+  # Record that the badge has been completed.
+  verification_request.status = VerificationRequest.VERIFIED
   verification_request.save()
 
   return r.__dict__

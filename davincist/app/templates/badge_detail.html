@@ -6,7 +6,11 @@
 
 {% block head %}
 {{ block.super }}
-<script>var badgePk = {{ badge.pk }};</script>
+<script>
+  var badgePk = {{ badge.pk|escapejs }};
+  var firstName = '{{ user.first_name|lower|escapejs }}';
+  var lastName = '{{ user.last_name|lower|escapejs }}';
+</script>
 {% endblock %}
 
 {% block gutter_subtitle %}Badge{% endblock %}
@@ -18,7 +22,7 @@
 <p>
 <div id="training">
   {{ badge.training|safe }}
-  {% if not badge_status %}
+  {% if not is_started %}
     <div id="start-badge-mask">
       <div>
         <!-- TODO: Change to a "Join this track" button if not already joined. -->
@@ -28,21 +32,34 @@
       </div>
     </div>
   {% endif %}
+  <div id="verification">
+    <h1>Verification</h1>
+    {% if not badge.requires_verification %}
+      {% if not is_submitted %}
+        <div id="complete-badge-form">
+          <div id="oath">I, {{ user.first_name }} {{ user.last_name }}, have completed the requirements for this badge.</div>
+          <label for="signature-field" >Signature:</label>
+          <input type="text" id="signature-field" name="signature"></input>
+          <br>
+          <button id="complete-badge-button" disabled>Complete "{{ badge.name }}"</button>
+          <div id="complete-badge-error"></div>
+        </div>
+      {% else %}
+        Badge already earned! Congrats?
+      {% endif %}
+    {% else %}
+      TODO: Form to send for peer verification.
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
 
 {% block footer_script %}
 {{ block.super }}
 <script>
-  $(function() {
-    {% if not badge_status %}
-      $('#start-badge-button').click(startBadge);
-    {% else %}
-      $('#training').css('max-height', 'none');
-    {% endif %}
-  });
+  {% if not is_started %}
+    $(function() { $('#start-badge-button').click(startBadge); });
 
-  {% if not badge_status %}
     function startBadge() {
       $('#start-badge-button').attr('disabled', true);
 
@@ -61,6 +78,53 @@
         $('#start-badge-button').removeAttr('disabled');
       });
     }
+  {% else %}
+    $(function() { $('#training').css('max-height', 'none'); });
+  {% endif %}
+
+  
+  {% if not badge.requires_verification and not is_submitted %}
+    $(function() {
+      $('#signature-field').keyup(signatureChanged);
+      signatureChanged();
+      $('#complete-badge-button').click(completeBadge);
+    });
+
+    function signatureChanged() {
+      var cleanedText = $('#signature-field').val().toLowerCase().trim();
+      if (cleanedText == firstName || cleanedText == lastName ||
+          cleanedText == firstName + ' ' + lastName ||
+          cleanedText == lastName + ' ' + firstName) {
+        $('#complete-badge-button').removeAttr('disabled');
+      } else {
+        $('#complete-badge-button').attr('disabled', true);
+      }
+    }
+
+    function completeBadge() {
+      $('#complete-badge-button').attr('disabled', true);
+      $('#signature-field').attr('disabled', true);
+      $('#complete-badge-error').text('');
+
+      var data = {};
+      data.badge = badgePk;
+      $.post('{% url ajax_complete_unverified_badge %}', data, function (data) {
+        if (data.errors) {
+          $('#complete-badge-error').text(data.errors.join());
+          $('#complete-badge-button').removeAttr('disabled');
+          $('#signature-field').removeAttr('disabled');
+          return;
+        }
+        $('#complete-badge-form').remove();
+        // TODO: add "earned mm/dd/yyyy" text
+      }).fail(function() {
+        $('#complete-badge-error').text('Server error!');
+        $('#complete-badge-button').removeAttr('disabled');
+        $('#signature-field').removeAttr('disabled');
+      });
+    }
+  {% elif badge.requires_verification and not is_submitted %}
+    // TODO: js for actual verification.
   {% endif %}
 </script>
 {% endblock %}

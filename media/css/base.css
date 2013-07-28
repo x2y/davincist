@@ -1,6 +1,7 @@
 /* Base styles go here. */
 
 @import url(http://fonts.googleapis.com/css?family=Lobster);
+@import url(http://fonts.googleapis.com/css?family=Satisfy);
 
 body {
   background-attachment: fixed;
@@ -238,6 +239,20 @@ body {
   min-height: 150px;
   max-height: 400px;
   overflow: hidden;
+}
+
+#signature-field {
+  border: none;
+  border-bottom: 1px #444 dotted;
+  font-family: Satisfy, "Comic Sans", cursive;
+  font-size: 12pt;
+  width: 175px;
+  padding: 0 10px;
+}
+
+#signature-field:active {
+  border: none;
+  border-bottom: 1px #444 dotted;
 }
 
 #start-badge-mask {
