@@ -191,7 +191,6 @@ body {
 
 #wall-post-error {
   float: left;
-  color: red;
 }
 
 #wall-post-button-box {
@@ -226,7 +225,6 @@ body {
 #wall-load-previous-error {
   clear: left;
   float: left;
-  color: red;
 }
 
 #wall-load-previous-button {
@@ -286,16 +284,12 @@ body {
   font-size: 14pt;
 }
 
-#start-badge-error {
-  color: red;
-}
-
 #join-track-button {
   height: 40px;
   min-width: 250px;
   font-size: 14pt;
 }
 
-#join-track-error {
+.error {
   color: red;
 }

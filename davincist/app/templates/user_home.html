@@ -43,7 +43,7 @@
 <!-- Move the wall posting stuff into a reusable template. -->
 <div id="wall-post-box">
   <textarea id="wall-post-textbox"></textarea>
-  <div id="wall-post-error"></div>
+  <div id="wall-post-error" class="error"></div>
   <div id="wall-post-button-box">
     <button id="wall-post-public-button">Post Public</button>
     <button id="wall-post-private-button">Post Private</button>
@@ -51,7 +51,7 @@
 </div>
 
 <div id="wall"></div>
-<div id="wall-load-previous-error"></div>
+<div id="wall-load-previous-error" class="error"></div>
 <button id="wall-load-previous-button" disabled>Load more</button>
 {% endblock %}
 
@@ -82,6 +82,7 @@
 
   function loadPreviousWallPosts() {
     $('#wall-load-previous-button').attr('disabled', true);
+    $('#wall-load-previous-error').text('');
 
     var data = {};
     data.target_user = targetUserPk;
@@ -115,6 +116,7 @@
 
   function postToWall(is_public) {
     $('#wall-post-box :input').attr('disabled', true);
+    $('#wall-post-error').text('');
 
     var data = {};
     data.text = $('#wall-post-textbox').val();
@@ -129,7 +131,7 @@
       renderWallPost(data.post).prependTo($('#wall'));
       $('#wall-post-textbox').val('');
     }).fail(function() {
-      $('#wall-error').text('Server error!');
+      $('#wall-post-error').text('Server error!');
     }).always(function() {
       $('#wall-post-box :input').removeAttr('disabled');
     });

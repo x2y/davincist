@@ -7,7 +7,7 @@
 {% block head %}
 {{ block.super }}
 <script>
-  var badgePk = {{ badge.pk|escapejs }};
+  var badgePk = {{ badge.pk }};
   var firstName = '{{ user.first_name|lower|escapejs }}';
   var lastName = '{{ user.last_name|lower|escapejs }}';
 </script>
@@ -28,7 +28,7 @@
         <!-- TODO: Change to a "Join this track" button if not already joined. -->
         <!-- TODO: Change to a login/join link if not logged in. -->
         <button id="start-badge-button">Start {{ badge.name }}!</button>
-        <div id="start-badge-error"></div>
+        <div id="start-badge-error" class="error"></div>
       </div>
     </div>
   {% endif %}
@@ -42,7 +42,7 @@
           <input type="text" id="signature-field" name="signature"></input>
           <br>
           <button id="complete-badge-button" disabled>Complete "{{ badge.name }}"</button>
-          <div id="complete-badge-error"></div>
+          <div id="complete-badge-error" class="error"></div>
         </div>
       {% else %}
         Badge already earned! Congrats?
@@ -62,6 +62,7 @@
 
     function startBadge() {
       $('#start-badge-button').attr('disabled', true);
+      $('#start-badge-error').text('');
 
       var data = {};
       data.badge = badgePk;

@@ -7,7 +7,7 @@
 
 {% block head %}
 {{ block.super }}
-<script>var trackName = '{{ track.name }}';</script>
+<script>var trackName = '{{ track.name|escapejs }}';</script>
 <style>
   #nav #track-home-link {
     color: #FAFAFA;
@@ -25,7 +25,7 @@
 {% if user.is_authenticated and not user_track %}
   <p>
     <button id="join-track-button">Join {{ track.name }}!</button>
-    <div id="join-track-error"></div>
+    <div id="join-track-error" class="error"></div>
   </p>
 {% endif %}
 
@@ -63,6 +63,7 @@
     <!-- TODO: Refactor into a common location so that it can be utilized in multiple locations. -->
     function joinTrack() {
       $('#join-track-button').attr('disabled', true);
+      $('#join-track-error').text('');
 
       var data = {};
       data.track = trackName;
