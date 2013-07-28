@@ -1,4 +1,4 @@
-<a href="{% url track_badges track_name=badge.track_name %}#{{ badge.id }}"
+<a href="{% url badge_detail badge.track_name badge.id %}"
    id={{ badge.id }}
    class="badge {{ badge.is_required|yesno:'required,' }}">
     <span class="medal grade-{{ badge.grade }}"></span>{{ badge.name }}
