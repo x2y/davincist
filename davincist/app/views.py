@@ -118,7 +118,8 @@ def user_home(request, username):
 def user_merits(request, username, track_name):
   r = Response()
   r.user = get_object_or_404(User, username__iexact=username)
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
+  if track_name:
+    r.track = get_object_or_404(Track, pk__iexact=track_name)
   return r.__dict__
 
 
