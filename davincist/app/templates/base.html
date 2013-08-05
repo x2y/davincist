@@ -6,6 +6,7 @@
   <link href="{% static 'base.css' %}" rel="stylesheet" type="text/css">
   <script src="{% static 'jquery.min.js' %}"></script>
   <script src="{% static 'jquery.cookie.js' %}"></script>
+  <script src="{% static 'base.js' %}"></script>
   <script src="{% static 'ajax.js' %}"></script>
   <script>
     function openPopup(url) {
@@ -40,6 +41,7 @@
   </div>
   <div id="content" class="floating-box">{% block content %}{% endblock %}</div>
   <div>{% block footer %}{% endblock %}</div>
+  <div id="dimmer"><div></div></div>
   <script>
     $(function() {
       var MIN_NAV_TOP_PX = 25;
@@ -48,7 +50,33 @@
         $('#nav').css('margin-top', Math.max(MIN_NAV_TOP_PX, 150 - top) + 'px');
       });
       $(document).scroll();
+
+      $('#dimmer, #dimmer:first-child').click(function() { showDimmer(false); });
     });
+
+    function showDimmer(show) {
+      if (show || typeof show == 'undefined') {
+        $('#dimmer').fadeIn(300);
+      } else {
+        $('#dimmer').fadeOut(300, function() {
+          $('#dimmer:first-child').empty();
+        });
+      }
+    }
+
+    {% if user.is_authenticated %}
+      $(function() {
+        $('#gutter-box').hover(showMerits);
+      });
+
+      function showMerits() {
+        $("#dimmer > div").html(
+          '<iframe onload="this.style.visibility = \'visible\';" ' +
+          '        src="{% url user_merits user.username track.name %}" ' +
+          '        allowtransparency="true"></iframe>');
+        showDimmer();
+      }
+    {% endif %}
   </script>
   {% block footer_script %}{% endblock %}
 </body>

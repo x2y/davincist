@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+  <title>{% block tab_title %}{% endblock %}</title>
+  {% load staticfiles %}
+  <link href="{% static 'base.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'user_merits.css' %}" rel="stylesheet" type="text/css">
+  <script src="{% static 'jquery.min.js' %}"></script>
+  <script src="{% static 'base.js' %}"></script>
+  {% load tags %}
+  <script>
+    var selectedTrackIndex = -1;
+  </script>
+</head>
+<body>
+  <ul id="track-selector-container">
+  {% for user_track in user.user_tracks.all %}
+    <li {% if not forloop.last %}class="separated"{% endif %}>{{ user_track.track.name }}
+  {% endfor %}
+  </ul>
+  <div id="tracks-container">
+  {% for user_track in user.user_tracks.all %}
+    <div>
+      <div>Lvl. {{ user_track.level.rank }}: {{ user_track.level.name }}</div>
+      <div>{{ user_track.xp }}xp</div>
+      {% for badge in user_track.badges.all %}
+        {% badge_link badge %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+  </div>
+  <script>
+    $(function() {
+      $('#track-selector-container li').click(trackSelectorClicked);
+      selectTrack('{{ track.name }}');
+    });
+    
+    function trackSelectorClicked(e) {
+      selectTrack(trim($(e.target).text()));
+    }
+
+    function selectTrack(name) {
+      var newSelectedTrackIndex = -1;
+      $('#track-selector-container li').each(function(i, elem) {
+        if (trim($(elem).text()) == name) {
+          newSelectedTrackIndex = i;
+          return false;
+        }
+      });
+
+      if (newSelectedTrackIndex < 0 || newSelectedTrackIndex == selectedTrackIndex) {
+        return;
+      }
+
+      $('#track-selector-container > li:eq(' + selectedTrackIndex + ')').removeClass('selected');
+      $('#track-selector-container > li:eq(' + newSelectedTrackIndex + ')').addClass('selected');
+      $('#tracks-container > div:eq(' + selectedTrackIndex + ')').fadeOut(200);
+      $('#tracks-container > div:eq(' + newSelectedTrackIndex + ')').fadeIn(200);
+      selectedTrackIndex = newSelectedTrackIndex;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+  padding: 0;
+  color: #FFF;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+#track-selector-container {
+  text-align: center;
+  font-size: 32px;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+#track-selector-container li {
+  display: inline;
+  transition: all 200ms linear;
+  color: #999;
+  cursor: pointer;
+  padding-left: 12px;
+}
+
+#track-selector-container li.separated {
+  border-right: 2px solid #999;
+  padding-right: 6px;
+}
+
+#track-selector-container li.selected {
+  color: #FFF;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+}
+
+#track-selector-container li:hover {
+  color: #FFF;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+}
+
+#tracks-container {
+  width: 100%;
+  margin-top: 15px;
+}
+
+#tracks-container > div {
+  position: absolute;
+  display: none;
+}
+
+#tracks-container > div.selected {
+  display: block;
+}
