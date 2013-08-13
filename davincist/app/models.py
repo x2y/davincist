@@ -220,12 +220,6 @@ class UserTrack(models.Model):
   def __unicode__(self):
     return '%s/%s' % (self.user, self.track.name)
 
-  def top_badges(self):
-    return self.badges.order_by('-requirement__level__rank', '-grade')[:3]
-
-  def badges_owned(self):
-    return self.badges.order_by('-requirement__level__rank', '-grade')
-
   def current_challenges(self):
     return (
         self.user.verification_requests
