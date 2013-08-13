@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -81,7 +82,7 @@ class Level(models.Model):
   def user_count(self):
     return self.user_tracks.count()
 
-  def next_level(self):
+  def next(self):
     try:
       return self.track.levels.get(rank=self.rank + 1)
     except ObjectDoesNotExist:
@@ -224,6 +225,31 @@ class UserTrack(models.Model):
 
   def badges_owned(self):
     return self.badges.order_by('-requirement__level__rank', '-grade')
+
+  def current_challenges(self):
+    return (
+        self.user.verification_requests
+        .filter(status__in=(VerificationRequest.UNSUBMITTED, VerificationRequest.UNCHECKED),
+                badge__requirement__level__track=self.track)
+        .order_by('-timestamp'))
+
+  def next_requirements(self):
+    return (
+        Requirement.objects
+        .filter(level=self.level.next())
+        .exclude(badges__verification_requests__user=self.user,
+                 badges__verification_requests__status__in=(VerificationRequest.UNSUBMITTED,
+                                                            VerificationRequest.UNCHECKED,
+                                                            VerificationRequest.VERIFIED)))
+
+  def challenges_to_verify(self):
+    return (
+        VerificationRequest.objects
+        .exclude(user=self.user)
+        .filter(Q(badge__in=self.badges.all()) |
+                Q(badge__requirement__level__track=self.track,
+                  badge__requirement__level__rank__lt=self.level.rank),
+                status=VerificationRequest.UNCHECKED))
 
   class Meta:
     ordering = ['user', 'track']

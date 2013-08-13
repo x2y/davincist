@@ -180,6 +180,10 @@ body {
   background-color: #FFF;
 }
 
+.private-post {
+  color: blue;
+}
+
 #wall-post-box {
   float: left;
   width: 400px;
