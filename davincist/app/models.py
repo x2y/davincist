@@ -90,7 +90,7 @@ class Level(models.Model):
 
   class Meta:
     get_latest_by = 'created'
-    ordering = ['rank']
+    ordering = ['track', 'rank']
     unique_together = (('rank', 'track'), ('name', 'track'))
 
 
@@ -104,7 +104,7 @@ class Requirement(models.Model):
                                  ', '.join(badge.name for badge in self.badges.all()))
 
   class Meta:
-    ordering = ['level__rank', 'order']
+    ordering = ['level__track', 'level__rank', 'order']
     unique_together = ('level', 'order')
 
 
@@ -144,7 +144,7 @@ class Badge(models.Model):
 
   class Meta:
     get_latest_by = 'created'
-    ordering = ['-requirement__level__rank', 'grade', 'name']
+    ordering = ['requirement__level__track', 'requirement__level__rank', 'grade', 'name']
 
 
 class VerificationRequest(models.Model):
