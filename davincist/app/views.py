@@ -120,6 +120,7 @@ def user_merits(request, username, track_name):
   r.user = get_object_or_404(User, username__iexact=username)
   if track_name:
     r.track = get_object_or_404(Track, pk__iexact=track_name)
+  r.user_tracks = r.user.user_tracks.order_by('-level__rank', '-xp')
   return r.__dict__
 
 

@@ -14,12 +14,12 @@
 </head>
 <body>
   <ul id="track-selector-container">
-  {% for user_track in user.user_tracks.all %}
+  {% for user_track in user_tracks %}
     <li {% if not forloop.last %}class="separated"{% endif %}>{{ user_track.track.name }}
   {% endfor %}
   </ul>
   <div id="tracks-container">
-  {% for user_track in user.user_tracks.all %}
+  {% for user_track in user_tracks %}
     <div>
       <div>Lvl. {{ user_track.level.rank }}: {{ user_track.level.name }}</div>
       <div>{{ user_track.xp }}xp</div>
