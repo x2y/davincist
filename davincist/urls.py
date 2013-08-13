@@ -21,7 +21,7 @@ USER_REGEX = r'[^\s/]{1,30}'
 USER_GROUP = r'(?P<username>%s)' % USER_REGEX
 
 urlpatterns = patterns('',
-    # url(r'^(?i)admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('social_auth.urls')),
 

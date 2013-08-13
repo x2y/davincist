@@ -78,8 +78,8 @@ STATICFILES_DIRS = (
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
     #'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -116,14 +116,15 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'davincist.app',
+    'grappelli',
     'south',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
     'social_auth',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

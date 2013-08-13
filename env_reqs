@@ -5,10 +5,12 @@ South==0.7.6
 argparse==1.2.1
 django-annoying==0.7.7
 django-appconf==0.6
+django-grappelli==2.4.5
 django-imagekit==2.0.2
 django-social-auth==0.7.23
 httplib2==0.8
 oauth2==1.5.211
+pyrg==0.2.6
 python-openid==2.2.5
 six==1.2.0
 wsgiref==0.1.2
