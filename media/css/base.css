@@ -185,7 +185,7 @@ body {
 }
 
 #wall-post-box {
-  float: left;
+  display: inline-block;
   width: 400px;
 }
 
@@ -202,11 +202,6 @@ body {
 
 #wall-post-button-box {
   float: right;
-}
-
-#wall {
-  clear: left;
-  float: left;
 }
 
 .wall-post.private {
@@ -227,16 +222,6 @@ body {
 
 .wall-post .timestamp:before {
   content: ' @';
-}
-
-#wall-load-previous-error {
-  clear: left;
-  float: left;
-}
-
-#wall-load-previous-button {
-  clear: left;
-  float: left;
 }
 
 #training {
