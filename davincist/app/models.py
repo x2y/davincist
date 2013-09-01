@@ -152,11 +152,10 @@ class VerificationRequest(models.Model):
   badge = models.ForeignKey(Badge, related_name='verification_requests')
   text = models.TextField(blank=True)
   youtube_id = models.SlugField(max_length=11, blank=True)
-  UNSUBMITTED, UNCHECKED, VERIFIED, NOT_VERIFIED = 'X', 'U', 'V', 'N'
+  UNSUBMITTED, UNVERIFIED, VERIFIED = 'X', 'U', 'V'
   STATUSES = {UNSUBMITTED: 'Unsubmitted',
-              UNCHECKED: 'Unchecked',
-              VERIFIED: 'Verified',
-              NOT_VERIFIED: 'Not verified'}
+              UNVERIFIED: 'Unverified',
+              VERIFIED: 'Verified'}
   status = models.CharField(max_length=1, choices=STATUSES.items(), default=UNSUBMITTED)
   timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
@@ -223,7 +222,7 @@ class UserTrack(models.Model):
   def current_challenges(self):
     return (
         self.user.verification_requests
-        .filter(status__in=(VerificationRequest.UNSUBMITTED, VerificationRequest.UNCHECKED),
+        .filter(status__in=(VerificationRequest.UNSUBMITTED, VerificationRequest.UNVERIFIED),
                 badge__requirement__level__track=self.track)
         .order_by('-timestamp'))
 
@@ -233,7 +232,7 @@ class UserTrack(models.Model):
         .filter(level=self.level.next())
         .exclude(badges__verification_requests__user=self.user,
                  badges__verification_requests__status__in=(VerificationRequest.UNSUBMITTED,
-                                                            VerificationRequest.UNCHECKED,
+                                                            VerificationRequest.UNVERIFIED,
                                                             VerificationRequest.VERIFIED)))
 
   def challenges_to_verify(self):
@@ -243,7 +242,7 @@ class UserTrack(models.Model):
         .filter(Q(badge__in=self.badges.all()) |
                 Q(badge__requirement__level__track=self.track,
                   badge__requirement__level__rank__lt=self.level.rank),
-                status=VerificationRequest.UNCHECKED))
+                status=VerificationRequest.UNVERIFIED))
 
   class Meta:
     ordering = ['user', 'track']
