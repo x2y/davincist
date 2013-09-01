@@ -19,3 +19,11 @@ function disable($elements) {
     $elements[i].prop('disabled', true);
   }
 }
+
+function renderTemplate($template, data) {
+  var $instance = $template.clone().removeClass('template');
+  for (var key in data) {
+    $instance.find('.' + key).text(data[key]);
+  }
+  return $instance;
+}

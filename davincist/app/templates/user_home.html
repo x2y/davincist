@@ -77,7 +77,18 @@ TODO
   </div>
 </div>
 
-<div id="wall"></div>
+<div id="wall">
+  <div class="public-post template">
+    <span class="poster"></span>
+    <span class="text"></span>
+    <span class="timestamp"></span>
+  </div>
+  <div class="private-post template">
+    <span class="poster"></span>
+    <span class="text"></span>
+    <span class="timestamp"></span>
+  </div>
+</div>
 <div id="wall-load-previous-error" class="error"></div>
 <button id="wall-load-previous-button" disabled>Load more</button>
 {% endblock %}
@@ -94,18 +105,6 @@ TODO
 
     loadPreviousWallPosts();
   });
-
-  function renderWallPost(data) {
-    var $newPost = $('<div class="wall-post"></div>');
-    if (!data.is_public) {
-      $newPost.addClass('private-post');
-    }
-    $newPost.append($('<span class="poster">').text(data.poster));
-    $newPost.append($('<span>').text(data.text));
-    $newPost.append($('<span class="timestamp">').text(
-        new Date(data.timestamp * 1000).toLocaleString()));
-    return $newPost;
-  }
 
   function loadPreviousWallPosts() {
     $('#wall-load-previous-button').attr('disabled', true);
@@ -127,7 +126,10 @@ TODO
         }
         for (var i = 0; i < data.wall_posts.length; ++i) {
           var post = data.wall_posts[i];
-          renderWallPost(post).appendTo($('#wall'));
+          post.timestamp = new Date(post.timestamp * 1000).toLocaleString();
+
+          var postClass = post.is_public ? '.public-post' : '.private-post';
+          renderTemplate($(postClass + '.template'), post).appendTo($('#wall'));
           earliestWallPostPk = post.pk;
         }
         if (!data.has_next) {
@@ -155,7 +157,9 @@ TODO
         return;
       }
 
-      renderWallPost(data.post).prependTo($('#wall'));
+      data.post.timestamp = new Date(data.post.timestamp * 1000).toLocaleString();
+      var postClass = data.post.is_public ? '.public-post' : '.private-post';
+      renderTemplate($(postClass + '.template'), data.post).prependTo($('#wall'));
       $('#wall-post-textbox').val('');
     }).fail(function() {
       $('#wall-post-error').text('Server error!');

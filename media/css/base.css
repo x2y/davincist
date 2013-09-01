@@ -180,10 +180,6 @@ body {
   background-color: #FFF;
 }
 
-.private-post {
-  color: blue;
-}
-
 #wall-post-box {
   display: inline-block;
   width: 400px;
@@ -204,24 +200,28 @@ body {
   float: right;
 }
 
-.wall-post.private {
-  color: blue;
-}
-
-.wall-post .poster {
+.public-post .poster,
+.private-post .poster {
   font-weight: bold;
 }
 
-.wall-post .poster:after {
+.public-post .poster:after,
+.private-post .poster:after {
   content: ': ';
 }
 
-.wall-post .timestamp {
+.public-post .timestamp,
+.private-post .timestamp {
   color: #888;
 }
 
-.wall-post .timestamp:before {
+.public-post .timestamp:before,
+.private-post .timestamp:before {
   content: ' @';
+}
+
+.private-post {
+  color: blue;
 }
 
 #training {
@@ -310,4 +310,8 @@ body {
   width: 800px;
   border: 0;
   visibility: hidden;
+}
+
+.template {
+  display: none;
 }
