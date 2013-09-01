@@ -1,5 +1,7 @@
 """Field validators for AJAX request dictionaries."""
 
+import re
+
 
 def get_errors(data, field_validators):
   errors = []
@@ -70,3 +72,12 @@ class ModelValidator(object):
     if self.model_.objects.filter(pk=pk).count() != 1:
       return 'No unique %s model %s for field: %s.' % (self.model_name_, data[field], field)
     return None
+
+
+class YouTubeIdValidator(object):
+  def error(self, data, field):
+    if field not in data:
+      return None
+    print
+    return ('Invalid YouTube Id: %s.' % field
+            if not re.match(r'|[a-zA-Z_-]{11}', data[field]) else None)

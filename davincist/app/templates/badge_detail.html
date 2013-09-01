@@ -35,10 +35,11 @@
   <div id="verification">
     <h1>Verification</h1>
     {% if not badge.requires_verification %}
-      {% if not is_submitted %}
+      <!-- Unverified badge form -->
+      {% if is_unsubmitted %}
         <div id="complete-badge-form">
           <div id="oath">I, {{ user.first_name }} {{ user.last_name }}, have completed the requirements for this badge.</div>
-          <label for="signature-field" >Signature:</label>
+          <label for="signature-field">Signature:</label>
           <input type="text" id="signature-field" name="signature"></input>
           <br>
           <button id="complete-badge-button" disabled>Complete "{{ badge.name }}"</button>
@@ -48,7 +49,27 @@
         Badge already earned! Congrats?
       {% endif %}
     {% else %}
-      TODO: Form to send for peer verification.
+      <!-- Verified badge form -->
+      <div id="submit-request-form">
+        <label for="text-proof-field">Text:</label>
+        <textarea id="text-proof-field" name="text_proof" rows="5" cols="60"
+                  {{ is_verified|yesno:'disabled,' }}>{{ request.text }}</textarea>
+        <br>
+        <label for="raw-video-proof-field">YouTube id/URL:</label>
+        <input type="text" id="raw-video-proof-field" name="raw_video_proof"
+               value="{{ request.youtube_id }}" {{ is_verified|yesno:'disabled,' }}></input>
+        <input type="hidden" id="video-proof-field" name="video_proof"
+               value="{{ request.youtube_id }}"></input>
+        <br>
+        <iframe id="video-proof-embed" type="text/html" width="320" height="195" frameborder="0"></iframe>
+        <br>
+        {% if not is_verified %}
+          <button id="submit-request-button">Submit "{{ badge.name }}"</button>
+          <button id="update-request-button">Update "{{ badge.name }}"</button>
+          <div id="submit-request-error" class="error"></div>
+        {% endif %}
+      </div>
+      TODO: Wall-ish type thing
     {% endif %}
   </div>
 </div>
@@ -64,8 +85,9 @@
       $('#start-badge-button').attr('disabled', true);
       $('#start-badge-error').text('');
 
-      var data = {};
-      data.badge = badgePk;
+      var data = {
+        badge: badgePk
+      };
       $.post('{% url ajax_start_badge %}', data, function (data) {
         if (data.errors) {
           $('#start-badge-error').text(data.errors.join());
@@ -83,8 +105,7 @@
     $(function() { $('#training').css('max-height', 'none'); });
   {% endif %}
 
-  
-  {% if not badge.requires_verification and not is_submitted %}
+  {% if not badge.requires_verification and is_unsubmitted %}
     $(function() {
       $('#signature-field').keyup(signatureChanged);
       signatureChanged();
@@ -107,8 +128,9 @@
       $('#signature-field').attr('disabled', true);
       $('#complete-badge-error').text('');
 
-      var data = {};
-      data.badge = badgePk;
+      var data = {
+        badge: badgePk
+      };
       $.post('{% url ajax_complete_unverified_badge %}', data, function (data) {
         if (data.errors) {
           $('#complete-badge-error').text(data.errors.join());
@@ -124,8 +146,92 @@
         $('#signature-field').removeAttr('disabled');
       });
     }
-  {% elif badge.requires_verification and not is_submitted %}
-    // TODO: js for actual verification.
+  {% elif badge.requires_verification %}
+    $(function() {
+      {% if not is_verified %}
+        $('#raw-video-proof-field').keyup(videoChanged);
+        $('#submit-request-button, #update-request-button').click(submitRequest);
+      {% endif %}
+
+      $('#{{ is_unsubmitted|yesno:'update,submit' }}-request-button').hide();
+      updateVideoPreview();
+    });
+
+    var UPDATE_VIDEO_PREVIEW_DELAY_MS = 1000;
+    var updateVideoPreviewTimer = null;
+
+    function videoChanged() {
+      clearTimeout(updateVideoPreviewTimer);
+      updateVideoPreviewTimer = setTimeout(updateVideoPreview, UPDATE_VIDEO_PREVIEW_DELAY_MS);
+    }
+
+    function updateVideoPreview() {
+      $('#submit-request-error').text('');
+
+      var text = $('#raw-video-proof-field').val().trim();
+      var urlRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i;
+      var urlMatches = urlRegex.exec(text);
+      var videoId = urlMatches ? urlMatches[1] : /^[a-zA-Z0-9_-]{11}$/.exec(text);
+      $('#video-proof-field').val(videoId || '');
+
+      if (videoId || !text) {
+        enable($('#submit-request-button, #update-request-button'));
+      } else if (text) {
+        $('#submit-request-error').text('Invalid YouTube id or URL!');
+        disable($('#submit-request-button, #update-request-button'));
+      }
+
+      var $videoEmbed = $('#video-proof-embed');
+      $videoEmbed.attr('src', '//www.youtube.com/embed/' + (videoId || '00000000000'));
+      if (text) {
+        $videoEmbed.show();
+      } else {
+        $videoEmbed.hide();
+      }
+    }
+
+    function submitRequest() {
+      // Ensure that the video has been properly validated and the video proof hidden input updated.
+      updateVideoPreview();
+      if ($('#raw-video-proof-field').val() && !$('#video-proof-field').val()) {
+        // If a raw-video is specified but no video has been successfully parsed out, then the user
+        // must've tried to submit a request with an invalid video url/id (perhaps they submitted
+        // in the second after the last keystroke in the raw-video field before the video preview
+        // is updated).
+        return;
+      }
+
+      var formFields = [
+        $('#submit-request-button'),
+        $('#update-request-button'),
+        $('#text-proof-field'),
+        $('#raw-video-proof-field')
+      ];
+      disable(formFields);
+      $('#submit-request-error').text('');
+
+      var data = {
+        badge: badgePk,
+        text_proof: $('#text-proof-field').val(),
+        video_proof: $('#video-proof-field').val()
+      };
+      $.post('{% url ajax_submit_verification_request %}', data, function (data) {
+        if (data.errors) {
+          $('#submit-request-error').text(data.errors.join());
+          enable(formFields);
+          return;
+        }
+
+        $('#submit-request-button').hide();
+        $('#update-request-button').show();
+        enable(formFields);
+        
+        alert('Success!');
+      }).fail(function() {
+        $('#submit-request-error').text('Server error!');
+        enable(formFields);
+      });
+    }
   {% endif %}
 </script>
 {% endblock %}

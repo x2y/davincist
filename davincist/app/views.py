@@ -92,9 +92,11 @@ def badge_detail(request, track_name, badge_id):
 
   if request.user.is_authenticated():
     try:
-      status = VerificationRequest.objects.get(user=request.user, badge=r.badge).status
+      r.request = VerificationRequest.objects.get(user=request.user, badge=r.badge)
       r.is_started = True
-      r.is_submitted = status != VerificationRequest.UNSUBMITTED
+      r.is_unsubmitted = r.request.status == VerificationRequest.UNSUBMITTED
+      r.is_unverified = r.request.status == VerificationRequest.UNVERIFIED
+      r.is_verified = r.request.status == VerificationRequest.VERIFIED
     except ObjectDoesNotExist:
       r.is_started = False
 
@@ -275,6 +277,49 @@ def ajax_complete_unverified_badge(request):
 
   # Record that the badge has been completed.
   verification_request.status = VerificationRequest.VERIFIED
+  verification_request.save()
+
+  return r.__dict__
+
+
+@ajax_request
+def ajax_submit_verification_request(request):
+  r = Response()
+  if request.method != 'POST':
+    return Response.errors('Request must use POST; used: %s.' % request.method)
+
+  # Posting User must be logged in.
+  if not request.user.is_authenticated():
+    return Response.errors('User is not logged in.')
+
+  # Perform all the general validation.
+  errors = get_errors(request.POST, {
+      'badge': (RequiredValidator(), ModelValidator(Badge, int)),
+      'text_proof': (RequiredValidator()),
+      'video_proof': (RequiredValidator(), YouTubeIdValidator()),
+  })
+  if errors:
+    return Response.errors(errors)
+
+  badge = Badge.objects.get(pk=int(request.POST['badge']))
+  if not badge.requires_verification:
+    return Response.errors('Badge does not require verification.')
+
+  text_proof = request.POST['text_proof'].strip()
+  video_proof = request.POST['video_proof']
+
+  try:
+    verification_request = VerificationRequest.objects.get(user=request.user, badge=badge)
+  except ObjectDoesNotExist:
+    return Response.errors('Badge not started.')
+
+  if verification_request.status == VerificationRequest.VERIFIED:
+    return Response.errors('Badge already completed.')
+
+  # Update the data and open the request for verification.
+  verification_request.text = text_proof
+  verification_request.youtube_id = video_proof
+  verification_request.status = VerificationRequest.UNVERIFIED
   verification_request.save()
 
   return r.__dict__
