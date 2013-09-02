@@ -50,7 +50,7 @@ urlpatterns = patterns(
     url(r'^(?i)x/post-to-wall/', ajax_post_to_wall, name='ajax_post_to_wall'),
     url(r'^(?i)x/start-badge/', ajax_start_badge, name='ajax_start_badge'),
     url(r'^(?i)x/complete-unverified-badge/', ajax_complete_unverified_badge, name='ajax_complete_unverified_badge'),
-    url(r'^(?i)x/submit-verification-request/', ajax_submit_verification_request, name='ajax_submit_verification_request'),
+    url(r'^(?i)x/submit-verification/', ajax_submit_verification, name='ajax_submit_verification'),
     url(r'^(?i)x/join-track/', ajax_join_track, name='ajax_join_track'),
 
     # Authentication flow pages.

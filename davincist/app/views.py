@@ -92,11 +92,11 @@ def badge_detail(request, track_name, badge_id):
 
   if request.user.is_authenticated():
     try:
-      r.request = VerificationRequest.objects.get(user=request.user, badge=r.badge)
+      r.verification = Verification.objects.get(user=request.user, badge=r.badge)
       r.is_started = True
-      r.is_unsubmitted = r.request.status == VerificationRequest.UNSUBMITTED
-      r.is_unverified = r.request.status == VerificationRequest.UNVERIFIED
-      r.is_verified = r.request.status == VerificationRequest.VERIFIED
+      r.is_unsubmitted = r.verification.status == Verification.UNSUBMITTED
+      r.is_unverified = r.verification.status == Verification.UNVERIFIED
+      r.is_verified = r.verification.status == Verification.VERIFIED
     except ObjectDoesNotExist:
       r.is_started = False
 
@@ -221,17 +221,16 @@ def ajax_start_badge(request):
     return Response.errors(errors)
 
   badge = Badge.objects.get(pk=int(request.POST['badge']))
-  if VerificationRequest.objects.filter(user=request.user, badge=badge).exists():
+  if Verification.objects.filter(user=request.user, badge=badge).exists():
     return Response.errors('Badge already started.')
 
   if not request.user.user_tracks.filter(track__pk=badge.requirement.level.track.pk).exists():
     return Response.errors('User has not joined %s.' % badge.requirement.level.track.name)
 
   # Record that the badge has been started.
-  verification_request = VerificationRequest(user=request.user,
-                                             status=VerificationRequest.UNSUBMITTED)
-  verification_request.badge = badge
-  verification_request.save()
+  verification = Verification(user=request.user, status=Verification.UNSUBMITTED)
+  verification.badge = badge
+  verification.save()
 
   return r.__dict__
 
@@ -263,11 +262,11 @@ def ajax_complete_unverified_badge(request):
     return Response.errors('User has not joined %s.' % badge.requirement.level.track.name)
 
   try:
-    verification_request = VerificationRequest.objects.get(user=request.user, badge=badge)
+    verification = Verification.objects.get(user=request.user, badge=badge)
   except ObjectDoesNotExist:
     return Response.errors('Badge not started.')
 
-  if verification_request.status != VerificationRequest.UNSUBMITTED:
+  if verification.status != Verification.UNSUBMITTED:
     return Response.errors('Badge already completed.')
 
   # Award the badge and xp.
@@ -276,14 +275,14 @@ def ajax_complete_unverified_badge(request):
   user_track.save()
 
   # Record that the badge has been completed.
-  verification_request.status = VerificationRequest.VERIFIED
-  verification_request.save()
+  verification.status = Verification.VERIFIED
+  verification.save()
 
   return r.__dict__
 
 
 @ajax_request
-def ajax_submit_verification_request(request):
+def ajax_submit_verification(request):
   r = Response()
   if request.method != 'POST':
     return Response.errors('Request must use POST; used: %s.' % request.method)
@@ -309,18 +308,18 @@ def ajax_submit_verification_request(request):
   video_proof = request.POST['video_proof']
 
   try:
-    verification_request = VerificationRequest.objects.get(user=request.user, badge=badge)
+    verification = Verification.objects.get(user=request.user, badge=badge)
   except ObjectDoesNotExist:
     return Response.errors('Badge not started.')
 
-  if verification_request.status == VerificationRequest.VERIFIED:
+  if verification.status == Verification.VERIFIED:
     return Response.errors('Badge already completed.')
 
   # Update the data and open the request for verification.
-  verification_request.text = text_proof
-  verification_request.youtube_id = video_proof
-  verification_request.status = VerificationRequest.UNVERIFIED
-  verification_request.save()
+  verification.text = text_proof
+  verification.youtube_id = video_proof
+  verification.status = Verification.UNVERIFIED
+  verification.save()
 
   return r.__dict__
 

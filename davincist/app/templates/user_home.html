@@ -19,8 +19,8 @@ TODO
     {% if current_challenges %}
       <li>{{ user_track.track.name }}
       <ul>
-      {% for verification_request in current_challenges %}
-        <li>{{ verification_request }}
+      {% for verification in current_challenges %}
+        <li>{{ verification }}
       {% endfor %}
       </ul>
     {% else %}
@@ -53,8 +53,8 @@ TODO
     {% if challenges_to_verify %}
       <li>{{ user_track.track.name }}
       <ul>
-      {% for verification_request in challenges_to_verify %}
-        <li>{{ verification_request }}
+      {% for verification in challenges_to_verify %}
+        <li>{{ verification }}
       {% endfor %}
       </ul>
     {% else %}

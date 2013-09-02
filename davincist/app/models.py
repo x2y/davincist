@@ -147,9 +147,9 @@ class Badge(models.Model):
     ordering = ['requirement__level__track', 'requirement__level__rank', 'grade', 'name']
 
 
-class VerificationRequest(models.Model):
-  user = models.ForeignKey(User, related_name='verification_requests')
-  badge = models.ForeignKey(Badge, related_name='verification_requests')
+class Verification(models.Model):
+  user = models.ForeignKey(User, related_name='verifications')
+  badge = models.ForeignKey(Badge, related_name='verifications')
   text = models.TextField(blank=True)
   youtube_id = models.SlugField(max_length=11, blank=True)
   UNSUBMITTED, UNVERIFIED, VERIFIED = 'X', 'U', 'V'
@@ -204,8 +204,8 @@ class UserTrack(models.Model):
 
   def current_challenges(self):
     return (
-        self.user.verification_requests
-        .filter(status__in=(VerificationRequest.UNSUBMITTED, VerificationRequest.UNVERIFIED),
+        self.user.verifications
+        .filter(status__in=(Verification.UNSUBMITTED, Verification.UNVERIFIED),
                 badge__requirement__level__track=self.track)
         .order_by('-timestamp'))
 
@@ -213,19 +213,19 @@ class UserTrack(models.Model):
     return (
         Requirement.objects
         .filter(level=self.level.next())
-        .exclude(badges__verification_requests__user=self.user,
-                 badges__verification_requests__status__in=(VerificationRequest.UNSUBMITTED,
-                                                            VerificationRequest.UNVERIFIED,
-                                                            VerificationRequest.VERIFIED)))
+        .exclude(badges__verifications__user=self.user,
+                 badges__verifications__status__in=(Verification.UNSUBMITTED,
+                                                    Verification.UNVERIFIED,
+                                                    Verification.VERIFIED)))
 
   def challenges_to_verify(self):
     return (
-        VerificationRequest.objects
+        Verification.objects
         .exclude(user=self.user)
         .filter(Q(badge__in=self.badges.all()) |
                 Q(badge__requirement__level__track=self.track,
                   badge__requirement__level__rank__lt=self.level.rank),
-                status=VerificationRequest.UNVERIFIED))
+                status=Verification.UNVERIFIED))
 
   class Meta:
     ordering = ['user', 'track']
@@ -238,8 +238,7 @@ class WallPost(models.Model):
   MAX_TEXT_LENGTH = 512
   text = models.CharField(max_length=MAX_TEXT_LENGTH)
   is_public = models.BooleanField(default=True)
-  verification_request = models.ForeignKey(VerificationRequest, related_name='wall_posts',
-                                           blank=True, null=True)
+  verification = models.ForeignKey(Verification, related_name='wall_posts', blank=True, null=True)
   timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   @ellipsis(100)
@@ -256,8 +255,8 @@ class WallPost(models.Model):
         'is_public': self.is_public,
         'timestamp': int(time.mktime(self.timestamp.timetuple())),
     }
-    if self.verification_request:
-      ret['verification_request'] = self.verification_request.to_dict()
+    if self.verification:
+      ret['verification'] = self.verification.to_dict()
     return ret
 
   class Meta:
