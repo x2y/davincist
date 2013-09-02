@@ -175,23 +175,6 @@ class VerificationRequest(models.Model):
     unique_together = ('user', 'badge')
 
 
-class Verification(models.Model):
-  request = models.ForeignKey(VerificationRequest, related_name='verifications')
-  verifier = models.ForeignKey(User, related_name='verifications')
-  is_positive = models.BooleanField(default=False)
-  timestamp = models.DateTimeField(default=datetime.now, editable=False, blank=True)
-
-  def __unicode__(self):
-    return '%s for %s - %sverified by %s' % (self.request.badge.name, self.request.user.username,
-                                             '' if self.is_positive else 'not ',
-                                             self.verifier.username)
-
-  class Meta:
-    get_latest_by = 'time'
-    ordering = ['verifier', '-timestamp']
-    unique_together = ('request', 'verifier')
-
-
 class UserProfile(models.Model):
   user = models.OneToOneField(User, primary_key=True, related_name='profile')
   MALE, FEMALE, OTHER = 'M', 'F', 'O'
