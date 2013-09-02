@@ -141,7 +141,7 @@ def ajax_get_wall_posts(request):
 
   errors = get_errors(request.GET, {
       'target_user': (RequiredValidator(), ModelValidator(User, int)),
-      'since_id': (ModelValidator(WallPost, int)),
+      'since_pk': (ModelValidator(WallPost, int)),
   })
   if errors:
     return Response.errors(errors)
