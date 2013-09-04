@@ -77,18 +77,7 @@ TODO
   </div>
 </div>
 
-<div id="wall">
-  <div class="public-post template">
-    <span class="poster"></span>
-    <span class="text"></span>
-    <span class="timestamp"></span>
-  </div>
-  <div class="private-post template">
-    <span class="poster"></span>
-    <span class="text"></span>
-    <span class="timestamp"></span>
-  </div>
-</div>
+{% include "wall_template.html" %}
 <div id="wall-load-previous-error" class="error"></div>
 <button id="wall-load-previous-button" disabled>Load more</button>
 {% endblock %}
