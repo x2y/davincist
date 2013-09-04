@@ -3,10 +3,53 @@
     <span class="poster"></span>
     <span class="text"></span>
     <span class="timestamp"></span>
+    <span class="verification"></span>
   </div>
   <div class="private-post template">
     <span class="poster"></span>
     <span class="text"></span>
     <span class="timestamp"></span>
+    <span class="verification"></span>
   </div>
 </div>
+
+<script>
+  function renderPost(post) {
+    var templateParams = {
+      poster: post.poster,
+      text: post.text,
+      timestamp: new Date(post.timestamp * 1000).toLocaleString()
+    };
+    if (post.verification != null) {
+      templateParams.verification = ' re: ' + post.verification.badge;
+    }
+    var postClass = post.is_public ? '.public-post' : '.private-post';
+    return renderTemplate($(postClass + '.template'), templateParams);
+  }
+
+  function postToWall(isPublic, opt_verificationPk) {
+    $('#wall-post-box :input').attr('disabled', true);
+    $('#wall-post-error').text('');
+
+    var data = {};
+    data.text = $('#wall-post-textbox').val();
+    data.to = targetUserPk;
+    data.is_public = isPublic;
+    if (opt_verificationPk) {
+      data.verification_pk = opt_verificationPk;
+    }
+    $.post('{% url ajax_post_to_wall %}', data, function (data) {
+      if (data.errors) {
+        $('#wall-post-error').text(data.errors.join());
+        return;
+      }
+
+      renderPost(data.post).prependTo($('#wall'));
+      $('#wall-post-textbox').val('');
+    }).fail(function() {
+      $('#wall-post-error').text('Server error!');
+    }).always(function() {
+      $('#wall-post-box :input').removeAttr('disabled');
+    });
+  }
+</script>

@@ -184,6 +184,7 @@ def ajax_post_to_wall(request):
       'text': (NonEmptyValidator(), StrippedLengthValidator(WallPost.MAX_TEXT_LENGTH)),
       'to': (RequiredValidator(), ModelValidator(User, int)),
       'is_public': (RequiredValidator(), BooleanValidator()),
+      'verification_pk': (ModelValidator(Verification, int)),
   })
   if errors:
     return Response.errors(errors)
@@ -192,12 +193,15 @@ def ajax_post_to_wall(request):
   text = request.POST['text'].strip()
   to_pk = int(request.POST['to'])
   is_public = request.POST['is_public'] == 'true'
-
-  # TODO: Support badge verification linking.
+  verification_pk = (int(request.POST['verification_pk'])
+                     if 'verification_pk' in request.POST
+                     else None)
 
   # Create and save the new WallPost.
   post = WallPost(poster=request.user, text=text, is_public=is_public)
   post.user_id = to_pk
+  if verification_pk:
+    post.verification_id = verification_pk
   post.save()
   r.post = post.to_dict()
   return r.__dict__

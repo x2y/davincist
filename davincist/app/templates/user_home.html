@@ -113,12 +113,10 @@ TODO
           $('#wall-load-previous-posts-error').text(data.errors.join());
           return;
         }
+        var $wall = $('#wall');
         for (var i = 0; i < data.wall_posts.length; ++i) {
           var post = data.wall_posts[i];
-          post.timestamp = new Date(post.timestamp * 1000).toLocaleString();
-
-          var postClass = post.is_public ? '.public-post' : '.private-post';
-          renderTemplate($(postClass + '.template'), post).appendTo($('#wall'));
+          renderPost(post).appendTo(wall);
           earliestWallPostPk = post.pk;
         }
         if (!data.has_next) {
@@ -129,31 +127,6 @@ TODO
       $('#wall-load-previous-error').text('Server error!');
     }).always(function() {
       $('#wall-load-previous-button').removeAttr('disabled');
-    });
-  }
-
-  function postToWall(is_public) {
-    $('#wall-post-box :input').attr('disabled', true);
-    $('#wall-post-error').text('');
-
-    var data = {};
-    data.text = $('#wall-post-textbox').val();
-    data.to = targetUserPk;
-    data.is_public = is_public;
-    $.post('{% url ajax_post_to_wall %}', data, function (data) {
-      if (data.errors) {
-        $('#wall-post-error').text(data.errors.join());
-        return;
-      }
-
-      data.post.timestamp = new Date(data.post.timestamp * 1000).toLocaleString();
-      var postClass = data.post.is_public ? '.public-post' : '.private-post';
-      renderTemplate($(postClass + '.template'), data.post).prependTo($('#wall'));
-      $('#wall-post-textbox').val('');
-    }).fail(function() {
-      $('#wall-post-error').text('Server error!');
-    }).always(function() {
-      $('#wall-post-box :input').removeAttr('disabled');
     });
   }
 </script>
