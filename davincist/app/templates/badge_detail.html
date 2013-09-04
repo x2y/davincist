@@ -36,7 +36,7 @@
     <h1>Verification</h1>
     {% if not badge.requires_verification %}
       <!-- Unverified badge form -->
-      {% if is_unsubmitted %}
+      {% if not is_verified %}
         <div id="complete-badge-form">
           <div id="oath">I, {{ user.first_name }} {{ user.last_name }}, have completed the requirements for this badge.</div>
           <label for="signature-field">Signature:</label>
