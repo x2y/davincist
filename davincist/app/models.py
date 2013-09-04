@@ -262,3 +262,26 @@ class WallPost(models.Model):
   class Meta:
     get_latest_by = 'timestamp'
     ordering = ['user', '-timestamp']
+
+
+def user_can_verify(self, verification):
+  if not self.is_authenticated():
+    return False
+  elif self == verification.user:
+    return not verification.badge.requires_verification
+  elif verification.status != Verification.UNVERIFIED:
+    return False
+  else:
+    try:
+      verification_badge = verification.badge
+      verification_level = verification_badge.requirement.level
+      user_track = self.user_tracks.get(track__name=verification_level.track)
+      if user_track.level > verification_level:
+        return True
+      else:
+        return user_track.badges.filter(badge=verification_badge).exists()
+    except ObjectDoesNotExist:
+      return False
+
+
+User.add_to_class('can_verify', user_can_verify)
