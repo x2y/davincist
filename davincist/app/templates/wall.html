@@ -1,0 +1,161 @@
+{% if allow_public_posting or allow_private_posting %}
+  <div id="wall-post-box">
+    <textarea id="wall-post-textbox"></textarea>
+    <div id="wall-post-error" class="error"></div>
+    <div id="wall-post-button-box">
+      {% if allow_public_posting %}
+        <button id="wall-post-public-button">Post Public</button>
+      {% endif %}
+      {% if allow_private_posting %}
+        <button id="wall-post-private-button">Post Private</button>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+<div id="wall">
+  <div class="public-post template">
+    <span class="poster"></span>
+    <span class="text"></span>
+    <span class="timestamp"></span>
+    <span class="verification"></span>
+  </div>
+  <div class="private-post template">
+    <span class="poster"></span>
+    <span class="text"></span>
+    <span class="timestamp"></span>
+    <span class="verification"></span>
+  </div>
+</div>
+<div id="wall-load-error" class="error"></div>
+{% if paginate %}
+  <button id="wall-load-button" disabled>Load more</button>
+{% endif %}
+
+<script>
+  {% if allow_public_posting or allow_private_posting %}
+    $(function () {
+      {% if allow_public_posting %}
+        $('#wall-post-public-button').click(function() { postToWall(true); });
+      {% endif %}
+      {% if allow_private_posting %}
+        $('#wall-post-private-button').click(function() { postToWall(false); });
+      {% endif %}
+    });
+  {% endif %}
+
+  function renderPost(post) {
+    var templateParams = {
+      poster: post.poster,
+      text: post.text,
+      timestamp: new Date(post.timestamp * 1000).toLocaleString()
+    };
+    if (post.verification != null) {
+      templateParams.verification = ' re: ' + post.verification.badge;
+    }
+    var postClass = post.is_public ? '.public-post' : '.private-post';
+    return renderTemplate($(postClass + '.template'), templateParams);
+  }
+
+  {% if paginate %}
+    var earliestWallPostPk = null;
+
+    function loadWallPosts() {
+      $('#wall-load-button').attr('disabled', true);
+      $('#wall-load-error').text('');
+
+      var data = {
+        target_user: {{ target_user.pk }},
+        paginate: true
+        {% if verification %}, verification_pk: {{ verification.pk }}{% endif %}
+      };
+      if (earliestWallPostPk) {
+        data.since_pk = earliestWallPostPk;
+      }
+      $.ajax({
+        url: '{% url ajax_get_wall_posts %}',
+        data: data,
+        cache: false,
+        success: function (data) {
+          if (data.errors) {
+            $('#wall-load-error').text(data.errors.join());
+            return;
+          }
+          var $wall = $('#wall');
+          for (var i = 0; i < data.wall_posts.length; ++i) {
+            var post = data.wall_posts[i];
+            renderPost(post).appendTo(wall);
+            earliestWallPostPk = post.pk;
+          }
+          if (!data.has_next) {
+            $('#wall-load-button').remove();
+          }
+        }
+      }).fail(function() {
+        $('#wall-load-error').text('Server error!');
+      }).always(function() {
+        $('#wall-load-button').removeAttr('disabled');
+      });
+    }
+  {% else %}
+    function loadWallPosts() {
+      $('#wall-load-error').text('');
+
+      var data = {
+        target_user: {{ target_user.pk }},
+        paginate: false
+        {% if verification %}, verification_pk: {{ verification.pk }}{% endif %}
+      };
+      $.ajax({
+        url: '{% url ajax_get_wall_posts %}',
+        data: data,
+        cache: false,
+        success: function (data) {
+          if (data.errors) {
+            $('#wall-load-error').text(data.errors.join());
+            return;
+          }
+          var $wall = $('#wall');
+          for (var i = 0; i < data.wall_posts.length; ++i) {
+            var post = data.wall_posts[i];
+            renderPost(post).appendTo(wall);
+          }
+        }
+      }).fail(function() {
+        $('#wall-load-error').text('Server error!');
+      });
+    }
+  {% endif %}
+
+  $(function () {
+    {% if paginate %}
+      $('#wall-load-button').click(loadWallPosts);
+    {% endif %}
+    loadWallPosts();
+  });
+
+  function postToWall(isPublic) {
+    $('#wall-post-box :input').attr('disabled', true);
+    $('#wall-post-error').text('');
+
+    var data = {};
+    data.text = $('#wall-post-textbox').val();
+    data.to = {{ target_user.pk }};
+    data.is_public = isPublic;
+    {% if verification %}
+      data.verification_pk = {{ verification.pk }};
+    {% endif %}
+    $.post('{% url ajax_post_to_wall %}', data, function (data) {
+      if (data.errors) {
+        $('#wall-post-error').text(data.errors.join());
+        return;
+      }
+
+      renderPost(data.post).prependTo($('#wall'));
+      $('#wall-post-textbox').val('');
+    }).fail(function() {
+      $('#wall-post-error').text('Server error!');
+    }).always(function() {
+      $('#wall-post-box :input').removeAttr('disabled');
+    });
+  }
+</script>

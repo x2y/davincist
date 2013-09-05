@@ -9,7 +9,6 @@
 <script>
   var userPk = {{ user.pk }};
   var badgePk = {{ badge.pk }};
-  var verificationPk = {{ verification.pk }};
   var firstName = '{{ user.first_name|lower|escapejs }}';
   var lastName = '{{ user.last_name|lower|escapejs }}';
 </script>
@@ -71,9 +70,7 @@
           <div id="submit-verification-error" class="error"></div>
         {% endif %}
       </div>
-      {% if badge.requires_verification %}
-        {% include "wall_template.html" %}
-      {% endif %}
+      {% wall user allow_private_posting=False verification=verification %}
     {% endif %}
   </div>
 </div>
@@ -159,7 +156,6 @@
 
       $('#{{ is_unsubmitted|yesno:'update,submit' }}-verification-button').hide();
       updateVideoPreview();
-      loadWallPosts();
     });
 
     var UPDATE_VIDEO_PREVIEW_DELAY_MS = 1000;
@@ -193,34 +189,6 @@
       } else {
         $videoEmbed.hide();
       }
-    }
-
-    function loadWallPosts() {
-      $('#wall-load-error').text('');
-
-      var data = {
-        target_user: userPk,
-        paginate: false,
-        verification_pk: verificationPk
-      };
-      $.ajax({
-        url: '{% url ajax_get_wall_posts %}',
-        data: data,
-        cache: false,
-        success: function (data) {
-          if (data.errors) {
-            $('#wall-load-error').text(data.errors.join());
-            return;
-          }
-          var $wall = $('#wall');
-          for (var i = 0; i < data.wall_posts.length; ++i) {
-            var post = data.wall_posts[i];
-            renderPost(post).appendTo(wall);
-          }
-        }
-      }).fail(function() {
-        $('#wall-load-error').text('Server error!');
-      });
     }
 
     function submitVerification() {
