@@ -78,7 +78,6 @@ TODO
 </div>
 
 {% include "wall_template.html" %}
-<div id="wall-load-previous-error" class="error"></div>
 <button id="wall-load-previous-button" disabled>Load more</button>
 {% endblock %}
 
@@ -97,10 +96,12 @@ TODO
 
   function loadPreviousWallPosts() {
     $('#wall-load-previous-button').attr('disabled', true);
-    $('#wall-load-previous-error').text('');
+    $('#wall-load-error').text('');
 
-    var data = {};
-    data.target_user = targetUserPk;
+    var data = {
+      target_user: targetUserPk,
+      paginate: true
+    };
     if (earliestWallPostPk) {
       data.since_pk = earliestWallPostPk;
     }
@@ -110,7 +111,7 @@ TODO
       cache: false,
       success: function (data) {
         if (data.errors) {
-          $('#wall-load-previous-posts-error').text(data.errors.join());
+          $('#wall-load-error').text(data.errors.join());
           return;
         }
         var $wall = $('#wall');
@@ -124,7 +125,7 @@ TODO
         }
       }
     }).fail(function() {
-      $('#wall-load-previous-error').text('Server error!');
+      $('#wall-load-error').text('Server error!');
     }).always(function() {
       $('#wall-load-previous-button').removeAttr('disabled');
     });

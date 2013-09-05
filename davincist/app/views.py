@@ -141,28 +141,38 @@ def ajax_get_wall_posts(request):
 
   errors = get_errors(request.GET, {
       'target_user': (RequiredValidator(), ModelValidator(User, int)),
+      'paginate': (RequiredValidator(), BooleanValidator()),
       'since_pk': (ModelValidator(WallPost, int)),
+      'verification_pk': (ModelValidator(Verification, int)),
   })
   if errors:
     return Response.errors(errors)
 
   target_user_pk = int(request.GET['target_user'])
 
-  # Get all wall posts visible to the specified user (paginated).
+  # Get all wall posts visible to the specified user.
+  wall_posts = WallPost.objects.filter(
+      Q(is_public=True) | Q(user=request.user) | Q(poster=request.user),
+      user__pk=target_user_pk)
+
   if 'since_pk' in request.GET:
-    since_pk = int(request.GET['since_pk'])
-    wall_posts = WallPost.objects.filter(
-        Q(is_public=True) | Q(user=request.user) | Q(poster=request.user),
-        user__pk=target_user_pk,
-        pk__lt=since_pk).order_by('-timestamp').all()[:WALL_POSTS_PER_PAGE + 1]
+    wall_posts = wall_posts.filter(pk__lt=int(request.GET['since_pk']))
+
+  if 'verification_pk' in request.GET:
+    wall_posts = wall_posts.filter(verification__pk=int(request.GET['verification_pk']))
+
+  # Always sort by newest first, allowing the client to reorder the posts, if necessary.
+  wall_posts = wall_posts.order_by('-timestamp').all()
+
+  if request.GET['paginate'] == 'true':
+    # Ignore the last post, which is just used to decide whether has_next.
+    wall_post_count = min(len(wall_posts), WALL_POSTS_PER_PAGE)
+    wall_posts = wall_posts[:WALL_POSTS_PER_PAGE + 1]
   else:
-    # Just get the latest wall posts if no since_pk field is specified.
-    wall_posts = WallPost.objects.filter(
-        Q(is_public=True) | Q(user=request.user) | Q(poster=request.user),
-        user__pk=target_user_pk).order_by('-timestamp').all()[:WALL_POSTS_PER_PAGE + 1]
+    wall_post_count = len(wall_posts)
 
   r.wall_posts = []
-  for i in xrange(min(len(wall_posts), WALL_POSTS_PER_PAGE)):
+  for i in xrange(wall_post_count):
     r.wall_posts.append(wall_posts[i].to_dict())
   r.has_next = len(wall_posts) > WALL_POSTS_PER_PAGE
 
