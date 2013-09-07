@@ -312,6 +312,30 @@ body {
   visibility: hidden;
 }
 
+.banner {
+  position: fixed;
+  top: 50%;
+  height: 300px;
+  margin-top: -150px;
+  width: 100%;
+  opacity: 1;
+  box-shadow: #000 2px 2px 13px;
+  display: none;
+}
+
+.banner-text {
+  width: 100%;
+  height: 300px;
+  padding: 50px 75px;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  font: 10px 'Lobster', cursive;
+  text-align: center;
+  position: relative;
+  text-shadow: #000 0px 3px 10px, rgba(0, 0, 0, 0.3) 0px 0px 30px;
+}
+
 .template {
   display: none;
 }

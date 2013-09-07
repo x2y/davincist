@@ -6,6 +6,7 @@
   <link href="{% static 'base.css' %}" rel="stylesheet" type="text/css">
   <script src="{% static 'jquery.min.js' %}"></script>
   <script src="{% static 'jquery.cookie.js' %}"></script>
+  <script src="{% static 'jquery.textFit.min.js' %}"></script>
   <script src="{% static 'base.js' %}"></script>
   <script src="{% static 'ajax.js' %}"></script>
   <script>
@@ -42,6 +43,9 @@
   <div id="content" class="floating-box">{% block content %}{% endblock %}</div>
   <div>{% block footer %}{% endblock %}</div>
   <div id="dimmer"><div></div></div>
+  <!-- Use two banners for smooth cross-fading. -->
+  <div class="banner"><div class="banner-text"></div></div>
+  <div class="banner"><div class="banner-text"></div></div>
   <script>
     $(function() {
       var MIN_NAV_TOP_PX = 25;
