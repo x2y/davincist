@@ -183,7 +183,9 @@
       }
 
       var $videoEmbed = $('#video-proof-embed');
-      $videoEmbed.attr('src', '//www.youtube.com/embed/' + (videoId || '00000000000'));
+      $videoEmbed.attr('src',
+                       '//www.youtube.com/embed/' + (videoId || '00000000000') +
+                       '?wmode=transparent');
       if (text) {
         $videoEmbed.show();
       } else {
