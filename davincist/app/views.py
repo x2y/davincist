@@ -126,13 +126,6 @@ def user_merits(request, username, track_name):
   return r.__dict__
 
 
-@render_to('user_edit.html')
-def user_edit(request, username):
-  r = Response()
-  r.user = get_object_or_404(User, username__iexact=username)
-  return r.__dict__
-
-
 @ajax_request
 def ajax_get_wall_posts(request):
   r = Response()
