@@ -56,7 +56,7 @@
 {{ block.super }}
 <script>
   {% if user.is_authenticated and not user_track %}
-    $(function() {
+    $(function () {
       $('#join-track-button').click(joinTrack);
     });
 
@@ -73,9 +73,9 @@
           return;
         }
         location.reload();
-      }).fail(function() {
+      }).fail(function () {
         $('#join-track-error').text('Server error!');
-      }).always(function() {
+      }).always(function () {
         $('#join-track-button').removeAttr('disabled');
       });
     }

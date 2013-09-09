@@ -47,29 +47,29 @@
   <div class="banner"><div class="banner-text"></div></div>
   <div class="banner"><div class="banner-text"></div></div>
   <script>
-    $(function() {
+    $(function () {
       var MIN_NAV_TOP_PX = 25;
-      $(document).scroll(function(e) {
+      $(document).scroll(function (e) {
         var top = $(document).scrollTop();
         $('#nav').css('margin-top', Math.max(MIN_NAV_TOP_PX, 150 - top) + 'px');
       });
       $(document).scroll();
 
-      $('#dimmer, #dimmer:first-child').click(function() { showDimmer(false); });
+      $('#dimmer, #dimmer:first-child').click(function () { showDimmer(false); });
     });
 
     function showDimmer(show) {
       if (show || typeof show == 'undefined') {
         $('#dimmer').fadeIn(300);
       } else {
-        $('#dimmer').fadeOut(300, function() {
+        $('#dimmer').fadeOut(300, function () {
           $('#dimmer:first-child').empty();
         });
       }
     }
 
     {% if user.is_authenticated %}
-      $(function() {
+      $(function () {
         $('#gutter-box').hover(showMerits);
       });
 

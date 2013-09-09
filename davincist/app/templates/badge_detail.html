@@ -82,7 +82,7 @@
 {{ block.super }}
 <script>
   {% if not is_started %}
-    $(function() { $('#start-badge-button').click(startBadge); });
+    $(function () { $('#start-badge-button').click(startBadge); });
 
     function startBadge() {
       $('#start-badge-button').attr('disabled', true);
@@ -98,18 +98,18 @@
         }
         $('#start-badge-mask').remove();
         $('#training').css('max-height', 'none');
-      }).fail(function() {
+      }).fail(function () {
         $('#start-badge-error').text('Server error!');
-      }).always(function() {
+      }).always(function () {
         $('#start-badge-button').removeAttr('disabled');
       });
     }
   {% else %}
-    $(function() { $('#training').css('max-height', 'none'); });
+    $(function () { $('#training').css('max-height', 'none'); });
   {% endif %}
 
   {% if not badge.requires_verification and is_unsubmitted %}
-    $(function() {
+    $(function () {
       $('#signature-field').keyup(signatureChanged);
       signatureChanged();
       $('#complete-badge-button').click(completeBadge);
@@ -143,14 +143,14 @@
         }
         $('#complete-badge-form').remove();
         // TODO: add "earned mm/dd/yyyy" text
-      }).fail(function() {
+      }).fail(function () {
         $('#complete-badge-error').text('Server error!');
         $('#complete-badge-button').removeAttr('disabled');
         $('#signature-field').removeAttr('disabled');
       });
     }
   {% elif badge.requires_verification %}
-    $(function() {
+    $(function () {
       {% if not is_verified %}
         $('#raw-video-proof-field').keyup(videoChanged);
         $('#submit-verification-button, #update-verification-button').click(submitVerification);
@@ -232,7 +232,7 @@
         enable(formFields);
         
         alert('Success!');
-      }).fail(function() {
+      }).fail(function () {
         $('#submit-verification-error').text('Server error!');
         enable(formFields);
       });

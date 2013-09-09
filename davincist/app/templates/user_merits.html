@@ -30,7 +30,7 @@
   {% endfor %}
   </div>
   <script>
-    $(function() {
+    $(function () {
       $('#track-selector-container li').click(trackSelectorClicked);
       selectTrack('{{ track.name }}');
     });
@@ -41,7 +41,7 @@
 
     function selectTrack(name) {
       var newSelectedTrackIndex = 0;
-      $('#track-selector-container li').each(function(i, elem) {
+      $('#track-selector-container li').each(function (i, elem) {
         if (trim($(elem).text()) == name) {
           newSelectedTrackIndex = i;
           return false;
