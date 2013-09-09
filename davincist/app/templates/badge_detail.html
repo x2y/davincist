@@ -72,7 +72,9 @@
           <div id="submit-verification-error" class="error"></div>
         {% endif %}
       </div>
-      {% wall user allow_private_posting=False verification=verification %}
+      {% if is_started %}
+        {% wall user allow_private_posting=False verification=verification %}
+      {% endif %}
     {% endif %}
   </div>
 </div>
