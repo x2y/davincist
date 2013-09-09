@@ -1,0 +1,16 @@
+{% extends "base_user.html" %}
+
+{% load tags %}
+
+{% block tab_title %}{{ target_user.username }}'s Verifications{% endblock %}
+{% block subtitle %}Verify{% endblock %}
+
+{% block content %}
+{% if target_user != user %}
+  What are you doing here silly? You're not {{ target_user.username }}!
+  <br>
+  <a href="{% url user_verify user.username %}">Here's</a> your verification page :)
+{% else %}
+  TODO: Implement verification form.
+{% endif %}
+{% endblock %}

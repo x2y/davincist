@@ -43,6 +43,7 @@ urlpatterns = patterns(
     url(r'^(?i)u/signup/$', user_add, name='user_add'),
     url(r'^(?i)u/%s/$' % USER_GROUP, user_home, name='user_home'),
     url(r'^(?i)u/%s/merits/(?:%s/)?' % (USER_GROUP, TRACK_GROUP), user_merits, name='user_merits'),
+    url(r'^(?i)u/%s/verify/$' % USER_GROUP, user_verify, name='user_verify'),
 
     # AJAX pages.
     url(r'^(?i)x/get-wall-posts/', ajax_get_wall_posts, name='ajax_get_wall_posts'),
