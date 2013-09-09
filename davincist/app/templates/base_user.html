@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 
-{% block tab_title %}Home{% endblock %}
+{% block tab_title %}{{ target_user.username }}{% endblock %}
+{% block title %}{{ target_user.username }}{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<style>
+  body {
+    background-color: #DDD;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 Lorem ipsum dolor...
