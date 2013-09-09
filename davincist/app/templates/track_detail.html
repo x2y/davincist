@@ -65,8 +65,9 @@
       $('#join-track-button').attr('disabled', true);
       $('#join-track-error').text('');
 
-      var data = {};
-      data.track = trackName;
+      var data = {
+        track: trackName      
+      };
       $.post('{% url ajax_join_track %}', data, function (data) {
         if (data.errors) {
           $('#join-track-error').text(data.errors.join());
