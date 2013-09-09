@@ -7,6 +7,8 @@
 
 {% block head %}
 {{ block.super }}
+{% load staticfiles %}
+<script src="{% static 'wall.js' %}"></script>
 <script>var targetUserPk = {{ target_user.pk }};</script>
 {% endblock %}
 

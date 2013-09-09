@@ -6,6 +6,8 @@
 
 {% block head %}
 {{ block.super }}
+{% load staticfiles %}
+<script src="{% static 'wall.js' %}"></script>
 <script>
   var userPk = {{ user.pk }};
   var badgePk = {{ badge.pk }};
