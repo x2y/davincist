@@ -35,21 +35,20 @@ function loadWallPosts(targetUserPk, paginate, opt_verificationPk) {
   $.ajax({
     url: '/x/get-wall-posts/',
     data: data,
-    cache: false,
-    success: function (data) {
-      if (data.errors) {
-        $(wallSelector + ' .wall-load-error').text(data.errors.join());
-        return;
-      }
-      var $wall = $(wallSelector + ' .wall');
-      for (var i = 0; i < data.wall_posts.length; ++i) {
-        var post = data.wall_posts[i];
-        renderPost(targetUserPk, post).appendTo($wall);
-        if (paginate) {
-          earliestWallPostPks[targetUserPk] = post.pk;
-          if (!data.has_next) {
-            $(wallSelector + ' .wall-load-button').remove();
-          }
+    cache: false
+  }).done(function (data) {
+    if (data.errors) {
+      $(wallSelector + ' .wall-load-error').text(data.errors.join());
+      return;
+    }
+    var $wall = $(wallSelector + ' .wall');
+    for (var i = 0; i < data.wall_posts.length; ++i) {
+      var post = data.wall_posts[i];
+      renderPost(targetUserPk, post).appendTo($wall);
+      if (paginate) {
+        earliestWallPostPks[targetUserPk] = post.pk;
+        if (!data.has_next) {
+          $(wallSelector + ' .wall-load-button').remove();
         }
       }
     }
