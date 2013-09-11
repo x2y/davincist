@@ -275,11 +275,11 @@ def user_can_verify(self, verification):
     try:
       verification_badge = verification.badge
       verification_level = verification_badge.requirement.level
-      user_track = self.user_tracks.get(track__name=verification_level.track)
-      if user_track.level > verification_level:
+      user_track = self.user_tracks.get(track=verification_level.track)
+      if user_track.level.rank > verification_level.rank:
         return True
       else:
-        return user_track.badges.filter(badge=verification_badge).exists()
+        return user_track.badges.filter(pk=verification_badge.pk).exists()
     except ObjectDoesNotExist:
       return False
 
