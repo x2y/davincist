@@ -73,7 +73,7 @@
         {% endif %}
       </div>
       {% if is_started %}
-        {% wall user allow_private_posting=False verification=verification %}
+        {% include 'user_wall.html' with target_user=verification.user verification=verification %}
       {% endif %}
     {% endif %}
   </div>

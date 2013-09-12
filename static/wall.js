@@ -10,7 +10,7 @@ function renderPost(targetUserPk, post) {
     text: post.text,
     timestamp: new Date(post.timestamp * 1000).toLocaleString()
   };
-  if (post.verification != null) {
+  if (post.verification) {
     templateParams.verification = ' re: ' + post.verification.badge;
   }
   var wallSelector = buildWallSelector(targetUserPk);
@@ -29,7 +29,7 @@ function loadWallPosts(targetUserPk, paginate, opt_verificationPk) {
   if (paginate) {
     data.since_pk = earliestWallPostPks[targetUserPk];
   }
-  if (opt_verificationPk != null) {
+  if (opt_verificationPk) {
     data.verification_pk = opt_verificationPk;
   }
   $.ajax({
@@ -41,6 +41,7 @@ function loadWallPosts(targetUserPk, paginate, opt_verificationPk) {
       $(wallSelector + ' .wall-load-error').text(data.errors.join());
       return;
     }
+
     var $wall = $(wallSelector + ' .wall');
     for (var i = 0; i < data.wall_posts.length; ++i) {
       var post = data.wall_posts[i];
@@ -59,17 +60,32 @@ function loadWallPosts(targetUserPk, paginate, opt_verificationPk) {
   });
 }
 
-function postToWall(targetUserPk, isPublic, opt_verificationPk) {
+function postToWall(targetUserPk, isPublic, opt_verificationPk, opt_verify) {
   var wallSelector = buildWallSelector(targetUserPk);
+  var text = trim($(wallSelector + ' .wall-post-textbox').val());
+
+  if (text.length == 0) {
+    if (opt_verify) {
+      verify(opt_verificationPk, opt_verify);
+      return;
+    } else if (opt_verificationPk && opt_verify === false) {
+      $(wallSelector + ' .wall-post-error').text(
+          'You must provide an explanation to say "Needs more work."');
+      return;  
+    } else {
+      return;
+    }
+  }
+
   disable($(wallSelector + ' .wall-post-box :input'));
   $(wallSelector + ' .wall-post-error').text('');
 
   var data = {
-    text: $(wallSelector + ' .wall-post-textbox').val(),
+    text: text,
     to: targetUserPk,
     is_public: isPublic
   };
-  if (opt_verificationPk != null) {
+  if (opt_verificationPk) {
     data.verification_pk = opt_verificationPk;
   }
   $.post('/x/post-to-wall/', data, function (data) {
@@ -80,6 +96,10 @@ function postToWall(targetUserPk, isPublic, opt_verificationPk) {
 
     renderPost(targetUserPk, data.post).prependTo($(wallSelector + ' .wall'));
     $(wallSelector + ' .wall-post-textbox').val('');
+
+    if (typeof opt_verify == 'boolean') {
+      verify(opt_verificationPk, opt_verify);
+    }
   }).fail(function () {
     $(wallSelector + ' .wall-post-error').text('Server error!');
   }).always(function () {

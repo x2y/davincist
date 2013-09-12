@@ -1,0 +1,92 @@
+{% comment %}
+
+A partial template for a user's wall, taking:
+
+  * user [User]: The automatically populated User model from the request.
+  * target_user [User]: The User model that 'owns' this wall.
+  * verification [None|Verification]: A Verification model, if applicable.
+  * paginate [None|bool]: Whether or not to paginate posts or simply load them all (default).
+
+This template includes all the necessary logic to load the posts asynchronously and post to the wall
+inside and outside the context of a verification (where a call is also made to a verify() function
+expected to be already defined by the page that loads this). In order to cut down on redundant
+<script> definitions, this partial template relies on the including page to preload:
+
+  * jquery.min.js
+  * jquery.cookie.js
+  * base.js
+  * ajax.js
+  * wall.js
+
+{% endcomment %}
+<div class="wall-container user-{{ target_user.pk }}">
+  {% if user.is_authenticated %}
+    <div class="wall-post-box">
+      <textarea class="wall-post-textbox"></textarea>
+      <div class="wall-post-error error"></div>
+      <div class="wall-post-button-box">
+        {% if verification and user != target_user %}
+          <button class="wall-post-verify-button">Looks good!</button>
+          <button class="wall-post-deny-button">Needs more work</button>
+        {% else %}
+          <button class="wall-post-public-button">Post Public</button>
+          {% if not verification %}
+            <button class="wall-post-private-button">Post Private</button>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+  <div class="wall">
+    <div class="public-post template">
+      <span class="poster"></span>
+      <span class="text"></span>
+      <span class="timestamp"></span>
+      <span class="verification"></span>
+    </div>
+    <div class="private-post template">
+      <span class="poster"></span>
+      <span class="text"></span>
+      <span class="timestamp"></span>
+      <span class="verification"></span>
+    </div>
+  </div>
+  <div class="wall-load-error error"></div>
+  {% if paginate %}
+    <button class="wall-load-button" disabled>Load more</button>
+  {% endif %}
+</div>
+
+<script>
+  $(function () {
+    var wallSelector = buildWallSelector({{ target_user.pk }});
+
+    {% if verification and user != target_user %}
+      $(wallSelector + ' .wall-post-verify-button').click(function () {
+        postToWall({{ target_user.pk }}, true, {{ verification.pk }}, true);
+      });
+      
+      $(wallSelector + ' .wall-post-deny-button').click(function () {
+        postToWall({{ target_user.pk }}, true, {{ verification.pk }}, false);
+      });
+    {% else %}
+      $(wallSelector + ' .wall-post-public-button').click(function () {
+        postToWall({{ target_user.pk }}, true, {% firstof verification.pk 'null' %});
+      });
+      
+      $(wallSelector + ' .wall-post-private-button').click(function () {
+        postToWall({{ target_user.pk }}, false, {% firstof verification.pk 'null' %});
+      });
+    {% endif %}
+    
+    $(wallSelector + ' .wall-load-button').click(function () {
+      loadWallPosts({{ target_user.pk }},
+                    {{ paginate|yesno:'true,false' }},
+                    {% firstof verification.pk 'null' %});
+    });
+
+    loadWallPosts({{ target_user.pk }},
+                  {{ paginate|yesno:'true,false' }},
+                  {% firstof verification.pk 'null' %});
+  });
+</script>

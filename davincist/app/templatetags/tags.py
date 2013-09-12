@@ -31,15 +31,3 @@ def crest_link(crest):
 @register.inclusion_tag('user_link_tag.html')
 def user_link(user):
   return {'user': user}
-
-
-@register.inclusion_tag('wall.html')
-def wall(target_user, allow_public_posting=True, allow_private_posting=True, verification=None,
-         paginate=False):
-  return {
-      'target_user': target_user,
-      'allow_public_posting': allow_public_posting,
-      'allow_private_posting': allow_private_posting,
-      'verification': verification,
-      'paginate': paginate,
-  }

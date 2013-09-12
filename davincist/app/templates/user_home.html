@@ -68,5 +68,5 @@ TODO
 </ul>
 
 <h2>Wall</h2>
-{% wall target_user paginate=True %}
+{% include 'user_wall.html' with target_user=target_user paginate=True %}
 {% endblock %}

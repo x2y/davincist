@@ -1,0 +1,25 @@
+{% comment %}
+
+A partial template for the verification interface for a single verification.
+
+This template {% include %}s the wall partial, which implements all the logic needed to receive
+verification input from the user (although the actual verify() AJAX function is assumed to be
+provided at a higher scope). In order to cut down on redundant <script> definitions, this partial
+template relies on the including page to preload:
+
+  * jquery.min.js
+  * jquery.cookie.js
+  * base.js
+  * ajax.js
+  * wall.js
+
+{% endcomment %}
+{% if verification.text %}
+  <div class="text-proof">{{ verification.text }}</div>
+{% endif %}
+{% if verification.youtube_id %}
+  <iframe id="video-proof-embed" type="text/html" width="320" height="195" frameborder="0"
+          src="//www.youtube.com/embed/{{ verification.youtube_id }}?wmode=transparent"></iframe>
+{% endif %}
+{% include 'user_wall.html' with target_user=verification.user verification=verification %}
+<hr>

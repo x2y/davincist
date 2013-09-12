@@ -1,3 +1,5 @@
+import itertools
+
 from annoying.decorators import ajax_request, render_to
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -8,6 +10,7 @@ from validators import *
 
 
 WALL_POSTS_PER_PAGE = 15
+VERIFICATIONS_PER_FETCH = 10  # Must be > MIN_USER_TRACK_VERIFICATIONS_TO_PRELOAD.
 
 
 # Attributes will be defined outside init pylint: disable=W0201
@@ -130,6 +133,14 @@ def user_merits(request, username, track_name):
 def user_verify(request, username):
   r = Response()
   r.target_user = get_object_or_404(User, username__iexact=username)
+  r.user_tracks = r.target_user.user_tracks.order_by('-level__rank', '-xp')
+  return r.__dict__
+
+
+@render_to('verification.html')
+def verification(request, verification_id):
+  r = Response()
+  r.verification = get_object_or_404(Verification, pk=verification_id)
   return r.__dict__
 
 
@@ -203,17 +214,24 @@ def ajax_post_to_wall(request):
   text = request.POST['text'].strip()
   to_pk = int(request.POST['to'])
   is_public = request.POST['is_public'] == 'true'
-  verification_pk = (int(request.POST['verification_pk'])
-                     if 'verification_pk' in request.POST
-                     else None)
+
+  verification = None
+  if 'verification_pk' in request.POST:
+    verification = Verification.objects.get(pk=int(request.POST['verification_pk']))
 
   # Create and save the new WallPost.
   post = WallPost(poster=request.user, text=text, is_public=is_public)
   post.user_id = to_pk
-  if verification_pk:
-    post.verification_id = verification_pk
+  if verification:
+    post.verification = verification
   post.save()
   r.post = post.to_dict()
+
+  # Reset the verification status to "in-need-of-verification", if the posting user responds.
+  if request.user.pk == to_pk and verification and verification.status == Verification.UNSUBMITTED:
+    verification.status = Verification.UNVERIFIED
+    verification.save()
+
   return r.__dict__
 
 
@@ -334,6 +352,104 @@ def ajax_submit_verification(request):
   verification.youtube_id = video_proof
   verification.status = Verification.UNVERIFIED
   verification.save()
+
+  return r.__dict__
+
+
+@ajax_request
+def ajax_get_verifications(request):
+  r = Response()
+  if request.method != 'GET':
+    return Response.errors('Request must use GET; used: %s.' % request.method)
+
+  # Verifying User must be logged in.
+  if not request.user.is_authenticated():
+    return Response.errors('User is not logged in.')
+
+  # Perform all the general validation.
+  errors = get_errors(request.GET, {
+      'user_track': (RequiredValidator(), ModelValidator(UserTrack, int)),
+      'verifications_to_ignore': (IterableValidator(int)),
+  })
+  if errors:
+    return Response.errors(errors)
+
+  verifications_to_ignore = []
+  if 'verifications_to_ignore' in request.GET:
+    print request.GET['verifications_to_ignore']
+    for verification_pk in request.GET['verifications_to_ignore']:
+      verifications_to_ignore.append(int(verification_pk))
+    print verifications_to_ignore
+
+  verifications = (
+      UserTrack.objects.get(pk=int(request.GET['user_track']))
+      .challenges_to_verify()
+      .exclude(pk__in=verifications_to_ignore)
+      [0:VERIFICATIONS_PER_FETCH])
+
+  r.verifications = [verification.to_dict() for verification in verifications]
+
+  return r.__dict__
+
+
+@ajax_request
+def ajax_verify(request):
+  r = Response()
+  if request.method != 'POST':
+    return Response.errors('Request must use POST; used: %s.' % request.method)
+
+  # Verifying User must be logged in.
+  if not request.user.is_authenticated():
+    return Response.errors('User is not logged in.')
+
+  # Perform all the general validation.
+  errors = get_errors(request.POST, {
+      'verification': (RequiredValidator(), ModelValidator(Verification, int)),
+      'verify': (RequiredValidator(), BooleanValidator()),
+  })
+  if errors:
+    return Response.errors(errors)
+
+  verification = Verification.objects.get(pk=int(request.POST['verification']))
+
+  if verification.status == Verification.UNSUBMITTED:
+    # Don't throw an error here since this can occur with complete validity when two different users
+    # view the same verification and the first decides not to verify it without further changes,
+    # putting it back in the UNSUBMITTED state before the second user has a chance to act on it.
+    # Just proceed silently and make a note of what happened for debugging purposes.
+    r.already_unsubmitted = True
+    return r.__dict__
+
+  if verification.status == Verification.VERIFIED:
+    # Don't throw an error here since this can occur with complete validity when two different users
+    # view the same verification and decide to verify it independently. Just proceed silently and
+    # make a note of what happened for debugging purposes.
+    r.already_verified = True
+    return r.__dict__
+
+  if not request.user.can_verify(verification):
+    return Response.errors('User is not eligible to verify this challenge.')
+
+  if request.POST['verify'] == 'true':
+    try:
+      user_track = verification.user.user_tracks.get(
+          track__pk=verification.badge.requirement.level.track.pk)
+    except ObjectDoesNotExist:
+      return Response.errors(
+          'Target user has not joined %s.' % verification.badge.requirement.level.track.name)
+
+    # Award the badge and xp.
+    user_track.badges.add(verification.badge)
+    user_track.xp += verification.badge.xp()
+    user_track.save()
+
+    # Record that the badge has been completed.
+    verification.status = Verification.VERIFIED
+    verification.save()
+  else:
+    # Set status back to unsubmitted.
+    verification.status = Verification.UNSUBMITTED
+    verification.save()
 
   return r.__dict__
 

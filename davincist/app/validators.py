@@ -1,5 +1,6 @@
 """Field validators for AJAX request dictionaries."""
 
+import collections
 import re
 
 
@@ -81,3 +82,22 @@ class YouTubeIdValidator(object):
     print
     return ('Invalid YouTube Id: %s.' % field
             if not re.match(r'|[a-zA-Z_-]{11}', data[field]) else None)
+
+
+class IterableValidator(object):
+  def __init__(self, element_type):
+    self.element_type_ = element_type
+
+  def error(self, data, field):
+    if field not in data:
+      return None
+
+    if not isinstance(data[field], collections.Iterable):
+      return 'Non-iterable field: %s.' % field
+
+    try:
+      self.element_type_(data[field])
+    except:
+      return 'Invalid %s field element.' % field
+
+    return None

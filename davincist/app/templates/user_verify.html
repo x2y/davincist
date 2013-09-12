@@ -5,12 +5,140 @@
 {% block tab_title %}{{ target_user.username }}'s Verifications{% endblock %}
 {% block subtitle %}Verify{% endblock %}
 
+{% block head %}
+{{ block.super }}
+{% load staticfiles %}
+<script src="{% static 'wall.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 {% if target_user != user %}
   What are you doing here silly? You're not {{ target_user.username }}!
-  <br>
-  <a href="{% url user_verify user.username %}">Here's</a> your verification page :)
+  {% if user.is_authenticated %}
+    <br>
+    <a href="{% url user_verify user.username %}">Here's</a> your verification page :)
+  {% endif %}
 {% else %}
-  TODO: Implement verification form.
+  <ul id="track-selector-container">
+  {% for user_track in user_tracks %}
+    <li {% if not forloop.last %}class="separated"{% endif %}>{{ user_track.track.name }}
+  {% endfor %}
+  </ul>
+  <div id="tracks-container">
+  {% for user_track in user_tracks %}
+    <div class="track-container user-track-{{ user_track.pk }}">
+      <!-- Verifications go here. -->
+    </div>
+  {% endfor %}
+  </div>
 {% endif %}
+{% endblock %}
+
+{% block footer_script %}
+{{ block.super }}
+<script>
+  var MIN_USER_TRACK_VERIFICATIONS_TO_PRELOAD = 5;  // Must be <= VERIFICATIONS_PER_FETCH.
+
+  var selectedTrackIndex = -1;
+  var userTrackPks = [
+  {% for user_track in user_tracks %}
+    {{ user_track.pk }}{% if not forloop.last %},{% endif %}
+  {% endfor %}
+  ];
+  var verificationsToIgnore = [];
+
+  $(function () {
+    $('#track-selector-container li').click(trackSelectorClicked);
+    selectTrack();
+    maybePreloadVerifications(true);
+  });
+
+  function maybePreloadVerifications(force) {
+    for (var i = 0; i < userTrackPks.length; ++i) {
+      // We use == here rather than < so that when we've reached the end of the list of
+      // verifications and no more can be loaded, we don't keep naively requesting more
+      // verifications as the number trickles down to 0.
+      if ($('.user-track-' + userTrackPks[i] + ' .verification').length ==
+              MIN_USER_TRACK_VERIFICATIONS_TO_PRELOAD ||
+          force) {
+        getVerifications(userTrackPks[i]);
+      }
+    }
+  }
+
+  function getVerifications(userTrackPk) {
+    var trackContainerSelector = '.track-container.user-track-' + userTrackPk;
+
+    var data = {
+      user_track: userTrackPk,
+      verifications_to_ignore: verificationsToIgnore
+    };
+    $.ajax({
+      url: '{% url ajax_get_verifications %}',
+      data: data,
+      cache: false
+    }).done(function (data) {
+      if (data.errors) {
+        showBannerMessage(data.errors.join());
+        return;
+      }
+
+      for (var i = 0; i < data.verifications.length; ++i) {
+        var verification = data.verifications[i];
+        verificationsToIgnore.push(verification.pk);
+
+        var $verification = $('<div>', {class: 'verification verification-' + verification.pk});
+        $verification.load('/p/verification/' + verification.pk + '/');
+        $(trackContainerSelector).append($verification);
+      }
+    }).fail(function() {
+      showBannerMessage('Server error!');
+    });
+  }
+
+  // This function is called directly by wall.js upon an approval or denial (after any wall posting
+  // succeeded).
+  function verify(verificationPk, verify) {
+    // Verify, but don't wait for the response since we'll always just hide it from the user (even
+    // if it fails).
+    var data = {
+      verification: verificationPk,
+      verify: verify
+    };
+    $.post('{% url ajax_verify %}', data, function (data) {
+      if (data.errors) {
+        $.error(data.errors.join());
+      }
+    }).fail(function () {
+      $.error('Server error!');
+    });
+
+    $('.verification-' + verificationPk).remove();
+    maybePreloadVerifications();
+  }
+  
+  function trackSelectorClicked(e) {
+    selectTrack(trim($(e.target).text()));
+  }
+
+  function selectTrack(name) {
+    var newSelectedTrackIndex = 0;
+    $('#track-selector-container li').each(function (i, elem) {
+      if (trim($(elem).text()) == name) {
+        newSelectedTrackIndex = i;
+        return false;
+      }
+    });
+
+    if (newSelectedTrackIndex == selectedTrackIndex) {
+      return;
+    }
+
+    $('#track-selector-container > li:eq(' + selectedTrackIndex + ')').removeClass('selected');
+    $('#track-selector-container > li:eq(' + newSelectedTrackIndex + ')').addClass('selected');
+    $('#tracks-container > div:eq(' + selectedTrackIndex + ')').fadeOut(200);
+    $('#tracks-container > div:eq(' + newSelectedTrackIndex + ')').fadeIn(200);
+    selectedTrackIndex = newSelectedTrackIndex;
+  }
+</script>
 {% endblock %}

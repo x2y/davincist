@@ -11,14 +11,14 @@ admin.autodiscover()
 TRACK_REGEX = r'[^\s/]{1,64}'
 TRACK_GROUP = r'(?P<track_name>%s)' % TRACK_REGEX
 
-# LEVEL_REGEX = r'\d\d?'
-# LEVEL_GROUP = r'(?P<level_id>%s)' % LEVEL_REGEX
-
 BADGE_REGEX = r'\d{1,10}'
 BADGE_GROUP = r'(?P<badge_id>%s)' % BADGE_REGEX
 
 USER_REGEX = r'[^\s/]{1,30}'
 USER_GROUP = r'(?P<username>%s)' % USER_REGEX
+
+VERIFICATION_REGEX = r'\d{1,10}'
+VERIRIFICATION_GROUP = r'(?P<verification_id>%s)' % VERIFICATION_REGEX
 
 urlpatterns = patterns(
     '',
@@ -45,12 +45,17 @@ urlpatterns = patterns(
     url(r'^(?i)u/%s/merits/(?:%s/)?' % (USER_GROUP, TRACK_GROUP), user_merits, name='user_merits'),
     url(r'^(?i)u/%s/verify/$' % USER_GROUP, user_verify, name='user_verify'),
 
+    # Partial pages.
+    url(r'^(?i)p/verification/%s/$' % VERIRIFICATION_GROUP, verification, name='verification'),
+
     # AJAX pages.
     url(r'^(?i)x/get-wall-posts/', ajax_get_wall_posts, name='ajax_get_wall_posts'),
     url(r'^(?i)x/post-to-wall/', ajax_post_to_wall, name='ajax_post_to_wall'),
     url(r'^(?i)x/start-badge/', ajax_start_badge, name='ajax_start_badge'),
     url(r'^(?i)x/complete-unverified-badge/', ajax_complete_unverified_badge, name='ajax_complete_unverified_badge'),
     url(r'^(?i)x/submit-verification/', ajax_submit_verification, name='ajax_submit_verification'),
+    url(r'^(?i)x/get-verifications/', ajax_get_verifications, name='ajax_get_verifications'),
+    url(r'^(?i)x/verify/', ajax_verify, name='ajax_verify'),
     url(r'^(?i)x/join-track/', ajax_join_track, name='ajax_join_track'),
 
     # Authentication flow pages.
