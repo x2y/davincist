@@ -225,7 +225,8 @@ class UserTrack(models.Model):
         .filter(Q(badge__in=self.badges.all()) |
                 Q(badge__requirement__level__track=self.track,
                   badge__requirement__level__rank__lt=self.level.rank),
-                status=Verification.UNVERIFIED))
+                status=Verification.UNVERIFIED)
+        .order_by('?'))
 
   class Meta:
     ordering = ['user', 'track']
