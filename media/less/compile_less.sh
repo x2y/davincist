@@ -18,3 +18,11 @@ DAVINCIST_ROOT=$(pwd | grep '.*?/davincist' -o -P | head -1)
 lessc -x \
     $DAVINCIST_ROOT/media/less/custom-bootstrap.less > \
     $DAVINCIST_ROOT/media/css/bootstrap.min.css
+
+lessc -x \
+    $DAVINCIST_ROOT/media/less/base.less > \
+    $DAVINCIST_ROOT/media/css/base.min.css
+
+lessc -x \
+    $DAVINCIST_ROOT/media/less/user_merits.less > \
+    $DAVINCIST_ROOT/media/css/user_merits.min.css
