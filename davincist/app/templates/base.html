@@ -3,10 +3,12 @@
 <head>
   <title>{% block tab_title %}{% endblock %}</title>
   {% load staticfiles %}
+  <link href="{% static 'bootstrap.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'base.css' %}" rel="stylesheet" type="text/css">
   <script src="{% static 'jquery.min.js' %}"></script>
   <script src="{% static 'jquery.cookie.js' %}"></script>
   <script src="{% static 'jquery.textFit.min.js' %}"></script>
+  <script src="{% static 'bootstrap.min.js' %}"></script>
   <script src="{% static 'base.js' %}"></script>
   <script src="{% static 'ajax.js' %}"></script>
   <script>
