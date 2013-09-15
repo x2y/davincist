@@ -1,3 +1,6 @@
+#!/bin/bash
+# Usage: bash compile_less.sh
+
 type lessc >/dev/null 2>&1 || {
   echo >&2 "Installing Less compiler..."
   sudo apt-get install rubygems1.8 ruby1.8-dev
