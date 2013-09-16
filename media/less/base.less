@@ -1,4 +1,5 @@
-/* Base styles go here. */
+@import "bootstrap/less/bootstrap.less";
+@import "custom-bootstrap-variables.less";
 
 @import url(http://fonts.googleapis.com/css?family=Lobster);
 @import url(http://fonts.googleapis.com/css?family=Satisfy);
@@ -12,6 +13,10 @@ body {
   margin: 0;
   font-family: Helvetica,Helvetica Neue,Arial,Liberation Sans,DejaVu Sans,sans-serif;
   font-size: 14px;
+}
+
+button {
+  .btn
 }
 
 .floating-text {
@@ -368,3 +373,6 @@ body {
 .template {
   display: none;
 }
+
+// This line should always be last.
+@import "bootstrap/less/utilities.less";
