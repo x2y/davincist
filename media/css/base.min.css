@@ -16,8 +16,8 @@ body{background-color:transparent;background-attachment:fixed;background-repeat:
 #track-selector-container li.separated{border-right:2px solid #AAA;padding-right:6px}
 #track-selector-container li.selected{color:#555;text-shadow:1px 1px 5px rgba(0,0,0,0.4)}
 #tracks-container{width:100%;margin-top:15px}#tracks-container>div{position:absolute;display:none}#tracks-container>div.selected{display:block}
-.badge{color:#FFF;background-color:#505050;border:1px solid #333;padding:0px 6px 0px 3px;display:inline-block;text-decoration:none;white-space:nowrap;line-height:24px;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;margin:0 3px 3px 0;font-size:13px;font-style:italic;text-shadow:1px 1px 3px rgba(0,0,0,0.7)}.badge:hover{background-color:#555}
-.badge.required{font-style:normal;background-color:#333}
+.badge-chip{color:#FFF;background-color:#505050;border:1px solid #333;padding:0px 6px 0px 3px;display:inline-block;text-decoration:none;white-space:nowrap;line-height:24px;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;margin:0 3px 3px 0;font-size:13px;font-style:italic;text-shadow:1px 1px 3px rgba(0,0,0,0.7)}.badge-chip:hover,.badge-chip:focus{background-color:#555;color:#FFF}
+.badge-chip.required{font-style:normal;background-color:#333}
 .medal{background-color:red;width:6px;height:6px;line-height:inherit;display:inline-block;margin:0 5px 1px 3px;border-radius:100%}.medal.disabled{opacity:0.4}
 .medal.large{width:10px;height:10px;margin:0 -3px 0 0;border:1px solid #222}
 .grade-1{background-color:#CC9966}

@@ -155,7 +155,7 @@ body {
   }
 }
 
-.badge {
+.badge-chip {
   color: #FFF;
   background-color: #505050;
   border: 1px solid #333;
@@ -172,8 +172,9 @@ body {
   font-style: italic;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 
-  &:hover {
+  &:hover, &:focus {
     background-color: #555;
+    color: #FFF;
   }
 
   &.required {
