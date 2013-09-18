@@ -1,24 +1,11 @@
 #!/bin/bash
 # Usage: bash compile_less.sh
 
-type lessc >/dev/null 2>&1 || {
-  echo >&2 "Installing Less compiler..."
-  sudo apt-get install rubygems1.8 ruby1.8-dev
-  
-  sudo gem install rubygems-update
-  sudo gem update rubygems
-  sudo gem install less
-  sudo gem install therubyracer
+ORIGINAL_PATH=$(pwd)
+DAVINCIST_ROOT=$(echo "$ORIGINAL_PATH" | grep '.*?/davincist' -o -P | head -1)
 
-  sudo ln -s /var/lib/gems/1.8/bin/lessc /usr/bin/
-}
+cd $DAVINCIST_ROOT/media/less/
 
-DAVINCIST_ROOT=$(pwd | grep '.*?/davincist' -o -P | head -1)
+nodejs /usr/bin/grunt watch
 
-lessc -x \
-    $DAVINCIST_ROOT/media/less/base.less > \
-    $DAVINCIST_ROOT/media/css/base.min.css
-
-lessc -x \
-    $DAVINCIST_ROOT/media/less/user_merits.less > \
-    $DAVINCIST_ROOT/media/css/user_merits.min.css
+cd $ORIGINAL_PATH
