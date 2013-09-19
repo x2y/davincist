@@ -299,14 +299,7 @@ def ajax_complete_unverified_badge(request):
   if verification.status != Verification.UNSUBMITTED:
     return Response.errors('Badge already completed.')
 
-  # Award the badge and xp.
-  user_track.badges.add(badge)
-  user_track.xp += badge.xp()
-  user_track.save()
-
-  # Record that the badge has been completed.
-  verification.status = Verification.VERIFIED
-  verification.save()
+  r.changed_levels = user_track.award_badge(verification)
 
   return r.__dict__
 
@@ -434,14 +427,7 @@ def ajax_verify(request):
       return Response.errors(
           'Target user has not joined %s.' % verification.badge.requirement.level.track.name)
 
-    # Award the badge and xp.
-    user_track.badges.add(verification.badge)
-    user_track.xp += verification.badge.xp()
-    user_track.save()
-
-    # Record that the badge has been completed.
-    verification.status = Verification.VERIFIED
-    verification.save()
+    r.changed_levels = user_track.award_badge(verification)
   else:
     # Set status back to unsubmitted.
     verification.status = Verification.UNSUBMITTED

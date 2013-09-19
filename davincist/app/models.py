@@ -61,20 +61,26 @@ class Level(models.Model):
   def __unicode__(self):
     return '(%s) %d: %s' % (self.track.name, self.rank, self.name)
 
-  def hours_needed(self):
-    if self.rank > 0:
-      return round(HOURS_MULTIPLIER * self.rank ** HOURS_GROWTH_CONSTANT - HOURS_OFFSET)
+  @staticmethod
+  def hours_needed_in(rank):
+    if rank > 0:
+      return round(HOURS_MULTIPLIER * rank ** HOURS_GROWTH_CONSTANT - HOURS_OFFSET)
     else:
       return 0.0
 
-  def xp_per_hours_work(self):
-    if self.rank > 0:
-      return round(XP_MULTIPLIER * self.rank ** HOURS_GROWTH_CONSTANT)
+  @staticmethod
+  def xp_per_hours_work_in(rank):
+    if rank > 0:
+      return round(XP_MULTIPLIER * rank ** HOURS_GROWTH_CONSTANT)
     else:
       return 0.0
 
-  def xp_needed(self):
-    return self.hours_needed() * self.xp_per_hours_work()
+  @staticmethod
+  def cumulative_xp_needed_for(rank):
+    xp_needed = 0
+    for rank_i in xrange(rank + 1):
+      xp_needed += Level.hours_needed_in(rank_i) * Level.xp_per_hours_work_in(rank_i)
+    return xp_needed
 
   def top_10_user_tracks(self):
     return self.user_tracks.order_by('-xp')[:10]
@@ -134,7 +140,7 @@ class Badge(models.Model):
       return 0.0
 
   def xp(self):
-    return round(self.hours_needed() * self.requirement.level.xp_per_hours_work())
+    return round(self.hours_needed() * Level.xp_per_hours_work_in(self.requirement.level.rank))
 
   def user_count(self):
     return self.user_tracks.count()
@@ -228,6 +234,55 @@ class UserTrack(models.Model):
                 status=Verification.UNVERIFIED)
         .order_by('?'))
 
+  def award_badge(self, verification):
+    # Close the verification.
+    verification.status = Verification.VERIFIED
+    verification.save()
+
+    # Award the badge and xp.
+    self.badges.add(verification.badge)
+    self.xp += verification.badge.xp()
+
+    # Award the next level, if applicable.
+    changed_levels = False
+    needs_more_xp = False
+    if self.next_requirements().count() == 0:
+      next_level = self.level.next()
+      if next_level:
+        if self.xp >= Level.cumulative_xp_needed_for(next_level.rank):
+          self.level = next_level
+          changed_levels = True
+        else:
+          needs_more_xp = True
+
+    self.save()
+
+    # Send notifications from Prometheus.
+    WallPost(user=self.user,
+             poster=User.PROMETHEUS,
+             text="Congratulations! You've earned the badge \"%s\" in %s." %
+                  (verification.badge.name, self.track.name),
+             is_public=False,
+             verification=verification).save()
+    if changed_levels:
+      WallPost(user=self.user,
+               poster=User.PROMETHEUS,
+               text="Congratulations! You've achieved level %d in %s and earned the title \"%s\"." %
+                    (self.level.rank, self.track.name, self.level.name),
+               is_public=False,
+               verification=verification).save()
+    elif needs_more_xp:
+      WallPost(user=self.user,
+               poster=User.PROMETHEUS,
+               text=("You've earned all the required badges for level %d in %s but still need " +
+                     "some more experience before earning the title \"%s\". Earn experience by " +
+                     "completing other challenges and remember: more advanced badges earn more " +
+                     "experience!") % (next_level.rank + 1, self.track.name, next_level.name),
+               is_public=False,
+               verification=verification).save()
+
+    return changed_levels
+
   class Meta:
     ordering = ['user', 'track']
     unique_together = ('user', 'track')
@@ -286,3 +341,7 @@ def user_can_verify(self, verification):
 
 
 User.add_to_class('can_verify', user_can_verify)
+
+
+# Monkey-patch the Prometheus User onto the User object for convenience.
+User.PROMETHEUS = User.objects.get(pk=7)
