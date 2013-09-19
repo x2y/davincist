@@ -110,7 +110,7 @@
     $(function () { $('#training').css('max-height', 'none'); });
   {% endif %}
 
-  {% if not badge.requires_verification and is_unsubmitted %}
+  {% if not badge.requires_verification and not is_verified %}
     $(function () {
       $('#signature-field').keyup(signatureChanged);
       signatureChanged();
