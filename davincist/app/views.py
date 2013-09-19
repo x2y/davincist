@@ -1,5 +1,3 @@
-import itertools
-
 from annoying.decorators import ajax_request, render_to
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
