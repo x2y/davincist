@@ -40,7 +40,12 @@ TODO
       <li>{{ user_track.track.name }}
       <ul>
       {% for requirement in next_requirements %}
-        <li>{{ requirement }}
+        <li>
+          {% for badge in requirement.badges.all %}
+            {% badge_link badge %}
+            {% if not forloop.last %} or {% endif %}
+          {% endfor %}
+        </li>
       {% endfor %}
       </ul>
     {% else %}
