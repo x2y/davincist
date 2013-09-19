@@ -91,7 +91,7 @@
       $('#start-badge-error').text('');
 
       var data = {
-        badge: badgePk
+        badge_pk: badgePk
       };
       $.post('{% url ajax_start_badge %}', data, function (data) {
         if (data.errors) {
@@ -134,7 +134,7 @@
       $('#complete-badge-error').text('');
 
       var data = {
-        badge: badgePk
+        badge_pk: badgePk
       };
       $.post('{% url ajax_complete_unverified_badge %}', data, function (data) {
         if (data.errors) {
@@ -218,7 +218,7 @@
       $('#submit-verification-error').text('');
 
       var data = {
-        badge: badgePk,
+        badge_pk: badgePk,
         text_proof: $('#text-proof-field').val(),
         video_proof: $('#video-proof-field').val()
       };

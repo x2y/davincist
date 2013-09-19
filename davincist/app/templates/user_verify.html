@@ -45,7 +45,7 @@
     {{ user_track.pk }}{% if not forloop.last %},{% endif %}
   {% endfor %}
   ];
-  var verificationsToIgnore = [];
+  var verificationPksToIgnore = [];
 
   $(function () {
     $('#track-selector-container li').click(trackSelectorClicked);
@@ -70,8 +70,8 @@
     var trackContainerSelector = '.track-container.user-track-' + userTrackPk;
 
     var data = {
-      user_track: userTrackPk,
-      verifications_to_ignore: verificationsToIgnore
+      user_track_pk: userTrackPk,
+      verification_pks_to_ignore: verificationPksToIgnore
     };
     $.ajax({
       url: '{% url ajax_get_verifications %}',
@@ -85,7 +85,7 @@
 
       for (var i = 0; i < data.verifications.length; ++i) {
         var verification = data.verifications[i];
-        verificationsToIgnore.push(verification.pk);
+        verificationPksToIgnore.push(verification.pk);
 
         var $verification = $('<div>', {class: 'verification verification-' + verification.pk});
         $verification.load('/p/verification/' + verification.pk + '/');
@@ -102,7 +102,7 @@
     // Verify, but don't wait for the response since we'll always just hide it from the user (even
     // if it fails).
     var data = {
-      verification: verificationPk,
+      verification_pk: verificationPk,
       verify: verify
     };
     $.post('{% url ajax_verify %}', data, function (data) {

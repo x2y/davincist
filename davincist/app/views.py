@@ -151,7 +151,7 @@ def ajax_get_wall_posts(request):
     return Response.errors('Request must use GET; used: %s.' % request.method)
 
   errors = get_errors(request.GET, {
-      'target_user': (RequiredValidator(), ModelValidator(User, int)),
+      'target_user_pk': (RequiredValidator(), ModelValidator(User, int)),
       'paginate': (RequiredValidator(), BooleanValidator()),
       'since_pk': (ModelValidator(WallPost, int)),
       'verification_pk': (ModelValidator(Verification, int)),
@@ -159,7 +159,7 @@ def ajax_get_wall_posts(request):
   if errors:
     return Response.errors(errors)
 
-  target_user_pk = int(request.GET['target_user'])
+  target_user_pk = int(request.GET['target_user_pk'])
 
   # Get all wall posts visible to the specified user.
   wall_posts = WallPost.objects.filter(
@@ -203,7 +203,7 @@ def ajax_post_to_wall(request):
   # Perform all the general validation.
   errors = get_errors(request.POST, {
       'text': (NonEmptyValidator(), StrippedLengthValidator(WallPost.MAX_TEXT_LENGTH)),
-      'to': (RequiredValidator(), ModelValidator(User, int)),
+      'to_pk': (RequiredValidator(), ModelValidator(User, int)),
       'is_public': (RequiredValidator(), BooleanValidator()),
       'verification_pk': (ModelValidator(Verification, int)),
   })
@@ -212,7 +212,7 @@ def ajax_post_to_wall(request):
 
   # Extract the relevant data.
   text = request.POST['text'].strip()
-  to_pk = int(request.POST['to'])
+  to_pk = int(request.POST['to_pk'])
   is_public = request.POST['is_public'] == 'true'
 
   verification = None
@@ -247,12 +247,12 @@ def ajax_start_badge(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'badge': (RequiredValidator(), ModelValidator(Badge, int)),
+      'badge_pk': (RequiredValidator(), ModelValidator(Badge, int)),
   })
   if errors:
     return Response.errors(errors)
 
-  badge = Badge.objects.get(pk=int(request.POST['badge']))
+  badge = Badge.objects.get(pk=int(request.POST['badge_pk']))
   if Verification.objects.filter(user=request.user, badge=badge).exists():
     return Response.errors('Badge already started.')
 
@@ -279,12 +279,12 @@ def ajax_complete_unverified_badge(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'badge': (RequiredValidator(), ModelValidator(Badge, int)),
+      'badge_pk': (RequiredValidator(), ModelValidator(Badge, int)),
   })
   if errors:
     return Response.errors(errors)
 
-  badge = Badge.objects.get(pk=int(request.POST['badge']))
+  badge = Badge.objects.get(pk=int(request.POST['badge_pk']))
   if badge.requires_verification:
     return Response.errors('Badge requires verification.')
 
@@ -325,14 +325,14 @@ def ajax_submit_verification(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'badge': (RequiredValidator(), ModelValidator(Badge, int)),
+      'badge_pk': (RequiredValidator(), ModelValidator(Badge, int)),
       'text_proof': (RequiredValidator()),
       'video_proof': (RequiredValidator(), YouTubeIdValidator()),
   })
   if errors:
     return Response.errors(errors)
 
-  badge = Badge.objects.get(pk=int(request.POST['badge']))
+  badge = Badge.objects.get(pk=int(request.POST['badge_pk']))
   if not badge.requires_verification:
     return Response.errors('Badge does not require verification.')
 
@@ -368,21 +368,19 @@ def ajax_get_verifications(request):
 
   # Perform all the general validation.
   errors = get_errors(request.GET, {
-      'user_track': (RequiredValidator(), ModelValidator(UserTrack, int)),
-      'verifications_to_ignore': (IterableValidator(int)),
+      'user_track_pk': (RequiredValidator(), ModelValidator(UserTrack, int)),
+      'verification_pks_to_ignore': (IterableValidator(int)),
   })
   if errors:
     return Response.errors(errors)
 
   verifications_to_ignore = []
-  if 'verifications_to_ignore' in request.GET:
-    print request.GET['verifications_to_ignore']
-    for verification_pk in request.GET['verifications_to_ignore']:
+  if 'verification_pks_to_ignore' in request.GET:
+    for verification_pk in request.GET['verification_pks_to_ignore']:
       verifications_to_ignore.append(int(verification_pk))
-    print verifications_to_ignore
 
   verifications = (
-      UserTrack.objects.get(pk=int(request.GET['user_track']))
+      UserTrack.objects.get(pk=int(request.GET['user_track_pk']))
       .challenges_to_verify()
       .exclude(pk__in=verifications_to_ignore)
       [0:VERIFICATIONS_PER_FETCH])
@@ -404,13 +402,13 @@ def ajax_verify(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'verification': (RequiredValidator(), ModelValidator(Verification, int)),
+      'verification_pk': (RequiredValidator(), ModelValidator(Verification, int)),
       'verify': (RequiredValidator(), BooleanValidator()),
   })
   if errors:
     return Response.errors(errors)
 
-  verification = Verification.objects.get(pk=int(request.POST['verification']))
+  verification = Verification.objects.get(pk=int(request.POST['verification_pk']))
 
   if verification.status == Verification.UNSUBMITTED:
     # Don't throw an error here since this can occur with complete validity when two different users
@@ -466,12 +464,12 @@ def ajax_join_track(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'track': (RequiredValidator(), ModelValidator(Track, str)),
+      'track_pk': (RequiredValidator(), ModelValidator(Track, str)),
   })
   if errors:
     return Response.errors(errors)
 
-  track_name = request.POST['track']
+  track_name = request.POST['track_pk']
   if UserTrack.objects.filter(user=request.user, track__name=track_name).exists():
     return Response.errors('Track already joined.')
 

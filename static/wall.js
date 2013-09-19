@@ -23,7 +23,7 @@ function loadWallPosts(targetUserPk, paginate, opt_verificationPk) {
   $(wallSelector + ' .wall-load-error').text(''); 
 
   var data = {
-    target_user: targetUserPk,
+    target_user_pk: targetUserPk,
     paginate: paginate
   };
   if (paginate) {
@@ -82,7 +82,7 @@ function postToWall(targetUserPk, isPublic, opt_verificationPk, opt_verify) {
 
   var data = {
     text: text,
-    to: targetUserPk,
+    to_pk: targetUserPk,
     is_public: isPublic
   };
   if (opt_verificationPk) {
