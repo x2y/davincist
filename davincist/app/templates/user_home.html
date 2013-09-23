@@ -23,7 +23,7 @@ TODO
       <li>{{ user_track.track.name }}
       <ul>
       {% for verification in current_challenges %}
-        <li>{{ verification }}
+        <li>{% badge_link verification.badge True %}
       {% endfor %}
       </ul>
     {% else %}
