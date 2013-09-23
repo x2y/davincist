@@ -5,12 +5,12 @@ from models import *
 class LevelTests(TestCase):
   def test_level_hours_needed_in(self):
     expected = {
-        0: 0,
-        1: 1,
-        4: 42,
-        9: 255,
-        15: 788,
-        20: 1485,
+        0: 0.00,
+        1: 0.10,
+        4: 6.59,
+        9: 17.88,
+        15: 31.80,
+        20: 43.60,
     }
     actual = {}
     for rank in expected:
@@ -20,11 +20,11 @@ class LevelTests(TestCase):
   def test_level_xp_per_hours_work_in(self):
     expected = {
         0: 0,
-        1: 20,
-        4: 422,
-        9: 2514,
-        15: 7734,
-        20: 14565,
+        1: 10,
+        4: 42,
+        9: 99,
+        15: 169,
+        20: 227,
     }
     actual = {}
     for rank in expected:
@@ -34,11 +34,11 @@ class LevelTests(TestCase):
   def test_level_cumulative_xp_needed_for(self):
     expected = {
         0: 0,
-        1: 20,
-        4: 23408,
-        9: 1412504,
-        15: 20110321,
-        20: 91253113,
+        1: 1,
+        4: 461,
+        9: 5795,
+        15: 28017,
+        20: 67904,
     }
     actual = {}
     for rank in expected:
@@ -48,36 +48,37 @@ class LevelTests(TestCase):
 
 class BadgeTests(TestCase):
   def test_badge_hours_needed(self):
+    self.maxDiff = None  # Show all diff failures.
     expected = {
         (0, Badge.BRONZE): 0.0,
         (0, Badge.SILVER): 0.0,
         (0, Badge.GOLD): 0.0,
         (0, Badge.DIAMOND): 0.0,
 
-        (1, Badge.BRONZE): 0.25,
-        (1, Badge.SILVER): 0.5,
-        (1, Badge.GOLD): 1.0,
-        (1, Badge.DIAMOND): 1.5,
+        (1, Badge.BRONZE): 0.4,
+        (1, Badge.SILVER): 0.8,
+        (1, Badge.GOLD): 1.6,
+        (1, Badge.DIAMOND): 2.4,
 
-        (4, Badge.BRONZE): 4.0,
-        (4, Badge.SILVER): 8.0,
-        (4, Badge.GOLD): 16.0,
-        (4, Badge.DIAMOND): 24.0,
+        (4, Badge.BRONZE): 1.6,
+        (4, Badge.SILVER): 3.2,
+        (4, Badge.GOLD): 6.4,
+        (4, Badge.DIAMOND): 9.6,
 
-        (9, Badge.BRONZE): 10.25,
-        (9, Badge.SILVER): 20.5,
-        (9, Badge.GOLD): 41.0,
-        (9, Badge.DIAMOND): 61.5,
+        (9, Badge.BRONZE): 3.6,
+        (9, Badge.SILVER): 7.2,
+        (9, Badge.GOLD): 14.4,
+        (9, Badge.DIAMOND): 21.6,
 
-        (15, Badge.BRONZE): 17.75,
-        (15, Badge.SILVER): 35.5,
-        (15, Badge.GOLD): 71.0,
-        (15, Badge.DIAMOND): 106.5,
+        (15, Badge.BRONZE): 6.0,
+        (15, Badge.SILVER): 12.0,
+        (15, Badge.GOLD): 24.0,
+        (15, Badge.DIAMOND): 36.0,
 
-        (20, Badge.BRONZE): 24.0,
-        (20, Badge.SILVER): 48.0,
-        (20, Badge.GOLD): 96.0,
-        (20, Badge.DIAMOND): 144.0,
+        (20, Badge.BRONZE): 8.0,
+        (20, Badge.SILVER): 16.0,
+        (20, Badge.GOLD): 32.0,
+        (20, Badge.DIAMOND): 48.0,
     }
     actual = {}
     for key in expected:
@@ -91,36 +92,37 @@ class BadgeTests(TestCase):
     self.assertEqual(actual, expected)
 
   def test_badge_xp(self):
+    self.maxDiff = None  # Show all diff failures.
     expected = {
         (0, Badge.BRONZE): 0,
         (0, Badge.SILVER): 0,
         (0, Badge.GOLD): 0,
         (0, Badge.DIAMOND): 0,
 
-        (1, Badge.BRONZE): 5,
-        (1, Badge.SILVER): 10,
-        (1, Badge.GOLD): 20,
-        (1, Badge.DIAMOND): 30,
+        (1, Badge.BRONZE): 4,
+        (1, Badge.SILVER): 8,
+        (1, Badge.GOLD): 16,
+        (1, Badge.DIAMOND): 24,
 
-        (4, Badge.BRONZE): 1688,
-        (4, Badge.SILVER): 3376,
-        (4, Badge.GOLD): 6752,
-        (4, Badge.DIAMOND): 10128,
+        (4, Badge.BRONZE): 67,
+        (4, Badge.SILVER): 134,
+        (4, Badge.GOLD): 269,
+        (4, Badge.DIAMOND): 403,
 
-        (9, Badge.BRONZE): 25769,
-        (9, Badge.SILVER): 51537,
-        (9, Badge.GOLD): 103074,
-        (9, Badge.DIAMOND): 154611,
+        (9, Badge.BRONZE): 356,
+        (9, Badge.SILVER): 713,
+        (9, Badge.GOLD): 1426,
+        (9, Badge.DIAMOND): 2138,
 
-        (15, Badge.BRONZE): 137279,
-        (15, Badge.SILVER): 274557,
-        (15, Badge.GOLD): 549114,
-        (15, Badge.DIAMOND): 823671,
+        (15, Badge.BRONZE): 1014,
+        (15, Badge.SILVER): 2028,
+        (15, Badge.GOLD): 4056,
+        (15, Badge.DIAMOND): 6084,
 
-        (20, Badge.BRONZE): 349560,
-        (20, Badge.SILVER): 699120,
-        (20, Badge.GOLD): 1398240,
-        (20, Badge.DIAMOND): 2097360,
+        (20, Badge.BRONZE): 1816,
+        (20, Badge.SILVER): 3632,
+        (20, Badge.GOLD): 7264,
+        (20, Badge.DIAMOND): 10896,
     }
     actual = {}
     for key in expected:

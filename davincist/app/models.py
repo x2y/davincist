@@ -9,12 +9,12 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
 
-HOURS_GROWTH_CONSTANT = 2.2
-HOURS_MULTIPLIER = 2.04
-HOURS_OFFSET = 1.04
-TIME_UNIT_MULTIPLIER = 1.25
-TIME_UNIT_OFFSET = 1.0
-XP_MULTIPLIER = 20
+HOURS_GROWTH_CONSTANT = 1.043
+HOURS_MULTIPLIER = 2.0
+HOURS_OFFSET = 1.9
+TIME_UNIT_MULTIPLIER = 0.4
+TIME_UNIT_OFFSET = 0.0
+XP_MULTIPLIER = 10.0
 
 
 def ellipsis(width):
@@ -64,22 +64,23 @@ class Level(models.Model):
   @staticmethod
   def hours_needed_in(rank):
     if rank > 0:
-      return round(HOURS_MULTIPLIER * rank ** HOURS_GROWTH_CONSTANT - HOURS_OFFSET)
+      # Round to two decimals for simplicity's sake.
+      return round(HOURS_MULTIPLIER * rank ** HOURS_GROWTH_CONSTANT - HOURS_OFFSET, 2)
     else:
       return 0.0
 
   @staticmethod
   def xp_per_hours_work_in(rank):
     if rank > 0:
-      return round(XP_MULTIPLIER * rank ** HOURS_GROWTH_CONSTANT)
+      return int(round(XP_MULTIPLIER * rank ** HOURS_GROWTH_CONSTANT))
     else:
-      return 0.0
+      return 0
 
   @staticmethod
   def cumulative_xp_needed_for(rank):
     xp_needed = 0
     for rank_i in xrange(rank + 1):
-      xp_needed += Level.hours_needed_in(rank_i) * Level.xp_per_hours_work_in(rank_i)
+      xp_needed += round(Level.hours_needed_in(rank_i) * Level.xp_per_hours_work_in(rank_i))
     return xp_needed
 
   def top_10_user_tracks(self):
@@ -135,12 +136,14 @@ class Badge(models.Model):
 
   def hours_needed(self):
     if self.requirement.level.rank > 0:
-      return self.grade * (TIME_UNIT_MULTIPLIER * self.requirement.level.rank - TIME_UNIT_OFFSET)
+      return round(self.grade *
+                   (TIME_UNIT_MULTIPLIER * self.requirement.level.rank - TIME_UNIT_OFFSET),
+                   2)
     else:
       return 0.0
 
   def xp(self):
-    return round(self.hours_needed() * Level.xp_per_hours_work_in(self.requirement.level.rank))
+    return int(round(self.hours_needed() * Level.xp_per_hours_work_in(self.requirement.level.rank)))
 
   def user_count(self):
     return self.user_tracks.count()
