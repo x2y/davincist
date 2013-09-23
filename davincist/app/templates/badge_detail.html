@@ -27,6 +27,7 @@
   {{ badge.training|safe }}
   <div id="verification">
     <h1>Verification</h1>
+    <div id="challenge"><strong>Challenge:</strong> {{ badge.challenge }}</div>
     {% if not badge.requires_verification %}
       <!-- Unverified badge form -->
       {% if not is_verified %}

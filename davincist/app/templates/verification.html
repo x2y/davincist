@@ -14,6 +14,8 @@ template relies on the including page to preload:
   * wall.js
 
 {% endcomment %}
+{% load tags %}
+For {% badge_link verification.badge True %}: {{ verification.badge.challenge }}
 {% if verification.text %}
   <div class="text-proof">{{ verification.text }}</div>
 {% endif %}

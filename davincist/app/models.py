@@ -119,6 +119,7 @@ class Badge(models.Model):
   name = models.CharField(max_length=64)
   description = models.CharField(max_length=128)
   training = models.TextField()
+  challenge = models.CharField(max_length=256)
   BRONZE, SILVER, GOLD, DIAMOND = 1, 2, 4, 6
   GRADES = {BRONZE: 'Bronze',
             SILVER: 'Silver',
