@@ -158,6 +158,7 @@ class Badge(models.Model):
 class Verification(models.Model):
   user = models.ForeignKey(User, related_name='verifications')
   badge = models.ForeignKey(Badge, related_name='verifications')
+  verifier = models.ForeignKey(User, related_name='verifications_verified', blank=True, null=True)
   text = models.TextField(blank=True)
   youtube_id = models.SlugField(max_length=11, blank=True)
   UNSUBMITTED, UNVERIFIED, VERIFIED = 'X', 'U', 'V'
@@ -236,9 +237,10 @@ class UserTrack(models.Model):
                 status=Verification.UNVERIFIED)
         .order_by('?'))
 
-  def award_badge(self, verification):
+  def award_badge(self, verification, verifier):
     # Close the verification.
     verification.status = Verification.VERIFIED
+    verification.verifier = verifier
     verification.save()
 
     # Award the badge and xp.
