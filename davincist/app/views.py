@@ -171,7 +171,7 @@ def ajax_get_wall_posts(request):
     wall_posts = wall_posts.filter(verification__pk=int(request.GET['verification_pk']))
 
   # Always sort by newest first, allowing the client to reorder the posts, if necessary.
-  wall_posts = wall_posts.order_by('-timestamp').all()
+  wall_posts = wall_posts.order_by('-timestamp')
 
   if request.GET['paginate'] == 'true':
     # Ignore the last post, which is just used to decide whether has_next.
