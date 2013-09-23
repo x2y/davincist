@@ -53,7 +53,7 @@ def track_list(request):
 @render_to('track_detail.html')
 def track_detail(request, track_name):
   r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
+  r.track = get_object_or_404(Track, name__iexact=track_name)
   r.user_track = get_user_track(request, track_name)
   return r.__dict__
 
@@ -61,7 +61,7 @@ def track_detail(request, track_name):
 @render_to('track_users.html')
 def track_users(request, track_name):
   r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
+  r.track = get_object_or_404(Track, name__iexact=track_name)
   r.user_track = get_user_track(request, track_name)
   return r.__dict__
 
@@ -69,7 +69,7 @@ def track_users(request, track_name):
 @render_to('track_levels.html')
 def track_levels(request, track_name):
   r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
+  r.track = get_object_or_404(Track, name__iexact=track_name)
   r.user_track = get_user_track(request, track_name)
   return r.__dict__
 
@@ -77,7 +77,7 @@ def track_levels(request, track_name):
 @render_to('track_badges.html')
 def track_badges(request, track_name):
   r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
+  r.track = get_object_or_404(Track, name__iexact=track_name)
   r.user_track = get_user_track(request, track_name)
   return r.__dict__
 
@@ -85,7 +85,7 @@ def track_badges(request, track_name):
 @render_to('badge_detail.html')
 def badge_detail(request, track_name, badge_id):
   r = Response()
-  r.track = get_object_or_404(Track, pk__iexact=track_name)
+  r.track = get_object_or_404(Track, name__iexact=track_name)
   r.badge = get_object_or_404(Badge, pk=badge_id)
   r.user_track = get_user_track(request, track_name)
   if r.track != r.badge.requirement.level.track:
@@ -122,7 +122,7 @@ def user_merits(request, username, track_name):
   r = Response()
   r.target_user = get_object_or_404(User, username__iexact=username)
   if track_name:
-    r.track = get_object_or_404(Track, pk__iexact=track_name)
+    r.track = get_object_or_404(Track, name__iexact=track_name)
   r.user_tracks = r.target_user.user_tracks.order_by('-level__rank', '-xp')
   return r.__dict__
 
@@ -149,10 +149,10 @@ def ajax_get_wall_posts(request):
     return Response.errors('Request must use GET; used: %s.' % request.method)
 
   errors = get_errors(request.GET, {
-      'target_user_pk': (RequiredValidator(), ModelValidator(User, int)),
+      'target_user_pk': (RequiredValidator(), ModelValidator(User)),
       'paginate': (RequiredValidator(), BooleanValidator()),
-      'since_pk': (ModelValidator(WallPost, int)),
-      'verification_pk': (ModelValidator(Verification, int)),
+      'since_pk': (ModelValidator(WallPost)),
+      'verification_pk': (ModelValidator(Verification)),
   })
   if errors:
     return Response.errors(errors)
@@ -201,9 +201,9 @@ def ajax_post_to_wall(request):
   # Perform all the general validation.
   errors = get_errors(request.POST, {
       'text': (NonEmptyValidator(), StrippedLengthValidator(WallPost.MAX_TEXT_LENGTH)),
-      'to_pk': (RequiredValidator(), ModelValidator(User, int)),
+      'to_pk': (RequiredValidator(), ModelValidator(User)),
       'is_public': (RequiredValidator(), BooleanValidator()),
-      'verification_pk': (ModelValidator(Verification, int)),
+      'verification_pk': (ModelValidator(Verification)),
   })
   if errors:
     return Response.errors(errors)
@@ -245,7 +245,7 @@ def ajax_start_badge(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'badge_pk': (RequiredValidator(), ModelValidator(Badge, int)),
+      'badge_pk': (RequiredValidator(), ModelValidator(Badge)),
   })
   if errors:
     return Response.errors(errors)
@@ -277,7 +277,7 @@ def ajax_complete_unverified_badge(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'badge_pk': (RequiredValidator(), ModelValidator(Badge, int)),
+      'badge_pk': (RequiredValidator(), ModelValidator(Badge)),
   })
   if errors:
     return Response.errors(errors)
@@ -316,7 +316,7 @@ def ajax_submit_verification(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'badge_pk': (RequiredValidator(), ModelValidator(Badge, int)),
+      'badge_pk': (RequiredValidator(), ModelValidator(Badge)),
       'text_proof': (RequiredValidator()),
       'video_proof': (RequiredValidator(), YouTubeIdValidator()),
   })
@@ -359,7 +359,7 @@ def ajax_get_verifications(request):
 
   # Perform all the general validation.
   errors = get_errors(request.GET, {
-      'user_track_pk': (RequiredValidator(), ModelValidator(UserTrack, int)),
+      'user_track_pk': (RequiredValidator(), ModelValidator(UserTrack)),
       'verification_pks_to_ignore': (IterableValidator(int)),
   })
   if errors:
@@ -393,7 +393,7 @@ def ajax_verify(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'verification_pk': (RequiredValidator(), ModelValidator(Verification, int)),
+      'verification_pk': (RequiredValidator(), ModelValidator(Verification)),
       'verify': (RequiredValidator(), BooleanValidator()),
   })
   if errors:
@@ -448,20 +448,20 @@ def ajax_join_track(request):
 
   # Perform all the general validation.
   errors = get_errors(request.POST, {
-      'track_pk': (RequiredValidator(), ModelValidator(Track, str)),
+      'track_pk': (RequiredValidator(), ModelValidator(Track)),
   })
   if errors:
     return Response.errors(errors)
 
-  track_name = request.POST['track_pk']
-  if UserTrack.objects.filter(user=request.user, track__name=track_name).exists():
+  track_pk = int(request.POST['track_pk'])
+  if UserTrack.objects.filter(user=request.user, track__pk=track_pk).exists():
     return Response.errors('Track already joined.')
 
   # Create a new UserTrack.
   user_track = UserTrack(user=request.user, mission='')
-  user_track.track_id = track_name
+  user_track.track_id = track_pk
   try:
-    user_track.level = Level.objects.get(track__name=track_name, rank=0)
+    user_track.level = Level.objects.get(track__pk=track_pk, rank=0)
   except ObjectDoesNotExist:
     return Response.errors('Track has no level 0.')
   user_track.save()

@@ -30,10 +30,9 @@ def ellipsis(width):
 
 
 class Track(models.Model):
-  name = models.CharField(max_length=64, primary_key=True)
+  name = models.CharField(max_length=64)
   description = models.TextField()
   mission = models.CharField(max_length=128)
-  crest = models.ImageField(upload_to='uploads', null=True)
   backgrounds = models.PositiveSmallIntegerField(default=1)
   created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 

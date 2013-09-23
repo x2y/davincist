@@ -56,17 +56,16 @@ class BooleanValidator(object):
 
 
 class ModelValidator(object):
-  def __init__(self, model, pk_type):
+  def __init__(self, model):
     self.model_ = model
     self.model_name_ = model._meta.object_name
-    self.pk_type_ = pk_type
 
   def error(self, data, field):
     if field not in data:
       return None
 
     try:
-      pk = self.pk_type_(data[field])
+      pk = int(data[field])
     except:
       return 'Invalid %s model field: %s.' % (self.model_name_, field)
 

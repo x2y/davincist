@@ -19,15 +19,6 @@ def track_link(track):
   return {'track': track}
 
 
-@register.inclusion_tag('crest_link_tag.html')
-def crest_link(crest):
-#  if os.path.isfile(str(crest)):
-#    return {'crest': crest}
-#  else:
-#    return {'crest': 'nocrest'}
-  return {'crest': crest}
-
-
 @register.inclusion_tag('user_link_tag.html')
 def user_link(user):
   return {'user': user}

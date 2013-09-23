@@ -7,7 +7,7 @@
 
 {% block head %}
 {{ block.super }}
-<script>var trackName = '{{ track.name|escapejs }}';</script>
+<script>var trackPk = {{ track.pk }};</script>
 <style>
   #nav #track-home-link {
     color: #FAFAFA;
@@ -20,7 +20,6 @@
 {% block content %}
 {{ track.description }}
 <p>{{ track.mission }}
-<p><img src="/media/{{ track.crest }}" width="100px" height="100px"></img>
 
 {% if user.is_authenticated and not user_track %}
   <p>
@@ -66,7 +65,7 @@
       $('#join-track-error').text('');
 
       var data = {
-        track_pk: trackName      
+        track_pk: trackPk
       };
       $.post('{% url ajax_join_track %}', data, function (data) {
         if (data.errors) {

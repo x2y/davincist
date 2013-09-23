@@ -12,7 +12,6 @@ The following tracks are available for public signup:<br>
   <li>
     {{ track.name }}: {{ track.description|truncatechars:128 }}<br>
     Mission: {{ track.mission|truncatechars:128 }}<br>
-    {% crest_link track.crest %}
     For more details, <a href="{% url track_detail track.name %}">click here</a>.
   </li>
 {% empty %}
