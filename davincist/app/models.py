@@ -29,6 +29,36 @@ def ellipsis(width):
   return _decorator
 
 
+def randSecret():
+  adverbs = [
+      'absurdly', 'catastrophically', 'characteristically', 'closely', 'doubtfully', 'dutifully',
+      'eerily', 'energetically', 'fantastically', 'firmly', 'fully', 'furtively', 'indubitably',
+      'inexplicably', 'inoperably', 'naively', 'paradoxically', 'partially', 'rambunctiously',
+      'regretfully', 'romantically', 'simply', 'sporadically', 'stinkily', 'surgically',
+      'suspiciously', 'truthfully', 'unquestionably', 'wonderously'
+  ]
+  adjectives = [
+      'bamboozled', 'bemused', 'bifurcated', 'blushing', 'cantankerous', 'cheeky', 'courageous',
+      'cuddly', 'fungible', 'gobsmacked', 'greasy', 'groggy', 'grotesque', 'gunky', 'janky',
+      'lackadaisical', 'loopy', 'muddy', 'namby-pamby', 'persnickety', 'prickly', 'rapscallion',
+      'smelly', 'snarky', 'suspicious', 'wild', 'wonky', 'zealous'
+  ]
+  nouns = [
+      'bazinga', 'bootlegger', 'buccaneer', 'bumfuzzle', 'canoodle', 'carbuncle', 'caterwaul',
+      'cattywampus', 'conniption', 'didgeridoo', 'doodle', 'doohickey', 'fiddledeedee', 'girdle',
+      'gumbo', 'hornswoggle', 'hullabaloo', 'kahuna', 'katydid', 'kerplunk', 'kinkajou', 'monkey'
+      'mugwump', 'noggin', 'pantaloon', 'prestidigitation', 'pickle', 'proctor', 'rumpus',
+      'scootch', 'scuttlebutt', 'shebang', 'snuffle', 'spelunker', 'spork', 'sprocket', 'squeegee',
+      'tater', 'tuber', 'viper', 'waddle', 'walkabout', 'wasabi', 'weasel', 'whatnot', 'wombat',
+      'zeitgeist'
+  ]
+  adverb = adverbs[random.randint(0, len(adverbs) - 1)]
+  adjective = adjectives[random.randint(0, len(adjectives) - 1)]
+  noun = nouns[random.randint(0, len(nouns) - 1)]
+  article = 'an' if adverb[0] in 'aeiou' else 'a'
+  return '%s %s %s %s' % (article, adverb, adjective, noun)
+
+
 class Track(models.Model):
   name = models.CharField(max_length=64, unique=True, db_index=True)
   description = models.TextField()
@@ -323,6 +353,23 @@ class WallPost(models.Model):
   class Meta:
     get_latest_by = 'timestamp'
     ordering = ['user', '-timestamp']
+
+
+class Invitation(models.Model):
+  email = models.EmailField()
+  secret = models.CharField(max_length=75, default=randSecret)
+  created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
+  emails_sent = models.PositiveSmallIntegerField(default=0)
+  last_email_timestamp = models.DateTimeField(blank=True, null=True)
+  claimer = models.OneToOneField(User, related_name='invitation', blank=True, null=True)
+
+  def __unicode__(self):
+    return '%s: %s - %s' % (self.email, self.secret,
+                            datetime.date(self.created).strftime('%b %d, \'%y'))
+
+  class Meta:
+    get_latest_by = 'created'
+    ordering = ['created']
 
 
 def user_can_verify(self, verification):
