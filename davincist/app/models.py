@@ -30,7 +30,7 @@ def ellipsis(width):
 
 
 class Track(models.Model):
-  name = models.CharField(max_length=64, db_index=True)
+  name = models.CharField(max_length=64, unique=True, db_index=True)
   description = models.TextField()
   mission = models.CharField(max_length=128)
   backgrounds = models.PositiveSmallIntegerField(default=1)
