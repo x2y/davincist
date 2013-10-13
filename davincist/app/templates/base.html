@@ -36,7 +36,7 @@
       {% if user.is_authenticated %}
         {{ user.username }}
       {% else %}
-        <button id="request-invite-button">Request an invite</button>
+        <button class="request-invite-button">Request an invite</button>
       {% endif %}
       {% block track_info %}{% endblock %}
     </div>
@@ -93,7 +93,7 @@
       }
     {% else %}
       $(function () {
-        $('#request-invite-button').click(showInviteRequestForm);
+        $('.request-invite-button').click(showInviteRequestForm);
       });
 
       function showInviteRequestForm() {

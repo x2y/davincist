@@ -71,10 +71,13 @@
   {% if not is_started %}
     <div id="start-badge-mask">
       <div>
-        <!-- TODO: Change to a "Join this track" button if not already joined. -->
-        <!-- TODO: Change to a login/join link if not logged in. -->
-        <button id="start-badge-button">Start {{ badge.name }}!</button>
-        <div id="start-badge-error" class="error"></div>
+        {% if user.is_authenticated %}
+          <!-- TODO: Change to a "Join this track" button if not already joined. -->
+          <button id="start-badge-button">Start "{{ badge.name }}"!</button>
+          <div id="start-badge-error" class="error"></div>
+        {% else %}
+          <button class="request-invite-button">Request an invite to join!</button>
+        {% endif %}
       </div>
     </div>
   {% endif %}
