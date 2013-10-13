@@ -46,7 +46,7 @@ def randSecret():
   nouns = [
       'bazinga', 'bootlegger', 'buccaneer', 'bumfuzzle', 'canoodle', 'carbuncle', 'caterwaul',
       'cattywampus', 'conniption', 'didgeridoo', 'doodle', 'doohickey', 'fiddledeedee', 'girdle',
-      'gumbo', 'hornswoggle', 'hullabaloo', 'kahuna', 'katydid', 'kerplunk', 'kinkajou', 'monkey'
+      'gumbo', 'hornswoggle', 'hullabaloo', 'kahuna', 'katydid', 'kerplunk', 'kinkajou', 'monkey',
       'mugwump', 'noggin', 'pantaloon', 'prestidigitation', 'pickle', 'proctor', 'rumpus',
       'scootch', 'scuttlebutt', 'shebang', 'snuffle', 'spelunker', 'spork', 'sprocket', 'squeegee',
       'tater', 'tuber', 'viper', 'waddle', 'walkabout', 'wasabi', 'weasel', 'whatnot', 'wombat',
