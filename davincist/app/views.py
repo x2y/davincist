@@ -167,7 +167,9 @@ def ajax_get_wall_posts(request):
 
   # Get all wall posts visible to the specified user.
   wall_posts = WallPost.objects.filter(
-      Q(is_public=True) | Q(user=request.user) | Q(poster=request.user),
+      Q(is_public=True) | Q(user=request.user) | Q(poster=request.user)
+          if request.user.is_authenticated()
+          else Q(is_public=True),
       user__pk=target_user_pk)
 
   if 'since_pk' in request.GET:
