@@ -1,0 +1,31 @@
+<h1>Request an invite</h1>
+<br>
+<input type="text" id="invite-email-field" name="email"></input>
+<br>
+<button id="submit-invite-request-button">Request an invite</button>
+<script>
+  $(function () {
+    $('#submit-invite-request-button').click(requestInvite);
+  });
+
+  function requestInvite() {
+    disable($('#invite-email-field, #submit-invite-request-button'));
+
+    var data = {
+      email: trim($('#invite-email-field').val())
+    };
+    $.post('{% url ajax_submit_invite_request %}', data, function (data) {
+      if (data.errors) {
+        showBannerMessage(data.errors.join());
+        return;
+      }
+
+      showDimmer(false);
+      showBannerMessage('Thanks! We\'ll get back to you soon!');
+    }).fail(function () {
+      showBannerMessage('Server error!');
+    }).always(function () {
+      enable($('#invite-email-field, #submit-invite-request-button'));
+    });
+  }
+</script>

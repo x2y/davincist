@@ -30,6 +30,7 @@ urlpatterns = patterns(
     # Top-level pages.
     url(r'^(?i)$', home, name='home'),
     url(r'^(?i)about/$', about, name='about'),
+    url(r'^(?i)request-invite/$', request_invite, name='request_invite'),
 
     # Track pages.
     url(r'^(?i)t/all$', track_list, name='track_list'),
@@ -55,6 +56,7 @@ urlpatterns = patterns(
     url(r'^(?i)x/complete-unverified-badge/', ajax_complete_unverified_badge, name='ajax_complete_unverified_badge'),
     url(r'^(?i)x/submit-verification/', ajax_submit_verification, name='ajax_submit_verification'),
     url(r'^(?i)x/get-verifications/', ajax_get_verifications, name='ajax_get_verifications'),
+    url(r'^(?i)x/submit-invite-request/', ajax_submit_invite_request, name='ajax_submit_invite_request'),
     url(r'^(?i)x/verify/', ajax_verify, name='ajax_verify'),
     url(r'^(?i)x/join-track/', ajax_join_track, name='ajax_join_track'),
 

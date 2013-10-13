@@ -3,6 +3,8 @@
 import collections
 import re
 
+from django.core.validators import validate_email
+
 
 def get_errors(data, field_validators):
   errors = []
@@ -79,8 +81,18 @@ class YouTubeIdValidator(object):
     if field not in data:
       return None
     print
-    return ('Invalid YouTube Id: %s.' % field
+    return ('Invalid YouTube Id: %s.' % data[field]
             if not re.match(r'|[a-zA-Z_-]{11}', data[field]) else None)
+
+
+class EmailValidator(object):
+  def error(self, data, field):
+    if field not in data:
+      return None
+    try:
+      validate_email(data[field].strip())
+    except:
+      return 'Invalid email: %s.' % data[field] 
 
 
 class IterableValidator(object):

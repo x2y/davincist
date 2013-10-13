@@ -43,6 +43,12 @@ def about(request):
   return r.__dict__
 
 
+@render_to('request_invite.html')
+def request_invite(request):
+  r = Response()
+  return r.__dict__
+
+
 @render_to('track_list.html')
 def track_list(request):
   r = Response()
@@ -377,6 +383,32 @@ def ajax_get_verifications(request):
       [0:VERIFICATIONS_PER_FETCH])
 
   r.verifications = [verification.to_dict() for verification in verifications]
+
+  return r.__dict__
+
+
+@ajax_request
+def ajax_submit_invite_request(request):
+  r = Response()
+  if request.method != 'POST':
+    return Response.errors('Request must use POST; used: %s.' % request.method)
+
+  # Posting User cannot be logged in.
+  if request.user.is_authenticated():
+    return Response.errors('User already has an account.')
+
+  # Perform all the general validation.
+  errors = get_errors(request.POST, {
+      'email': (RequiredValidator(), EmailValidator()),
+  })
+  if errors:
+    return Response.errors(errors)
+
+  email = request.POST['email'].strip()
+
+  if not Invitation.objects.filter(email=email).exists():
+    invitation = Invitation(email=email)
+    invitation.save()
 
   return r.__dict__
 

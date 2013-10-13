@@ -36,7 +36,7 @@
       {% if user.is_authenticated %}
         {{ user.username }}
       {% else %}
-        <a href="javascript:openPopup('{% url socialauth_begin 'facebook' %}'); return void(0);">Log in with Facebook</a>
+        <button id="request-invite-button">Request an invite</button>
       {% endif %}
       {% block track_info %}{% endblock %}
     </div>
@@ -56,7 +56,12 @@
       });
       $(document).scroll();
 
-      $('#dimmer, #dimmer:first-child').click(function () { showDimmer(false); });
+      $('#dimmer, #dimmer:first-child').click(function (e) {
+        var $dimmer = $('#dimmer')[0];
+        if (e.target == $dimmer || $(e.target).parent()[0] == $dimmer) {
+          showDimmer(false);
+        }
+      });
     });
 
     function showDimmer(show) {
@@ -79,6 +84,15 @@
           '<iframe onload="this.style.visibility = \'visible\';" ' +
           '        src="{% url user_merits user.username track.name %}" ' +
           '        allowtransparency="true"></iframe>');
+        showDimmer();
+      }
+    {% else %}
+      $(function () {
+        $('#request-invite-button').click(showInviteRequestForm);
+      });
+
+      function showInviteRequestForm() {
+        $("#dimmer > div").load('{% url request_invite %}');
         showDimmer();
       }
     {% endif %}
