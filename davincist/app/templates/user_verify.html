@@ -24,13 +24,14 @@
     <li {% if not forloop.last %}class="separated"{% endif %}>{{ user_track.track.name }}
   {% endfor %}
   </ul>
-  <div id="tracks-container">
+  <div id="tracks-container" class="verifications">
   {% for user_track in user_tracks %}
     <div class="track-container user-track-{{ user_track.pk }}">
       <!-- Verifications go here. -->
     </div>
   {% endfor %}
   </div>
+  <div id="verifications-mask"></div>
 {% endif %}
 {% endblock %}
 

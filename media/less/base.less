@@ -127,11 +127,14 @@ textarea {
   line-height: 20px;
 }
 
+@content-padding: 30px;
+
 #content {
   clear: both;
+  position: relative;
   margin: 0 40px 30px 215px;
   border-top: 0;
-  padding: 30px;
+  padding: @content-padding;
   min-height: 1000px;
   min-width: 675px;
 }
@@ -170,10 +173,12 @@ textarea {
 #tracks-container {
   width: 100%;
   margin-top: 15px;
+  position: relative;
 
   & > div {
     position: absolute;
     display: none;
+    width: 100%;
 
     &.selected {
       display: block;
@@ -240,6 +245,59 @@ textarea {
   background-color: #FFF;
 }
 
+#tracks-container.verifications {
+  height: 900px;
+  overflow: hidden;
+    
+  .verification {
+    overflow: auto;
+    border-bottom: 1px solid #CCC;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+
+    .badge-chip {
+      float: left;
+    }
+
+    .challenge {
+      color: #888;
+      font-size: 14px;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    .proof-container {
+      clear: left;
+      float: left;
+      width: 50%;
+      padding-right: 4px;
+      margin-top: 5px;
+
+      .text-proof {
+        .well;
+        padding: 5px;
+        margin-bottom: 8px;
+      }
+    }
+
+    .wall-container {
+      float: left;
+      width: 50%;
+      padding-left: 4px;
+      margin-top: 5px;
+
+      .wall-post-box {
+        width: 100%;
+      }
+    }
+  }
+}
+
+#verifications-mask {
+  .faded-mask;
+  margin: 0 0 @content-padding -@content-padding;
+}
+
 .wall-post-box {
   display: inline-block;
   width: 400px;
@@ -248,7 +306,7 @@ textarea {
 .wall-post-textbox {
   float: left;
   width: 100%;
-  height: 5em;
+  height: 5.15em;
 }
 
 .wall-post-error {
@@ -307,14 +365,13 @@ textarea {
   padding: 0 10px;
 }
 
-#start-badge-mask {
+.faded-mask {
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 350px;
   text-align: center;
 
-  
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, #FFF)); /* Chrome,Safari4+ */
   background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #FFF 100%); /* Chrome10+,Safari5.1+ */
   background:    -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #FFF 100%); /* FF3.6+ */
@@ -322,6 +379,10 @@ textarea {
   background:      -o-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #FFF 100%); /* Opera 11.10+ */
   background:         linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #FFF 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+}
+
+#start-badge-mask {
+  .faded-mask;
 
   div {
     position: absolute;

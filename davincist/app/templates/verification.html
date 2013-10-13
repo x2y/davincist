@@ -15,13 +15,17 @@ template relies on the including page to preload:
 
 {% endcomment %}
 {% load tags %}
-For {% badge_link verification.badge True %}: {{ verification.badge.challenge }}
-{% if verification.text %}
-  <div class="text-proof">{{ verification.text }}</div>
-{% endif %}
-{% if verification.youtube_id %}
-  <iframe id="video-proof-embed" type="text/html" width="320" height="195" frameborder="0"
-          src="//www.youtube.com/embed/{{ verification.youtube_id }}?wmode=transparent"></iframe>
+{% badge_link verification.badge True %}
+<span class="challenge">: {{ verification.badge.challenge }}</span>
+{% if verification.text or verification.youtube_id %}
+<div class="proof-container">
+  {% if verification.text %}
+    <div class="text-proof">{{ verification.text }}</div>
+  {% endif %}
+  {% if verification.youtube_id %}
+    <iframe id="video-proof-embed" type="text/html" width="100%" height="300" frameborder="0"
+            src="//www.youtube.com/embed/{{ verification.youtube_id }}?wmode=transparent"></iframe>
+  {% endif %}
+</div>
 {% endif %}
 {% include 'user_wall.html' with target_user=verification.user verification=verification %}
-<hr>
