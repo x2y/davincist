@@ -9,6 +9,7 @@ from validators import *
 
 WALL_POSTS_PER_PAGE = 15
 VERIFICATIONS_PER_FETCH = 10  # Must be > MIN_USER_TRACK_VERIFICATIONS_TO_PRELOAD.
+LEVELS_AHEAD_TO_DISPLAY = 2
 
 
 # Attributes will be defined outside init pylint: disable=W0201
@@ -62,7 +63,7 @@ def track_detail(request, track_name):
   r.track = get_object_or_404(Track, name__iexact=track_name)
   r.user_track = get_user_track(request, track_name)
   r.first_level_to_display = r.user_track.level.rank if r.user_track else 0
-  r.last_level_to_display = r.first_level_to_display + 3
+  r.last_level_to_display = r.first_level_to_display + LEVELS_AHEAD_TO_DISPLAY + 1
   return r.__dict__
 
 
