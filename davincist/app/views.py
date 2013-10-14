@@ -75,22 +75,6 @@ def track_users(request, track_name):
   return r.__dict__
 
 
-@render_to('track_levels.html')
-def track_levels(request, track_name):
-  r = Response()
-  r.track = get_object_or_404(Track, name__iexact=track_name)
-  r.user_track = get_user_track(request, track_name)
-  return r.__dict__
-
-
-@render_to('track_badges.html')
-def track_badges(request, track_name):
-  r = Response()
-  r.track = get_object_or_404(Track, name__iexact=track_name)
-  r.user_track = get_user_track(request, track_name)
-  return r.__dict__
-
-
 @render_to('badge_detail.html')
 def badge_detail(request, track_name, badge_id):
   r = Response()

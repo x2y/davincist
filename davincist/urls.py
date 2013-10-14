@@ -36,8 +36,6 @@ urlpatterns = patterns(
     url(r'^(?i)t/all$', track_list, name='track_list'),
     url(r'^(?i)t/%s/$' % TRACK_GROUP, track_detail, name='track_detail'),
     url(r'^(?i)t/%s/users/$' % TRACK_GROUP, track_users, name='track_users'),
-    url(r'^(?i)t/%s/levels/$' % TRACK_GROUP, track_levels, name='track_levels'),
-    url(r'^(?i)t/%s/badges/$' % TRACK_GROUP, track_badges, name='track_badges'),
     url(r'^(?i)t/%s/badge/%s/$' % (TRACK_GROUP, BADGE_GROUP), badge_detail, name='badge_detail'),
 
     # User pages.
