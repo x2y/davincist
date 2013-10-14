@@ -12,6 +12,18 @@
 </style>
 {% endblock %}
 
+{% block navigation %}
+<ul>
+  {% for user_track in user.user_tracks.all %}
+    <li><a href="{% url track_detail track_name=user_track.track.name %}">{{ user_track.track.name }}</a>
+  {% endfor %}
+  {% if user.is_authenticated %}
+    <li><a id="whats-next-link" href="{% url user_home username=user.username %}">what's next?</a>
+    <li><a id="verify-link" href="{% url user_verify username=user.username %}">verify</a>
+  {% endif %}
+</ul>
+{% endblock %}
+
 {% block content %}
 Lorem ipsum dolor...
 {% endblock %}
