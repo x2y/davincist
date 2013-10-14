@@ -5,10 +5,11 @@ register = template.Library()
 
 
 @register.inclusion_tag('badge_link_tag.html')
-def badge_link(badge, link_to_verification=False):
+def badge_link(badge, link_to_verification=False, target_username=None):
   return {
       'badge': badge,
       'link_to_verification': link_to_verification,
+      'target_username': target_username,
   }
 
 
