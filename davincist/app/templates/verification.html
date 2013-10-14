@@ -16,7 +16,9 @@ template relies on the including page to preload:
 {% endcomment %}
 {% load tags %}
 {% badge_link verification.badge True %}
-<span class="challenge">: {{ verification.badge.challenge }}</span>
+<span class="challenge">
+  for {% user_link verification.user %}: {{ verification.badge.challenge }}
+</span>
 {% if verification.text or verification.youtube_id %}
 <div class="proof-container">
   {% if verification.text %}

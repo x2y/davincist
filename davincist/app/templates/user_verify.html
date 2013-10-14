@@ -59,7 +59,7 @@
       // We use == here rather than < so that when we've reached the end of the list of
       // verifications and no more can be loaded, we don't keep naively requesting more
       // verifications as the number trickles down to 0.
-      if ($('.user-track-' + userTrackPks[i] + ' .verification').length ==
+      if ($('.user-track-' + userTrackPks[i] + ' .verification-form').length ==
               MIN_USER_TRACK_VERIFICATIONS_TO_PRELOAD ||
           force) {
         getVerifications(userTrackPks[i]);
@@ -88,7 +88,7 @@
         var verification = data.verifications[i];
         verificationPksToIgnore.push(verification.pk);
 
-        var $verification = $('<div>', {class: 'verification verification-' + verification.pk});
+        var $verification = $('<div>', {class: 'verification-form verification-' + verification.pk});
         $verification.load('/p/verification/' + verification.pk + '/');
         $(trackContainerSelector).append($verification);
       }
