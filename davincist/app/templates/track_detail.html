@@ -31,24 +31,40 @@
 <h2> Announcements </h2>
 <p> Announcements go here </p>
 <h3>Levels</h3>
-<ul>
-{% for level in track.levels.all %}
-  <li>
-    {{ level.user_count }}
-    {% if level.user_count == 1 %}user is{% else %}users are{% endif %} on {{ level.name}}
-    <ul>
-    {% for requirement in level.requirements.all %}
-      <li>
-        {% for badge in requirement.badges.all %}
-          {% badge_link badge %}
-          {% if not forloop.last %} or {% endif %}
-        {% endfor %}
-      </li>
-    {% endfor %}
-    </ul>
-  </li>
-{% endfor %}
-</ul>
+<div class="panel-group" id="accordion">
+  {% for level in track.levels.all %}
+    {% if level.is_public %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
+               href="#collapse-level-{{ level.rank }}">
+              <b>Level {{ level.rank }}:</b> {{ level.name }}
+            </a>
+          </h4>
+        </div>
+        <div id="collapse-level-{{ level.rank }}" class="panel-collapse collapse {% if level.rank >= first_level_to_display and level.rank < last_level_to_display %}in{% endif %}">
+          <div class="panel-body">
+            {% if level.rank == 0 %}
+              There are no requirements for this level. This is where you start!
+            {% else %}
+              <ul>
+              {% for requirement in level.requirements.all %}
+                <li>
+                  {% for badge in requirement.badges.all %}
+                    {% badge_link badge %} - {{ badge.description }}
+                    {% if not forloop.last %} <b>or</b><br>{% endif %}
+                  {% endfor %}
+                </li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
 {% endblock %}
 
 {% block footer_script %}

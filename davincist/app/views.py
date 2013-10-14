@@ -61,6 +61,8 @@ def track_detail(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, name__iexact=track_name)
   r.user_track = get_user_track(request, track_name)
+  r.first_level_to_display = r.user_track.level.rank if r.user_track else 0
+  r.last_level_to_display = r.first_level_to_display + 3
   return r.__dict__
 
 
