@@ -16,14 +16,14 @@
 {% endblock %}
 
 {% block content %}
-{% for user_track in track.user_tracks.all %}
+{% for user_track in user_tracks %}
   <p>{% user_link user_track.user %}: (Lvl {{ user_track.level.rank }}) {{ user_track.level.name }}
   <ul>
     <li>"{{ user_track.mission }}"
     <li>{{ user_track.xp }} XP
-    {% for badge in user_track.badges.all %}
-      <li>{% badge_link badge %}
-    {% endfor %}
+    <li>
+      {% for badge in user_track.badges.all %}{% badge_link badge %}{% endfor %}
+    </li>
   </ul>
 {% endfor %}
 {% endblock %}

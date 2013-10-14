@@ -72,6 +72,7 @@ def track_users(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, name__iexact=track_name)
   r.user_track = get_user_track(request, track_name)
+  r.user_tracks = r.track.user_tracks.order_by('-level__rank', '-xp')
   return r.__dict__
 
 
