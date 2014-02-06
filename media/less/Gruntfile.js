@@ -15,6 +15,13 @@ module.exports = function(grunt) {
         },
         src: ['base.less'],
         dest: '../css/base.min.css'
+      },
+      user_merits: {
+        options: {
+          compress: true
+        },
+        src: ['user_merits.less'],
+        dest: '../css/user_merits.min.css'
       }
     },
 
