@@ -60,8 +60,7 @@
                 {% for requirement in level.requirements.all %}
                   <li>
                     {% for badge in requirement.badges.all %}
-                      {% badge_link badge %} - {{ badge.description }}
-                      {% if not forloop.last %} <b>or</b><br>{% endif %}
+                      {% badge_link badge %}{% if not forloop.last %} <b>or</b>{% endif %}
                     {% endfor %}
                   </li>
                 {% endfor %}

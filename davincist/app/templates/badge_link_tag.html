@@ -1,7 +1,12 @@
 <a href="{% url badge_detail badge.track_name badge.id %}{{ link_to_verification|yesno:'#verification,' }}"
-   class="badge-chip">
-    <span class="medal grade-{{ badge.grade }}"></span>{{ badge.name }}
-    {% if target_username %}
-      <span class="badge-chip-username">for {{ target_username }}</span>
-    {% endif %}
+   class="badge-chip grade-{{ badge.grade }}">
+  <div class="badge-medal"></div>
+  <div class="badge-chip-box">
+    <div class="badge-name">{{ badge.name }}
+      {% if target_username %}
+        <span class="badge-target-username">for {{ target_username }}</span>
+      {% endif %}
+    </div>
+    <div class="badge-description">{{ badge.description }}</div>
+  </div>
 </a>
