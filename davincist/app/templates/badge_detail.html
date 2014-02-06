@@ -9,7 +9,7 @@
 {% load staticfiles %}
 <script src="{% static 'wall.js' %}"></script>
 <script>
-  var userPk = {{ user.pk }};
+  var userPk = {{ user.pk|default:'null'}};
   var badgePk = {{ badge.pk }};
   var firstName = '{{ user.first_name|lower|escapejs }}';
   var lastName = '{{ user.last_name|lower|escapejs }}';
