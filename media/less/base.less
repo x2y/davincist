@@ -5,8 +5,12 @@
 @import url(http://fonts.googleapis.com/css?family=Lobster);
 @import url(http://fonts.googleapis.com/css?family=Satisfy);
 
+* {
+  box-sizing: border-box;
+}
+
 body {
-  background: #CCC;
+  background: #FFF;
   padding: 0;
   margin: 0;
   font-family: Helvetica,Helvetica Neue,Arial,Liberation Sans,DejaVu Sans,sans-serif;
@@ -24,81 +28,35 @@ textarea {
   margin-bottom: 7px;
 }
 
-.floating-text {
-  color: #FAFAFA;
-  text-shadow: #000 0px 3px 10px, rgba(0, 0, 0, 0.3) 0px 0px 30px;
-}
-  
-.floating-box {
-  background-color: #FFF;
-  -moz-box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
-   -webkit-shadow: rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
-       box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
-  border: 1px solid #DDD;
-}
-
 #header {
-  float: left;
-  margin-left: 22px;
-  height: 135px;
-  text-align: left;
-  font-family: 'Lobster', cursive;
-  font-size: 100px;
-  font-weight: 700;
-  color: #FAFAFA;
-  text-shadow: rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
-}
-
-#subtitle {
-  font-size: 36px;
-}
-
-#gutter {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 210px;
-}
-
-#nav {
-  margin: 150px 0 0 37px;
+  width: 100%;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 2px solid #666;
 
   ul {
+    float: left;
     list-style: none;
+    margin: 0;
     padding: 0;
-    width: 100%;
 
     li {
-      margin: 0 1em 1.1em 0;
+      float: left;
+      display: inline;
+
+      a {
+        display: block;
+        padding: 15px;
+        cursor: pointer;
+
+        &:hover {
+          background: #EEE;
+          border-bottom: 2px solid #BBB;
+          padding-bottom: 13px;
+        }
+      }
     }
   }
-
-  a {
-    text-decoration: none;
-    display: block;
-    width: 125px;
-    padding: 0 0 0 8px;
-    color: white;
-    font-family: 'Lobster', cursive;
-    font-size: 18px;
-    color: #FFF;
-    border-bottom: 4px solid rgba(250, 250, 250, 0.7);
-
-    &:hover {
-      border-color: #FFF;
-    }
-  }
-}
-
-#gutter-box {
-  position: absolute;
-  bottom: 0;
-  text-align: center;
-  width: 100%;
-  font-family: 'Lobster', cursive;
-  font-size: 28px;
-  padding: 15px 0;
 }
 
 .request-invite-button {
@@ -124,16 +82,10 @@ textarea {
   line-height: 20px;
 }
 
-@content-padding: 30px;
-
 #content {
   clear: both;
   position: relative;
-  margin: 0 40px 30px 215px;
   border-top: 0;
-  padding: @content-padding;
-  min-height: 1000px;
-  min-width: 675px;
   overflow: hidden;
 }
 
@@ -287,11 +239,6 @@ textarea {
   }
 }
 
-#verifications-mask {
-  .faded-mask;
-  bottom: @content-padding;
-}
-
 .wall-post-box {
   display: inline-block;
   width: 400px;
@@ -404,39 +351,6 @@ textarea {
   color: red;
 }
 
-#dimmer {
-  display: none;
-  position: fixed;
-  background-color: rgba(0, 0, 0, 0.9);
-  width: 100%;
-  height: 100%;
-  top: 0;
-
-  & > div {
-    position: absolute;
-    top: 100px;
-    right: 50px;
-    bottom: 100px;
-    left: 50px; 
-    text-align: center;
-    color: #FFF;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-  }
-
-  iframe {
-    display: block;
-    height: 100%;
-    margin: 0 auto;
-    width: 800px;
-    border: 0;
-    visibility: hidden;
-  }
-
-  h1 {
-    display: inline-block;
-  }
-}
-
 .banner {
   position: fixed;
   top: 50%;
@@ -452,7 +366,6 @@ textarea {
   width: 100%;
   height: 300px;
   padding: 50px 75px;
-  box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
   font: 10px 'Lobster', cursive;
@@ -462,11 +375,14 @@ textarea {
 }
 
 #feedback-button {
-  .floating-box;
   position: fixed;
   bottom: 0;
   right: 15px;
-  background: white;
+  background: #FFF;
+  -moz-box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
+   -webkit-shadow: rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
+       box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 0px 30px;
+  border: 1px solid #DDD;
   border-radius: 5px 5px 0 0;
 
   a {

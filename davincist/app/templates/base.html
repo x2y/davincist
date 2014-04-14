@@ -1,3 +1,5 @@
+{% load tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,23 +28,17 @@
   {% block head %}{% endblock %}
 </head>
 <body>
-  <div id="header">
-    <span id="title">{% block title %}Title{% endblock %}</span>
-    <span id="subtitle">{% block subtitle %}Subtitle{% endblock %}</span>
-  </div>
-  <div id="gutter" class="floating-text">
-    <div id="nav" class="floating-text">{% block navigation %}{% endblock %}</div>
-    <div id="gutter-box" class="floating-text">
-      {% if user.is_authenticated %}
-        {{ user.username }}
-      {% else %}
-        <button class="request-invite-button">Request an invite</button>
-      {% endif %}
-      {% block track_info %}{% endblock %}
-    </div>
-  </div>
-  <div id="content" class="floating-box">{% block content %}{% endblock %}</div>
-  <div>{% block footer %}{% endblock %}</div>
+  <header id="header">
+    <nav>
+      <ul>
+        <li><a>Fitness</a>
+        <li><a>Guitar</a>
+        <li><a>Programming</a>
+      </ul>
+    </nav>
+  </header>
+  <div id="content">{% block content %}{% endblock %}</div>
+  <footer>{% block footer %}{% endblock %}</footer>
   <div id="dimmer"><div></div></div>
   <div id="feedback-button">
     <a href="https://docs.google.com/forms/d/1_zbBvuiDbOQcYclXsvd9t714Zg5351BMfT-bxh0eWF8/viewform">
@@ -52,56 +48,6 @@
   <!-- Use two banners for smooth cross-fading. -->
   <div class="banner"><div class="banner-text"></div></div>
   <div class="banner"><div class="banner-text"></div></div>
-  <script>
-    $(function () {
-      var MIN_NAV_TOP_PX = 25;
-      $(document).scroll(function (e) {
-        var top = $(document).scrollTop();
-        $('#nav').css('margin-top', Math.max(MIN_NAV_TOP_PX, 150 - top) + 'px');
-      });
-      $(document).scroll();
-
-      $('#dimmer, #dimmer:first-child').click(function (e) {
-        var $dimmer = $('#dimmer')[0];
-        if (e.target == $dimmer || $(e.target).parent()[0] == $dimmer) {
-          showDimmer(false);
-        }
-      });
-    });
-
-    function showDimmer(show) {
-      if (show || typeof show == 'undefined') {
-        $('#dimmer').fadeIn(300);
-      } else {
-        $('#dimmer').fadeOut(300, function () {
-          $('#dimmer:first-child').empty();
-        });
-      }
-    }
-
-    {% if user.is_authenticated %}
-      $(function () {
-        $('#gutter-box').hover(showMerits);
-      });
-
-      function showMerits() {
-        $("#dimmer > div").html(
-          '<iframe onload="this.style.visibility = \'visible\';" ' +
-          '        src="{% url user_merits user.username track.name %}" ' +
-          '        allowtransparency="true"></iframe>');
-        showDimmer();
-      }
-    {% else %}
-      $(function () {
-        $('.request-invite-button').click(showInviteRequestForm);
-      });
-
-      function showInviteRequestForm() {
-        $("#dimmer > div").load('{% url request_invite %}');
-        showDimmer();
-      }
-    {% endif %}
-  </script>
   {% block footer_script %}{% endblock %}
 </body>
 </html>
