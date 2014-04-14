@@ -3,15 +3,6 @@
 {% block tab_title %}{{ target_user.username }}{% endblock %}
 {% block title %}{{ target_user.username }}{% endblock %}
 
-{% block head %}
-{{ block.super }}
-<style>
-  body {
-    background-color: #DDD;
-  }
-</style>
-{% endblock %}
-
 {% block navigation %}
 <ul>
   {% for user_track in user.user_tracks.all %}

@@ -35,21 +35,16 @@ TODO
 <h2>Upcoming challenges</h2>
 <ul>
 {% for user_track in target_user.user_tracks.all %}
-  {% with next_requirements=user_track.next_requirements %}
-    {% if next_requirements %}
+  {% with next_challenges=user_track.next_challenges %}
+    {% if next_challenges %}
       <li>{{ user_track.track.name }}
       <ul>
-      {% for requirement in next_requirements %}
-        <li>
-          {% for badge in requirement.badges.all %}
-            {% badge_link badge %}
-            {% if not forloop.last %} or {% endif %}
-          {% endfor %}
-        </li>
+      {% for badge in next_challenges.all %}
+        <li>{% badge_link badge %}</li>
       {% endfor %}
       </ul>
     {% else %}
-      <li>No unstarted requirements for {{ user_track.track.name }}!
+      <li>No unstarted challenges for {{ user_track.track.name }}!
     {% endif %}
   {% endwith %}
 {% endfor %}

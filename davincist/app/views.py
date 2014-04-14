@@ -82,7 +82,7 @@ def badge_detail(request, track_name, badge_id):
   r.track = get_object_or_404(Track, name__iexact=track_name)
   r.badge = get_object_or_404(Badge, pk=badge_id)
   r.user_track = get_user_track(request, track_name)
-  if r.track != r.badge.requirement.level.track:
+  if r.track != r.badge.level.track:
     raise Http404
 
   if request.user.is_authenticated():
@@ -250,8 +250,8 @@ def ajax_start_badge(request):
   if Verification.objects.filter(user=request.user, badge=badge).exists():
     return Response.errors('Badge already started.')
 
-  if not request.user.user_tracks.filter(track__pk=badge.requirement.level.track.pk).exists():
-    return Response.errors('User has not joined %s.' % badge.requirement.level.track.name)
+  if not request.user.user_tracks.filter(track__pk=badge.level.track.pk).exists():
+    return Response.errors('User has not joined %s.' % badge.level.track.name)
 
   # Record that the badge has been started.
   verification = Verification(user=request.user, status=Verification.UNSUBMITTED)
@@ -283,9 +283,9 @@ def ajax_complete_unverified_badge(request):
     return Response.errors('Badge requires verification.')
 
   try:
-    user_track = request.user.user_tracks.get(track__pk=badge.requirement.level.track.pk)
+    user_track = request.user.user_tracks.get(track__pk=badge.level.track.pk)
   except ObjectDoesNotExist:
-    return Response.errors('User has not joined %s.' % badge.requirement.level.track.name)
+    return Response.errors('User has not joined %s.' % badge.level.track.name)
 
   try:
     verification = Verification.objects.get(user=request.user, badge=badge)
@@ -444,10 +444,10 @@ def ajax_verify(request):
   if request.POST['verify'] == 'true':
     try:
       user_track = verification.user.user_tracks.get(
-          track__pk=verification.badge.requirement.level.track.pk)
+          track__pk=verification.badge.level.track.pk)
     except ObjectDoesNotExist:
       return Response.errors(
-          'Target user has not joined %s.' % verification.badge.requirement.level.track.name)
+          'Target user has not joined %s.' % verification.badge.level.track.name)
 
     r.changed_levels = user_track.award_badge(verification, request.user)
   else:
@@ -480,7 +480,7 @@ def ajax_join_track(request):
     return Response.errors('Track already joined.')
 
   # Create a new UserTrack.
-  user_track = UserTrack(user=request.user, mission='')
+  user_track = UserTrack(user=request.user)
   user_track.track_id = track_pk
   try:
     user_track.level = Level.objects.get(track__pk=track_pk, rank=0)

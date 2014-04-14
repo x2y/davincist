@@ -49,7 +49,7 @@
               There are no requirements for this level. This is where you start!
             {% else %}
               <ul>
-                <li>Top DaVincists at this level:
+                <li>Top users at this level:
                   {% for user_track in level.top_10_user_tracks|slice:":3" %}
                     {% user_link user_track.user %}
                     ({{ user_track.xp }}){% if not forloop.last %},{% endif %}
@@ -57,13 +57,11 @@
                     No one has reached this level yet.
                   {% endfor %}
                 </li>
-                {% for requirement in level.requirements.all %}
-                  <li>
-                    {% for badge in requirement.badges.all %}
-                      {% badge_link badge %}{% if not forloop.last %} <b>or</b>{% endif %}
-                    {% endfor %}
-                  </li>
-                {% endfor %}
+                <li>
+                  {% for badge in level.badges.all %}
+                    {% badge_link badge %}
+                  {% endfor %}
+                </li>
               </ul>
             {% endif %}
           </div>

@@ -5,15 +5,6 @@
 {% block tab_title %}{{ track.name|capfirst }}{% endblock %}
 {% block title %}{{ track.name|capfirst }}{% endblock %}
 
-{% block head %}
-{{ block.super }}
-<style>
-  body {
-    background-image: url('{{ track.background_url }}');
-  }
-</style>
-{% endblock %}
-
 {% block track_info %}
   {% if user.is_authenticated %}
     {% if user_track %}

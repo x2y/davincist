@@ -123,7 +123,7 @@ class Level(models.Model):
 
 class Badge(models.Model):
   name = models.CharField(max_length=64)
-  level = models.ForeignKey(Level, related_name='requirements')
+  level = models.ForeignKey(Level, related_name='badges')
   order = models.FloatField()
   description = models.CharField(max_length=128)
   training = models.TextField()
@@ -221,7 +221,7 @@ class UserTrack(models.Model):
     return (
         self.user.verifications
         .filter(status__in=(Verification.UNSUBMITTED, Verification.UNVERIFIED),
-                badge__requirement__level__track=self.track)
+                badge__level__track=self.track)
         .order_by('-timestamp'))
 
   def next_challenges(self):
