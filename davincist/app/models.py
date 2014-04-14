@@ -63,19 +63,12 @@ class Track(models.Model):
   name = models.CharField(max_length=64, unique=True, db_index=True)
   description = models.TextField()
   mission = models.CharField(max_length=128)
-  backgrounds = models.PositiveSmallIntegerField(default=1)
-  created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   @ellipsis(100)
   def __unicode__(self):
     return '%s: %s' % (self.name, self.description)
 
-  def background_url(self):
-    return '%s%s-bkg-%d.jpg' % (settings.STATIC_URL, self.name.lower(),
-                                random.randint(0, self.backgrounds - 1))
-
   class Meta:
-    get_latest_by = 'created'
     ordering = ['name']
 
 
@@ -85,7 +78,6 @@ class Level(models.Model):
   rank = models.PositiveSmallIntegerField()
   track = models.ForeignKey(Track, related_name='levels')
   is_public = models.BooleanField(default=True)
-  created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   def __unicode__(self):
     return '(%s) %d: %s' % (self.track.name, self.rank, self.name)
@@ -125,28 +117,14 @@ class Level(models.Model):
       return None
 
   class Meta:
-    get_latest_by = 'created'
     ordering = ['track', 'rank']
     unique_together = (('rank', 'track'), ('name', 'track'))
 
 
-class Requirement(models.Model):
+class Badge(models.Model):
+  name = models.CharField(max_length=64)
   level = models.ForeignKey(Level, related_name='requirements')
   order = models.FloatField()
-
-  @ellipsis(100)
-  def __unicode__(self):
-    return '%s (Lvl. %d): %s' % (self.level.track.name, self.level.rank,
-                                 ', '.join(badge.name for badge in self.badges.all()))
-
-  class Meta:
-    ordering = ['level__track', 'level__rank', 'order']
-    unique_together = ('level', 'order')
-
-
-class Badge(models.Model):
-  requirement = models.ForeignKey(Requirement, related_name='badges')
-  name = models.CharField(max_length=64)
   description = models.CharField(max_length=128)
   training = models.TextField()
   challenge = models.CharField(max_length=256)
@@ -156,34 +134,33 @@ class Badge(models.Model):
             GOLD: 'Gold',
             DIAMOND: 'Diamond'}
   grade = models.SmallIntegerField(choices=GRADES.items(), default=BRONZE)
+  is_required = models.BooleanField(default=False)
   requires_verification = models.BooleanField(default=False)
-  created = models.DateTimeField(default=datetime.now, editable=False, blank=True)
 
   @ellipsis(100)
   def __unicode__(self):
-    return '(%s/%s) %s: %s' % (self.grade, self.requirement.level.track.name, self.name,
+    return '(%s/%s) %s: %s' % (self.grade, self.level.track.name, self.name,
                                self.description)
 
   def hours_needed(self):
-    if self.requirement.level.rank > 0:
+    if self.level.rank > 0:
       return round(self.grade *
-                   (TIME_UNIT_MULTIPLIER * self.requirement.level.rank - TIME_UNIT_OFFSET),
+                   (TIME_UNIT_MULTIPLIER * self.level.rank - TIME_UNIT_OFFSET),
                    2)
     else:
       return 0.0
 
   def xp(self):
-    return int(round(self.hours_needed() * Level.xp_per_hours_work_in(self.requirement.level.rank)))
+    return int(round(self.hours_needed() * Level.xp_per_hours_work_in(self.level.rank)))
 
   def user_count(self):
     return self.user_tracks.count()
 
   def track_name(self):
-    return self.requirement.level.track.name
+    return self.level.track.name
 
   class Meta:
-    get_latest_by = 'created'
-    ordering = ['requirement__level__track', 'requirement__level__rank', 'grade', 'name']
+    ordering = ['level__track', 'level__rank', 'order']
 
 
 class Verification(models.Model):
@@ -210,7 +187,7 @@ class Verification(models.Model):
     }
 
   class Meta:
-    get_latest_by = 'time'
+    get_latest_by = 'timestamp'
     ordering = ['status', 'badge', 'user']
     unique_together = ('user', 'badge')
 
@@ -222,7 +199,6 @@ class UserProfile(models.Model):
              FEMALE: 'Female',
              OTHER: 'Other'}
   gender = models.CharField(max_length='1', choices=GENDERS.items())
-  profile_image = models.ImageField(upload_to='uploads', null=True)
 
   def xp(self):
     return sum(user_track.xp for user_track in self.user.user_tracks.all())
@@ -234,7 +210,6 @@ class UserProfile(models.Model):
 class UserTrack(models.Model):
   user = models.ForeignKey(User, related_name='user_tracks')
   track = models.ForeignKey(Track, related_name='user_tracks')
-  mission = models.CharField(max_length=128, default='')
   level = models.ForeignKey('Level', related_name='user_tracks')
   badges = models.ManyToManyField('Badge', blank=True, related_name='user_tracks')
   xp = models.PositiveIntegerField(default=0)
@@ -249,22 +224,23 @@ class UserTrack(models.Model):
                 badge__requirement__level__track=self.track)
         .order_by('-timestamp'))
 
-  def next_requirements(self):
+  def next_challenges(self):
     return (
-        Requirement.objects
+        Badge.objects
         .filter(level=self.level.next())
-        .exclude(badges__verifications__user=self.user,
-                 badges__verifications__status__in=(Verification.UNSUBMITTED,
-                                                    Verification.UNVERIFIED,
-                                                    Verification.VERIFIED)))
+        .exclude(verifications__user=self.user,
+                 verifications__status__in=(Verification.UNSUBMITTED,
+                                            Verification.UNVERIFIED,
+                                            Verification.VERIFIED))
+        .order_by('order'))
 
   def challenges_to_verify(self):
     return (
         Verification.objects
         .exclude(user=self.user)
         .filter(Q(badge__in=self.badges.all()) |
-                Q(badge__requirement__level__track=self.track,
-                  badge__requirement__level__rank__lt=self.level.rank),
+                Q(badge__level__track=self.track,
+                  badge__level__rank__lt=self.level.rank),
                 status=Verification.UNVERIFIED)
         .order_by('?'))
 
@@ -278,17 +254,13 @@ class UserTrack(models.Model):
     self.badges.add(verification.badge)
     self.xp += verification.badge.xp()
 
-    # Award the next level, if applicable.
+    # Award the next level, if available.
     changed_levels = False
-    needs_more_xp = False
-    if self.next_requirements().count() == 0:
+    if self.next_challenges().filter(is_required=True).count() == 0:
       next_level = self.level.next()
       if next_level:
-        if self.xp >= Level.cumulative_xp_needed_for(next_level.rank):
-          self.level = next_level
-          changed_levels = True
-        else:
-          needs_more_xp = True
+        self.level = next_level
+        changed_levels = True
 
     self.save()
 
@@ -304,15 +276,6 @@ class UserTrack(models.Model):
                poster=User.PROMETHEUS,
                text="Congratulations! You've achieved level %d in %s and earned the title \"%s\"." %
                     (self.level.rank, self.track.name, self.level.name),
-               is_public=False,
-               verification=verification).save()
-    elif needs_more_xp:
-      WallPost(user=self.user,
-               poster=User.PROMETHEUS,
-               text=("You've earned all the required badges for level %d in %s but still need " +
-                     "some more experience before earning the title \"%s\". Earn experience by " +
-                     "completing other challenges and remember: more advanced badges earn more " +
-                     "experience!") % (next_level.rank + 1, self.track.name, next_level.name),
                is_public=False,
                verification=verification).save()
 
@@ -382,7 +345,7 @@ def user_can_verify(self, verification):
   else:
     try:
       verification_badge = verification.badge
-      verification_level = verification_badge.requirement.level
+      verification_level = verification_badge.level
       user_track = self.user_tracks.get(track=verification_level.track)
       if user_track.level.rank > verification_level.rank:
         return True
