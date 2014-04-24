@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block content %}
-{% for user_track in user_tracks %}
+{% for user_track in track_user_tracks %}
   <p>{% user_link user_track.user %}: (Lvl {{ user_track.level.rank }}) {{ user_track.level.name }}
   <ul>
     <li>{{ user_track.xp }} XP

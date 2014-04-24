@@ -72,7 +72,7 @@ def track_users(request, track_name):
   r = Response()
   r.track = get_object_or_404(Track, name__iexact=track_name)
   r.user_track = get_user_track(request, track_name)
-  r.user_tracks = r.track.user_tracks.order_by('-level__rank', '-xp')
+  r.track_user_tracks = r.track.user_tracks.order_by('-level__rank', '-xp')
   return r.__dict__
 
 
@@ -117,7 +117,6 @@ def user_merits(request, username, track_name):
   r.target_user = get_object_or_404(User, username__iexact=username)
   if track_name:
     r.track = get_object_or_404(Track, name__iexact=track_name)
-  r.user_tracks = r.target_user.user_tracks.order_by('-level__rank', '-xp')
   return r.__dict__
 
 
@@ -125,7 +124,6 @@ def user_merits(request, username, track_name):
 def user_verify(request, username):
   r = Response()
   r.target_user = get_object_or_404(User, username__iexact=username)
-  r.user_tracks = r.target_user.user_tracks.order_by('-level__rank', '-xp')
   return r.__dict__
 
 

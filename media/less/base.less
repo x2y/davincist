@@ -28,31 +28,50 @@ textarea {
   margin-bottom: 7px;
 }
 
-#header {
-  width: 100%;
-  height: 50px;
-  background: rgba(255, 255, 255, 0.8);
-  border-bottom: 2px solid #666;
+#header-navbar {
+  .user-track-dropdown {
+    &.open table {
+      display: table;
+    }
 
-  ul {
-    float: left;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    table {
+      width: 770px;
+      border-spacing: 2px;
+      border-collapse: separate;
+      padding: 0;
 
-    li {
-      float: left;
-      display: inline;
+      thead {
+        th {
+          text-align: center;
+        }
 
-      a {
-        display: block;
-        padding: 15px;
-        cursor: pointer;
+        tr:nth-of-type(1) {
+          color: #FFF;
+        }
 
-        &:hover {
-          background: #EEE;
-          border-bottom: 2px solid #BBB;
-          padding-bottom: 13px;
+        .track-links-menu-subheader,
+        .challenges-menu-subheader,
+        .level-menu-subheader {
+          font-weight: normal;
+        }
+
+        .track-links-menu-header { background: @gray; }
+        .track-links-menu-subheader { background: @gray-light; }
+
+        .challenges-menu-header { background: @accent-color; }
+        .challenges-menu-subheader { background: @accent-color-light; }
+
+        .level-menu-header { background: @primary-color; }
+        .level-menu-subheader { background: @primary-color-light; }
+      }
+
+      td {
+        width: 20%;
+
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
         }
       }
     }
@@ -147,7 +166,7 @@ textarea {
     color: #000;
   }
 
-  & .badge-medal {
+  .badge-medal {
     position: absolute;
     top: -13px;
     left: -32px;
@@ -160,7 +179,7 @@ textarea {
   &.grade-4 .badge-medal { background: url(/static/gold-64x64.png); }
   &.grade-6 .badge-medal { background: url(/static/diamond-64x64.png); }
 
-  & .badge-chip-box {
+  .badge-chip-box {
     width: 210px;
     height: 42px;
     padding: 0 10px 0 32px;
@@ -169,24 +188,52 @@ textarea {
     border-radius: 5px;
     background: #F6F6F6;
 
-    & .badge-name,
-    & .badge-description {
+    .badge-name,
+    .badge-description {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
 
-    & .badge-name {
+    .badge-name {
       font-weight: bold;
     }
 
-    & .badge-target-username {
+    .badge-target-username {
 
     }
 
-    & .badge-description {
+    .badge-description {
       margin-left: 5px;
       font-size: 10pt;
+    }
+  }
+
+  &.mini {
+    margin: 7px 6px 7px 16px;
+
+    .badge-medal {
+      top: -4px;
+      left: -16px;
+      width: 32px;
+      height: 32px;
+    }
+
+    &.grade-1 .badge-medal { background: url(/static/bronze-32x32.png); }
+    &.grade-2 .badge-medal { background: url(/static/silver-32x32.png); }
+    &.grade-4 .badge-medal { background: url(/static/gold-32x32.png); }
+    &.grade-6 .badge-medal { background: url(/static/diamond-32x32.png); }
+
+    .badge-chip-box {
+      width: 120px;
+      height: 24px;
+      padding-left: 18px;
+      border-radius: 3px;
+
+      .badge-description {
+        margin-left: 5px;
+        font-size: 10pt;
+      }
     }
   }
 }
